@@ -1,0 +1,26 @@
+﻿<package>
+  <metadata>
+    <id>Carfup.XTBPlugins.QueryConverter</id>
+    <version>1.2018.2.1</version>
+    <title>QueryConverter</title>
+    <authors>Clement O.</authors>
+    <owners>Clement O.</owners>
+    <projectUrl>https://github.com/carfup/XTBPlugins.QueryConverter</projectUrl>
+	<iconUrl>http://www.gravatar.com/avatar/8b87aef303e872503c47ef3fdf83c801?s=64</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>QueryConverter</description>
+    <summary>Really sweet plugin that does awesome things</summary>
+    <releaseNotes>
+v1
+    </releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>XrmToolBox Plugin QueryConverter</tags>
+    <dependencies>
+	   <dependency id="XrmToolBox" version="1.2018.1.20" />
+    </dependencies>
+  </metadata>
+  <files>
+	  <file src="bin\Release\Carfup.XTBPlugins.*.dll" target="lib\net462\Plugins" />
+	  <file src="bin\Release\Microsoft.ApplicationInsights.dll" target="lib\net46\Plugins" />
+  </files>
+</package>

@@ -86,7 +86,7 @@
             this.groupBox4.Size = new System.Drawing.Size(407, 419);
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "User List Destination";
+            this.groupBox4.Text = "Output";
             // 
             // textBoxQueryOutput
             // 
@@ -110,7 +110,7 @@
             this.groupBox1.Size = new System.Drawing.Size(407, 419);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "User List";
+            this.groupBox1.Text = "Input";
             // 
             // textBoxQueryInput
             // 

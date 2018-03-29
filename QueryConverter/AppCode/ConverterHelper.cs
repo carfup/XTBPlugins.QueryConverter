@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Carfup.XTBPlugins.AppCode.Converters;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
@@ -14,6 +15,9 @@ namespace Carfup.XTBPlugins.AppCode
     {
       
         public IOrganizationService service { get; set; } = null;
+        public QueryExpressionTo queryExpressionTo = null;
+        public WebApiTo webApiTo = null;
+        public FetchXMLTo fetchXmlTo = null;
         public string inputType { get; set; } = null;
         public string outputType { get; set; } = null;
         public string inputQuery { get; set; } = null;
@@ -21,6 +25,9 @@ namespace Carfup.XTBPlugins.AppCode
         public ConverterHelper(IOrganizationService service)
         {
             this.service = service;
+            this.queryExpressionTo = new QueryExpressionTo(this);
+            this.webApiTo = new WebApiTo(this);
+            this.fetchXmlTo = new FetchXMLTo(this);
         }
 
         public string processQuery(string inputType, string outputType, string inputQuery)
@@ -31,40 +38,45 @@ namespace Carfup.XTBPlugins.AppCode
 
             string outputQuery = "";
 
-            if(this.inputType == ConstantHelper.QueryExpression && this.outputType == ConstantHelper.FetchXml) // QE TO FETCH
+            if(this.inputType == ConstantHelper.QueryExpression && this.outputType == ConstantHelper.FetchXml) // QueryExpression to FetchXML
             {
-                QueryExpression q = new QueryExpression();
-               
-                //var conversionRequest = new QueryExpressionToFetchXmlRequest
-                //{
-                //    Query = this.inputQuery
-                //};
-                //var conversionResponse =
-                //    (QueryExpressionToFetchXmlResponse)_serviceProxy.Execute(conversionRequest);
-
-                //// Use the converted query to make a retrieve multiple request to Microsoft Dynamics CRM.
-                //String fetchXml = conversionResponse.FetchXml;
+                outputQuery = this.queryExpressionTo.processToFetchXml(inputQuery);
             }
-            else if (this.inputType == ConstantHelper.FetchXml && this.outputType == ConstantHelper.QueryExpression) // FETCH TO QE
+            else if (this.inputType == ConstantHelper.QueryExpression && this.outputType == ConstantHelper.WebApi) // QueryExpression to WebApi
             {
-                // Convert the FetchXML into a query expression.
-                var conversionRequest = new FetchXmlToQueryExpressionRequest
-                {
-                    FetchXml = this.inputQuery
-                };
-
-                var conversionResponse = (FetchXmlToQueryExpressionResponse)this.service.Execute(conversionRequest);
-
-                // Use the newly converted query expression to make a retrieve multiple
-                // request to Microsoft Dynamics CRM.
-                var queryExpression = conversionResponse.Query;
-                outputQuery = $"var query = @\"{JsonConvert.SerializeObject((object)queryExpression)}\"";
-                outputQuery += $"\nQueryExpression queryExpression = JsonConvert.DeserializeObject<QueryExpression>(query);";
+                outputQuery = this.queryExpressionTo.processToWebApi(inputQuery);
             }
+            else if (this.inputType == ConstantHelper.FetchXml && this.outputType == ConstantHelper.QueryExpression) // FetchXML to QueryExpression
+            {
+                QueryExpression query = fromStringToQueryExpression(inputQuery);
+                CodeBeautifier.input = this.fetchXmlTo.processToQueryExpression(query);
+                var codeBeautifier = CodeBeautifier.doIt();
 
-
+                outputQuery = codeBeautifier;
+            }
+            else if (this.inputType == ConstantHelper.FetchXml && this.outputType == ConstantHelper.WebApi) // FetchXML to WebApi
+            {
+                outputQuery = this.fetchXmlTo.processToWebApi(inputQuery);
+            }
 
             return outputQuery;
+        }
+
+        public QueryExpression fromStringToQueryExpression(string input)
+        {
+            // Convert the FetchXML into a query expression.
+            var conversionRequest = new FetchXmlToQueryExpressionRequest
+            {
+                FetchXml = input
+            };
+
+            var conversionResponse =
+                (FetchXmlToQueryExpressionResponse)this.service.Execute(conversionRequest);
+
+            // Use the newly converted query expression to make a retrieve multiple
+            // request to Microsoft Dynamics CRM.
+            QueryExpression queryExpression = conversionResponse.Query;
+            return queryExpression;
         }
     }
 

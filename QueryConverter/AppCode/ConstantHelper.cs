@@ -14,6 +14,18 @@ namespace Carfup.XTBPlugins.AppCode
         public const string QueryExpression = "QueryExpression";
         public const string Linq = "Linq";
         public const string WebApi = "WebApi";
+
+        public static Dictionary<string, string> operatorsMapping = new Dictionary<string, string>
+        {
+            { "Equal", "eq" },
+            { "NotEqual", "ne"},
+            { "GreaterThan", "gt"},
+            { "GreaterEqual", "ge"},
+            { "LessThan", "lt"},
+            { "BeginsWith", "startswith"},
+            { "EndsWith", "endswith"},
+            { "Contains", "contains"},
+        };
         #endregion
     }
 }

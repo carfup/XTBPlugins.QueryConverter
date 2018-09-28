@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Carfup.XTBPlugins.AppCode.Converters;
@@ -10,6 +12,7 @@ using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Carfup.XTBPlugins.AppCode
 {
@@ -23,6 +26,7 @@ namespace Carfup.XTBPlugins.AppCode
         public string inputType { get; set; } = null;
         public string outputType { get; set; } = null;
         public string inputQuery { get; set; } = null;
+        public JObject operators = null;
 
         public ConverterHelper(IOrganizationService service)
         {
@@ -30,6 +34,7 @@ namespace Carfup.XTBPlugins.AppCode
             this.queryExpressionTo = new QueryExpressionTo(this);
             this.webApiTo = new WebApiTo(this);
             this.fetchXmlTo = new FetchXMLTo(this);
+            this.operators = LoadOperatorsMapping();
         }
 
         public string ProcessQuery(string inputType, string outputType, string inputQuery)
@@ -72,6 +77,7 @@ namespace Carfup.XTBPlugins.AppCode
             return outputQuery;
         }
 
+         
         public string GetCrmVersion()
         {
             RetrieveVersionRequest req = new RetrieveVersionRequest();
@@ -94,6 +100,32 @@ namespace Carfup.XTBPlugins.AppCode
             var result = ((RetrieveEntityResponse)this.service.Execute(request));
 
             return result.EntityMetadata.CollectionSchemaName.ToLower();
+        }
+
+        private JObject LoadOperatorsMapping()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = "Carfup.XTBPlugins.AppCode.Mappings.operators.json";
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                var result = reader.ReadToEnd();
+                return JObject.Parse(result);
+            }
+        }
+
+        public JToken LookForOperator(string fromQueryType, string operatorToSearch, string toQueryType = null)
+        {
+            foreach (JToken ope in operators["operators"])
+            {
+                if (ope.SelectToken(fromQueryType)?.Value<string>() == operatorToSearch)
+                {
+                    return ope;
+                }
+            }
+
+            return null;
         }
     }
 

@@ -13,6 +13,7 @@ using Microsoft.Xrm.Sdk.Client;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
+using Microsoft.Xrm.Tooling.Connector;
 
 namespace Carfup.XTBPlugins.AppCode.Converters
 {
@@ -161,14 +162,20 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                 else
                     values = values.Count() > 1 ? string.Join(",", values.Split(',').Select(x => $"{x}").ToList()) : values;
 
-                var operatorValue = ConstantHelper.operatorsMapping.FirstOrDefault(x => x.Key == condition.Operator.ToString()).Value;
+                //var operatorValue = ConstantHelper.operatorsMapping.FirstOrDefault(x => x.Key == condition.Operator.ToString()).Value;
+                var operatorToken =
+                    this.convertHelper.LookForOperator("queryexpression", condition.Operator.ToString());
+                var operatorValue = operatorToken.SelectToken("webapi")?.ToString();
+
+                // If operator is missing, then we skip it for now
+                if (operatorValue == null)
+                    continue;
 
                 // Handling special cases :
                 var specialOperators = new string[] {"contains", "startswith", "endswith", "not contains"};
                 if (specialOperators.Contains(operatorValue))
                 {
-                    foreach (var value in values.Split(','))
-                        conditionExpressions.Add($"{operatorValue}({condition.AttributeName}, '{value}')");
+                    conditionExpressions.AddRange(values.Split(',').Select(value => $"{operatorValue}({condition.AttributeName}, '{value}')"));
                 }
                 else
                     conditionExpressions.Add($"{condition.AttributeName} {operatorValue} {values}");

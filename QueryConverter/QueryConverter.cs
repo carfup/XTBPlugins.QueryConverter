@@ -29,7 +29,7 @@ namespace Carfup.XTBPlugins.QueryConverter
         {
             get
             {
-                return "XTBPlugins.PersonalViewsMigration";
+                return "XTBPlugins.QueryConverter";
             }
         }
 

@@ -61,7 +61,7 @@ namespace Carfup.XTBPlugins.QueryConverter
             if (converter == null)
                 converter = new ConverterHelper(Service);
 
-            string outputQuery = converter.processQuery(inputType, outputType, inputQuery);
+            string outputQuery = converter.ProcessQuery(inputType, outputType, inputQuery);
             textBoxQueryOutput.Text = outputQuery;
         }
     }

@@ -4,63 +4,105 @@
     {
       "queryexpression": {
         "operator": "NotNull",
-        "conditionPattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "ne null",
-        "conditionPattern": "'{propName}' {operator}"
+        "conditionpattern": "{propName} {operator}"
+      },
+      "fetchxml": {
+        "operator": "not-null",
+        "conditionpattern": "{propName} {operator}"
       }
     },
     {
       "queryexpression": {
         "operator": "Equal",
-        "conditionPattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "eq",
-        "conditionPattern": "'{propName}' {operator} {value}"
+        "conditionpattern": "{propName} {operator} {value}"
       }
     },
     {
       "queryexpression": {
         "operator": "NotEqual",
-        "conditionPattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "ne",
-        "conditionPattern": "'{propName}' {operator} {value}"
+        "conditionpattern": "{propName} {operator} {value}"
       }
     },
     {
       "queryexpression": {
-        "property": "GreaterThan",
-        "conditionPattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "operator": "GreaterThan",
+        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
       },
       "webapi": {
-        "property": "gt",
-        "conditionPattern": "'{propName}' {operator} {value}"
+        "operator": "gt",
+        "conditionpattern": "{propName} {operator} {value}"
       }
     },
     {
       "queryexpression": {
-        "property": "NotIn",
-        "conditionPattern": "\"{propName}\" , ConditionOperator.{operator}, new object[] \\{ {value} \\}",
-        "valueRendering": "ToArray"
+        "operator": "NotIn",
+        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, new object[] { {value} }"
       },
       "webapi": {
-        "property": "Microsoft.Dynamics.CRM.NotIn",
-        "conditionPattern": "{operator}(PropertyName='{propName}',PropertyValues=[{value}])",
-        "valueRendering": "ToArray"
+        "operator": "Microsoft.Dynamics.CRM.NotIn",
+        "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValues=[{value}])"
       }
     },
     {
       "queryexpression": {
-        "property": "Like",
-        "conditionPattern": "\"{propName}\" , ConditionOperator.{operator}, \"{value}\""
+        "operator": "In",
+        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, new object[] { {value} }"
       },
       "webapi": {
-        "property": "like",
-        "conditionPattern": "{propName} {operator} {value}",
+        "operator": "Microsoft.Dynamics.CRM.In",
+        "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValues=[{value}])"
+      }
+    },
+    {
+      "queryexpression": {
+        "operator": "Like",
+        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+      },
+      "webapi": {
+        "operator": "contains",
+        "conditionpattern": "{operator}({propName}, {value})"
+      }
+    },
+    {
+      "queryexpression": {
+        "operator": "Like",
+        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, %{value}"
+      },
+      "webapi": {
+        "operator": "startwith",
+        "conditionpattern": "{operator}({propName}, {value})"
+      }
+    },
+    {
+      "queryexpression": {
+        "operator": "Like",
+        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}%"
+      },
+      "webapi": {
+        "operator": "endswith",
+        "conditionpattern": "{operator}({propName}, {value})"
+      }
+    },
+    {
+      "queryexpression": {
+        "operator": "LastXDays",
+        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+      },
+      "webapi": {
+        "operator": "Microsoft.Dynamics.CRM.LastXDays",
+        "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValue={value})"
       }
     }
   ]

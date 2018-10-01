@@ -20,11 +20,11 @@ namespace Carfup.XTBPlugins.AppCode.Converters
 {
     class QueryExpressionTo
     {
-        public ConverterHelper convertHelper = null;
+        public ConverterHelper converterHelper = null;
 
         public QueryExpressionTo(ConverterHelper convertHelper)
         {
-            this.convertHelper = convertHelper;
+            this.converterHelper = convertHelper;
         }
 
         public string processToFetchXml(string input)
@@ -45,7 +45,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             };
 
             var conversionResponse =
-                (QueryExpressionToFetchXmlResponse)this.convertHelper.service.Execute(conversionRequest);
+                (QueryExpressionToFetchXmlResponse)this.converterHelper.service.Execute(conversionRequest);
 
             return conversionResponse.FetchXml;
         }
@@ -92,8 +92,8 @@ namespace Carfup.XTBPlugins.AppCode.Converters
 
             var queryExpression = this.FromStringToQueryExpression(input);
 
-            var url = ((OrganizationServiceProxy)this.convertHelper.service).EndpointSwitch.PrimaryEndpoint.Host;
-            var completeLink = $"https://{url}/api/data/v{this.convertHelper.GetCrmVersion()}/{this.convertHelper.GetEntityPlural(queryExpression.EntityName.ToLower())}?";
+            var url = ((OrganizationServiceProxy)this.converterHelper.service).EndpointSwitch.PrimaryEndpoint.Host;
+            var completeLink = $"https://{url}/api/data/v{this.converterHelper.GetCrmVersion()}/{this.converterHelper.GetEntityPlural(queryExpression.EntityName.ToLower())}?";
 
             // We go for the FetchXml WebApi
             if (queryExpression.LinkEntities.Count > 0)
@@ -142,55 +142,36 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             return ordersString;
         }
 
-        public string ManageConditionsToWebApi(FilterExpression filterExpression)
+        public string ManageConditionsToWebApi(FilterExpression filterExpression, string conditionString, int depth = 0)
         {
             var conditionsString = "";
             var logicalOperator = filterExpression.FilterOperator;
             var conditions = filterExpression.Conditions;
 
-            if (conditions.Count == 0)
+            if (conditions.Count == 0 && filterExpression.Filters.Count > 0)
+                foreach (var filter in filterExpression.Filters)
+                {
+                    depth++;
+                    conditionString = ManageConditionsToWebApi(filter, conditionString, depth);
+                    depth++;
+                }
+            else if (conditions.Count == 0)
                 return conditionsString;
 
-            conditionsString = "$filter=";
+            if(depth == 0)
+                conditionsString = "$filter=";
 
             List<string> conditionExpressions = new List<string>();
             foreach (var condition in conditions)
             {
                 //var operatorValue = ConstantHelper.operatorsMapping.FirstOrDefault(x => x.Key == condition.Operator.ToString()).Value;
-                var operatorToken =
-                    this.convertHelper.LookForOperator("queryexpression", condition.Operator.ToString(), "webapi");
-                var transformedCondition = operatorToken.SelectToken("conditionPattern")?.ToString();
+                var formatedCondition = this.converterHelper.ConditionHandling("queryexpression", "webapi",
+                    condition.Operator.ToString(), condition.AttributeName, condition.Values);
 
-                // If operator is missing, then we skip it for now
-                if (transformedCondition == null)
+                if (formatedCondition == null)
                     continue;
 
-                transformedCondition = transformedCondition.Replace("{operator}", operatorToken.SelectToken("operator").ToString());
-                transformedCondition = transformedCondition.Replace("{propName}", condition.AttributeName);
-
-                // Preparing the value side
-                var values = String.Join(",", condition.Values);
-                if (operatorToken.SelectToken("valueRendering") != null)
-                {
-
-                }
-                //if()                
-
-                //var values = (condition.Values.Count == 0 || operatorToken.Value<bool>("emptyValue")) ? null : String.Join(",", condition.Values);
-
-                //if(values == "") // handling empty values
-                //    values = "''";
-                //else if(values != null)
-                //    values = values.Count() > 1 ? string.Join(",", values.Split(',').Select(x => $"{x}").ToList()) : values;
-
-                //// Handling special cases :
-                //var specialOperators = new string[] {"contains", "startswith", "endswith", "not contains"};
-                //if (specialOperators.Contains(operatorValue))
-                //{
-                //    conditionExpressions.AddRange(values.Split(',').Select(value => $"{operatorValue}({condition.AttributeName}, '{value}')"));
-                //}
-                //else
-                //    conditionExpressions.Add($"{condition.AttributeName} {operatorValue} {values}");
+                conditionExpressions.Add(formatedCondition);
             }
 
 

@@ -162,9 +162,17 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             List<string> conditionExpressions = new List<string>();
             foreach (var condition in conditions)
             {
-                var values = String.Join(",", condition.Values);
-                values = values.Count() > 1 ? string.Join(",", values.Split(',').Select(x => string.Format("\"{0}\"", x)).ToList()) : values;
-                conditionExpressions.Add($"new ConditionExpression(\"{condition.AttributeName}\", ConditionOperator.{condition.Operator.ToString()}, {values})");
+                var formatedCondition = this.converterHelper.ConditionHandling("queryexpression", "queryexpression",
+                    condition.Operator.ToString(), condition.AttributeName, condition.Values);
+
+                if(formatedCondition == null)
+                continue;
+
+                conditionExpressions.Add($"new ConditionExpression({formatedCondition})");
+
+                //var values = String.Join(",", condition.Values);
+                //values = values.Count() > 1 ? string.Join(",", values.Split(',').Select(x => string.Format("\"{0}\"", x)).ToList()) : values;
+                //conditionExpressions.Add($"new ConditionExpression(\"{condition.AttributeName}\", ConditionOperator.{condition.Operator.ToString()}, {values})");
             }
 
             conditionsString += String.Join($",", conditionExpressions);

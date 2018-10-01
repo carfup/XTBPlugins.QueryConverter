@@ -116,7 +116,7 @@ namespace Carfup.XTBPlugins.AppCode
             }
         }
 
-        public JToken LookForOperator(string fromQueryType, string operatorToSearch, string toQueryType = null)
+        public JToken LookForOperator(string fromQueryType, string toQueryType, string operatorToSearch)
         {
             foreach (JToken ope in operators["operators"])
             {
@@ -127,6 +127,65 @@ namespace Carfup.XTBPlugins.AppCode
             }
 
             return null;
+        }
+
+        public string ConditionHandling(string fromType, string toType, string operatorToLookFor, string attribute, DataCollection<object> valuesList)
+        {
+            var operatorToken = LookForOperator(fromType, toType, operatorToLookFor);
+            // If operator is missing, then we skip it for now
+            if (operatorToken == null)
+                return null;
+
+            var transformedCondition = operatorToken.SelectToken("conditionpattern")?.ToString();
+
+            // If condition pattern is missing, then we skip it for now
+            if (transformedCondition == null)
+                return null;
+
+            transformedCondition = transformedCondition.Replace("{operator}", operatorToken.SelectToken("operator").ToString());
+            transformedCondition = transformedCondition.Replace("{propName}", attribute);
+
+            // If no values needed, return in this state
+            if(!transformedCondition.Contains("{value}"))
+                return transformedCondition;
+
+            // Preparing the value side
+            var valueResult = "";
+            if (valuesList.Count > 1)
+            {
+                if (operatorToken.SelectToken("valuerendering") != null)
+                {
+
+                }
+                else
+                {
+                    // Assuming we want an array here
+                    var type = valuesList[0].GetType();
+                    if (type == typeof(int))
+                    {
+                        valueResult = String.Join(",", valuesList.ToArray());
+                    }
+                    else if (type == typeof(string))
+                    {
+                        valueResult = "\"" + String.Join("\",\"", valuesList.ToArray()) + "\"";
+                    }
+                }
+            }
+            else
+            {
+                var type = valuesList.FirstOrDefault()?.GetType();
+
+                // If we have a int, no need of the double quotes
+                valueResult = (type == typeof(int)) ? valuesList.FirstOrDefault()?.ToString() : $"\"{valuesList.FirstOrDefault()}\"";
+
+                // if value = "", need to define double or single quote
+                if (valueResult == "")
+                    valueResult = toType == "queryexpression" ? "\"\"" : "''";
+            }
+
+            transformedCondition = transformedCondition.Replace("{value}", valueResult);
+
+            return transformedCondition;
         }
     }
 

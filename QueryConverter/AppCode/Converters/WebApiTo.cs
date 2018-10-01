@@ -22,14 +22,14 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             this.convertHelper = convertHelper;
         }
 
-        public string processToFetch(string input)
+        public string ProcessToFetch(string input)
         {
-            var queryExpressionStringValue = processToQueryExpression(input);
+            var queryExpressionStringValue = ProcessToQueryExpression(input);
             var fetch = this.convertHelper.queryExpressionTo.processToFetchXml(queryExpressionStringValue);
 
             return fetch;
         }
-        public string processToQueryExpression(string input)
+        public string ProcessToQueryExpression(string input)
         {
             var urlParts = input.Split('/');
             var interestingUrlPart = urlParts[urlParts.Length - 1];

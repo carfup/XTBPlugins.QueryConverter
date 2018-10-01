@@ -169,10 +169,6 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                 continue;
 
                 conditionExpressions.Add($"new ConditionExpression({formatedCondition})");
-
-                //var values = String.Join(",", condition.Values);
-                //values = values.Count() > 1 ? string.Join(",", values.Split(',').Select(x => string.Format("\"{0}\"", x)).ToList()) : values;
-                //conditionExpressions.Add($"new ConditionExpression(\"{condition.AttributeName}\", ConditionOperator.{condition.Operator.ToString()}, {values})");
             }
 
             conditionsString += String.Join($",", conditionExpressions);

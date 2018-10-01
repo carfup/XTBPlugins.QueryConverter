@@ -68,11 +68,13 @@ namespace Carfup.XTBPlugins.AppCode
             }
             else if (this.inputType == ConstantHelper.WebApi && this.outputType == ConstantHelper.QueryExpression) // WebApi to QueryExpression
             {
-                //TODO
+                CodeBeautifier.input = this.webApiTo.ProcessToQueryExpression(inputQuery);
+                var codeBeautifier = CodeBeautifier.doIt();
+                outputQuery = codeBeautifier;
             }
             else if (this.inputType == ConstantHelper.WebApi && this.outputType == ConstantHelper.FetchXml) // WebApi to FetchXML
             {
-                //TODO
+                outputQuery = this.webApiTo.ProcessToFetch(inputQuery);
             }
 
             return outputQuery;

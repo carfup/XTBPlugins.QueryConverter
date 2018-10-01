@@ -155,13 +155,6 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             List<string> conditionExpressions = new List<string>();
             foreach (var condition in conditions)
             {
-                var values = condition.Values.Count == 0 ? "null" : String.Join(",", condition.Values);
-
-                if(values == "") // handling empty values
-                    values = "''";
-                else
-                    values = values.Count() > 1 ? string.Join(",", values.Split(',').Select(x => $"{x}").ToList()) : values;
-
                 //var operatorValue = ConstantHelper.operatorsMapping.FirstOrDefault(x => x.Key == condition.Operator.ToString()).Value;
                 var operatorToken =
                     this.convertHelper.LookForOperator("queryexpression", condition.Operator.ToString());
@@ -170,6 +163,13 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                 // If operator is missing, then we skip it for now
                 if (operatorValue == null)
                     continue;
+
+                var values = (condition.Values.Count == 0 || operatorToken.Value<bool>("emptyValue")) ? null : String.Join(",", condition.Values);
+
+                if(values == "") // handling empty values
+                    values = "''";
+                else if(values != null)
+                    values = values.Count() > 1 ? string.Join(",", values.Split(',').Select(x => $"{x}").ToList()) : values;
 
                 // Handling special cases :
                 var specialOperators = new string[] {"contains", "startswith", "endswith", "not contains"};

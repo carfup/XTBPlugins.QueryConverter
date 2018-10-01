@@ -1,170 +1,172 @@
 {
-	"operators" : [
-		 {
-			"hasValue" :false,
-			"queryexpression" : "NotNull",
-			"webapi" : "ne null"
-		},
-		{
-			"queryexpression" : "NotIn",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "Equal",
-			"webapi" : "eq"
-		},
-		{
-			"queryexpression" : "NotEqual",
-			"webapi" : "ne"
-		},
-		{
-			"queryexpression" : "GreaterThan",
-			"webapi" : "gt"
-		},
-		{
-			"queryexpression" : "LessThan",
-			"webapi" : "lt"
-		},
-		{
-			"queryexpression" : "BeginsWith",
-			"webapi" : "startswith"
-		},
-		{
-			"queryexpression" : "EndsWith",
-			"webapi" : "endswith"
-		},
-		{
-			"queryexpression" : "Contains",
-			"webapi" : "contains"
-		},
-		{
-			"queryexpression" : "LessEqual",
-			"webapi" : "le"
-		},
-		{
-			"queryexpression" : "Like",
-			"webapi" : "contains"
-		},
-		{
-			"queryexpression" : "NotIn",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "AboveOrEqual",
-			"webapi" : "not startswith"
-		},
-		{
-			"queryexpression" : "DoesNotBeginWith",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "DoesNotContain",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "DoesNotEndWith",
-			"webapi" : "not endswith"
-		},
-		{
-			"queryexpression" : "GreaterEqual",
-			"webapi" : "ge"
-		},
-		{
-			"queryexpression" : "In",
-			"webapi" : "contains"
-		},
-		{
-			"hasValue" : false,
-			"queryexpression" : "InFiscalYear",
-			"webapi" : "not contains"
-		},
+  // https://docs.microsoft.com/en-us/dynamics365/customer-engagement/web-api/queryfunctions?view=dynamics-ce-odata-9 => WEBAPI
+
+  "operators": [
     {
-      "hasValue": false,
+      "emptyValue": true,
+      "queryexpression": "NotNull",
+      "webapi": "ne null"
+    },
+    {
+      "queryexpression": "NotIn",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "Equal",
+      "webapi": "eq"
+    },
+    {
+      "queryexpression": "NotEqual",
+      "webapi": "ne"
+    },
+    {
+      "queryexpression": "GreaterThan",
+      "webapi": "gt"
+    },
+    {
+      "queryexpression": "LessThan",
+      "webapi": "lt"
+    },
+    {
+      "queryexpression": "BeginsWith",
+      "webapi": "startswith"
+    },
+    {
+      "queryexpression": "EndsWith",
+      "webapi": "endswith"
+    },
+    {
+      "queryexpression": "Contains",
+      "webapi": "contains"
+    },
+    {
+      "queryexpression": "LessEqual",
+      "webapi": "le"
+    },
+    {
+      "queryexpression": "Like",
+      "webapi": "contains"
+    },
+    {
+      "queryexpression": "NotIn",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "AboveOrEqual",
+      "webapi": "not startswith"
+    },
+    {
+      "queryexpression": "DoesNotBeginWith",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "DoesNotContain",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "DoesNotEndWith",
+      "webapi": "not endswith"
+    },
+    {
+      "queryexpression": "GreaterEqual",
+      "webapi": "ge"
+    },
+    {
+      "queryexpression": "In",
+      "webapi": "contains"
+    },
+    {
+      "emptyValue": true,
+      "queryexpression": "InFiscalYear",
+      "webapi": "not contains"
+    },
+    {
+      "emptyValue": true,
       "queryexpression": "InFiscalPeriod",
       "webapi": "not contains"
     },
-		{
-			"hasValue" : false,
-			"queryexpression" : "Last7Days",
-			"webapi" : "not contains"
-		},
-		{
-			"hasValue" : false,
-			"queryexpression" : "LastFiscalPeriod",
-			"webapi" : "not contains"
-		},
-		{
-			"hasValue" : false,
-			"queryexpression" : "LastFiscalYear",
-			"webapi" : "not contains"
-		},
-		{
-			"hasValue" : false,
-			"queryexpression" : "LastMonth",
-			"webapi" : "not contains"
-		},
-		{
-			"hasValue" : false,
-			"queryexpression" : "LastWeek",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "LastXDays",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "LastXMonths",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "LastXWeeks",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "LastXYears",
-			"webapi" : "not contains"
-		},
-		{
-			"hasValue" : false,
-			"queryexpression" : "LastYear",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "On",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "OnOrAfter",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "OnOrBefore",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "ThisMonth",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "ThisWeek",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "ThisYear",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "Today",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "Tomorrow",
-			"webapi" : "not contains"
-		},
-		{
-			"queryexpression" : "Yesterday",
-			"webapi" : "not contains"
-		}
-	]
+    {
+      "emptyValue": true,
+      "queryexpression": "Last7Days",
+      "webapi": "not contains"
+    },
+    {
+      "emptyValue": true,
+      "queryexpression": "LastFiscalPeriod",
+      "webapi": "not contains"
+    },
+    {
+      "hasValue": false,
+      "queryexpression": "LastFiscalYear",
+      "webapi": "not contains"
+    },
+    {
+      "emptyValue": true,
+      "queryexpression": "LastMonth",
+      "webapi": "not contains"
+    },
+    {
+      "emptyValue": true,
+      "queryexpression": "LastWeek",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "LastXDays",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "LastXMonths",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "LastXWeeks",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "LastXYears",
+      "webapi": "not contains"
+    },
+    {
+      "emptyValue": true,
+      "queryexpression": "LastYear",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "On",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "OnOrAfter",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "OnOrBefore",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "ThisMonth",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "ThisWeek",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "ThisYear",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "Today",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "Tomorrow",
+      "webapi": "not contains"
+    },
+    {
+      "queryexpression": "Yesterday",
+      "webapi": "not contains"
+    }
+  ]
 }
 

@@ -14,6 +14,7 @@ using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Tooling.Connector;
+using Newtonsoft.Json.Linq;
 
 namespace Carfup.XTBPlugins.AppCode.Converters
 {
@@ -157,28 +158,39 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             {
                 //var operatorValue = ConstantHelper.operatorsMapping.FirstOrDefault(x => x.Key == condition.Operator.ToString()).Value;
                 var operatorToken =
-                    this.convertHelper.LookForOperator("queryexpression", condition.Operator.ToString());
-                var operatorValue = operatorToken.SelectToken("webapi")?.ToString();
+                    this.convertHelper.LookForOperator("queryexpression", condition.Operator.ToString(), "webapi");
+                var transformedCondition = operatorToken.SelectToken("conditionPattern")?.ToString();
 
                 // If operator is missing, then we skip it for now
-                if (operatorValue == null)
+                if (transformedCondition == null)
                     continue;
 
-                var values = (condition.Values.Count == 0 || operatorToken.Value<bool>("emptyValue")) ? null : String.Join(",", condition.Values);
+                transformedCondition = transformedCondition.Replace("{operator}", operatorToken.SelectToken("operator").ToString());
+                transformedCondition = transformedCondition.Replace("{propName}", condition.AttributeName);
 
-                if(values == "") // handling empty values
-                    values = "''";
-                else if(values != null)
-                    values = values.Count() > 1 ? string.Join(",", values.Split(',').Select(x => $"{x}").ToList()) : values;
-
-                // Handling special cases :
-                var specialOperators = new string[] {"contains", "startswith", "endswith", "not contains"};
-                if (specialOperators.Contains(operatorValue))
+                // Preparing the value side
+                var values = String.Join(",", condition.Values);
+                if (operatorToken.SelectToken("valueRendering") != null)
                 {
-                    conditionExpressions.AddRange(values.Split(',').Select(value => $"{operatorValue}({condition.AttributeName}, '{value}')"));
+
                 }
-                else
-                    conditionExpressions.Add($"{condition.AttributeName} {operatorValue} {values}");
+                //if()                
+
+                //var values = (condition.Values.Count == 0 || operatorToken.Value<bool>("emptyValue")) ? null : String.Join(",", condition.Values);
+
+                //if(values == "") // handling empty values
+                //    values = "''";
+                //else if(values != null)
+                //    values = values.Count() > 1 ? string.Join(",", values.Split(',').Select(x => $"{x}").ToList()) : values;
+
+                //// Handling special cases :
+                //var specialOperators = new string[] {"contains", "startswith", "endswith", "not contains"};
+                //if (specialOperators.Contains(operatorValue))
+                //{
+                //    conditionExpressions.AddRange(values.Split(',').Select(value => $"{operatorValue}({condition.AttributeName}, '{value}')"));
+                //}
+                //else
+                //    conditionExpressions.Add($"{condition.AttributeName} {operatorValue} {values}");
             }
 
 
@@ -191,6 +203,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
         {
             var columns = "";
 
+            // If all column or not selected, no need to go further
             if (columnSet.AllColumns || columnSet.Columns.Count == 0)
                 return columns;
 
@@ -204,6 +217,22 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             var stringq = $"$select={columns}";
 
             return stringq;
+        }
+
+        public JObject FormatConditionForMapper(ConditionExpression condition)
+        {
+            dynamic operatorMapping = new JObject();
+            
+            var values = (condition.Values.Count == 0) ? null : String.Join(",", condition.Values);
+            if (values == "") // handling empty values
+                values = "''";
+            else if (values != null)
+                values = values.Count() > 1 ? string.Join(",", values.Split(',').Select(x => $"{x}").ToList()) : values;
+
+            operatorMapping[condition.Operator.ToString()] = values;
+            
+
+            return operatorMapping;
         }
     }
 }

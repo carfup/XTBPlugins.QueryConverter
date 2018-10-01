@@ -55,6 +55,7 @@ namespace Carfup.XTBPlugins.AppCode
             }
             else if (this.inputType == ConstantHelper.FetchXml && this.outputType == ConstantHelper.QueryExpression) // FetchXML to QueryExpression
             {
+
                 QueryExpression query = this.fetchXmlTo.FromStringToQueryExpression(inputQuery);
                 CodeBeautifier.input = this.fetchXmlTo.ProcessToQueryExpression(query);
                 var codeBeautifier = CodeBeautifier.doIt();
@@ -119,9 +120,9 @@ namespace Carfup.XTBPlugins.AppCode
         {
             foreach (JToken ope in operators["operators"])
             {
-                if (ope.SelectToken(fromQueryType)?.Value<string>() == operatorToSearch)
+                if (ope.SelectToken(fromQueryType)?.SelectToken("operator").Value<string>() == operatorToSearch)
                 {
-                    return ope;
+                    return ope.SelectToken(toQueryType);
                 }
             }
 

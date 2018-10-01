@@ -107,7 +107,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             }
             else // we might go for the url
             {
-                var conditions = ManageConditionsToWebApi(queryExpression.Criteria);
+                var conditions = ManageConditionsToWebApi(queryExpression.Criteria, "");
                 var columns = ManageColumsetToWebApi(queryExpression.ColumnSet);
                 var order = ManageOrdersToWebApi(queryExpression.Orders);
                 var pageInfo = queryExpression.PageInfo;
@@ -142,19 +142,18 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             return ordersString;
         }
 
-        public string ManageConditionsToWebApi(FilterExpression filterExpression, string conditionString, int depth = 0)
+        public string ManageConditionsToWebApi(FilterExpression filterExpression, string conditionsString, int depth = 0, int maxDepth = 0)
         {
-            var conditionsString = "";
+            
             var logicalOperator = filterExpression.FilterOperator;
             var conditions = filterExpression.Conditions;
 
-            if (conditions.Count == 0 && filterExpression.Filters.Count > 0)
-                foreach (var filter in filterExpression.Filters)
-                {
-                    depth++;
-                    conditionString = ManageConditionsToWebApi(filter, conditionString, depth);
-                    depth++;
-                }
+            if (conditions.Count == 0 && filterExpression.Filters.Count > 0 && depth <= maxDepth)
+            {
+                // if maxdepth is already defined, we dont update it.
+                maxDepth = maxDepth == 0 ? filterExpression.Filters.Count - 1 : maxDepth;
+                conditions = filterExpression.Filters[0].Conditions;
+            }
             else if (conditions.Count == 0)
                 return conditionsString;
 
@@ -174,8 +173,14 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                 conditionExpressions.Add(formatedCondition);
             }
 
+            conditionsString += "(" + String.Join($" {logicalOperator.ToString().ToLower()} ", conditionExpressions) + ")";
 
-            conditionsString += String.Join($" {logicalOperator.ToString().ToLower()} ", conditionExpressions);
+            if(depth < maxDepth)
+            {
+                depth++;
+                conditionsString += " and ";
+                conditionsString += ManageConditionsToWebApi(filterExpression.Filters[depth], conditionsString, depth, maxDepth);
+            }
 
             return conditionsString;
         }

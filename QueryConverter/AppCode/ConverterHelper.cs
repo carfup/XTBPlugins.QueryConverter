@@ -178,9 +178,8 @@ namespace Carfup.XTBPlugins.AppCode
                 // If we have a int, no need of the double quotes
                 valueResult = (type == typeof(int)) ? valuesList.FirstOrDefault()?.ToString() : $"\"{valuesList.FirstOrDefault()}\"";
 
-                // if value = "", need to define double or single quote
-                if (valueResult == "")
-                    valueResult = toType == "queryexpression" ? "\"\"" : "''";
+                if (toType == "webapi")
+                    valueResult = valueResult.Replace("\"", "'");
             }
 
             transformedCondition = transformedCondition.Replace("{value}", valueResult);

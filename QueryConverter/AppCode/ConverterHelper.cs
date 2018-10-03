@@ -47,7 +47,7 @@ namespace Carfup.XTBPlugins.AppCode
 
             if(this.inputType == ConstantHelper.QueryExpression && this.outputType == ConstantHelper.FetchXml) // QueryExpression to FetchXML
             {
-                outputQuery = this.queryExpressionTo.processToFetchXml(inputQuery);
+                outputQuery = this.queryExpressionTo.ProcessToFetchXml(inputQuery);
             }
             else if (this.inputType == ConstantHelper.QueryExpression && this.outputType == ConstantHelper.WebApi) // QueryExpression to WebApi
             {
@@ -74,7 +74,7 @@ namespace Carfup.XTBPlugins.AppCode
             }
             else if (this.inputType == ConstantHelper.WebApi && this.outputType == ConstantHelper.FetchXml) // WebApi to FetchXML
             {
-                outputQuery = this.webApiTo.ProcessToFetch(inputQuery);
+                outputQuery = this.webApiTo.ProcessToFetchXml(inputQuery);
             }
 
             return outputQuery;
@@ -131,7 +131,7 @@ namespace Carfup.XTBPlugins.AppCode
             return null;
         }
 
-        public string ConditionHandling(string fromType, string toType, string operatorToLookFor, string attribute, DataCollection<object> valuesList)
+        public string ConditionHandling(string fromType, string toType, string operatorToLookFor, string attribute, List<object> valuesList)
         {
             var operatorToken = LookForOperator(fromType, toType, operatorToLookFor);
             // If operator is missing, then we skip it for now
@@ -144,12 +144,14 @@ namespace Carfup.XTBPlugins.AppCode
             if (transformedCondition == null)
                 return null;
 
-            transformedCondition = transformedCondition.Replace("{operator}", operatorToken.SelectToken("operator").ToString());
             transformedCondition = transformedCondition.Replace("{propName}", attribute);
 
             // If no values needed, return in this state
             if(!transformedCondition.Contains("{value}"))
                 return transformedCondition;
+
+            // Special case for operator which doesnt need a value
+            var operatorCondition = operatorToken.SelectToken("operator").ToString();
 
             // Preparing the value side
             var valueResult = "";
@@ -182,9 +184,16 @@ namespace Carfup.XTBPlugins.AppCode
 
                 if (toType == "webapi")
                     valueResult = valueResult.Replace("\"", "'");
+
+                if (new string[] {"ne"}.Contains(operatorCondition) && valueResult == "null")
+                {
+                    valueResult = "";
+                    operatorCondition = LookForOperator(fromType, toType, "ne null").SelectToken("operator").ToString();
+                }
             }
 
             transformedCondition = transformedCondition.Replace("{value}", valueResult);
+            transformedCondition = transformedCondition.Replace("{operator}", operatorCondition);
 
             return transformedCondition;
         }

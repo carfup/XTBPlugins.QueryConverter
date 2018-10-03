@@ -27,7 +27,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             this.converterHelper = convertHelper;
         }
 
-        public string processToFetchXml(string input)
+        public string ProcessToFetchXml(string input)
         {
             var queryToTransform = this.FromStringToQueryExpression(input);
             var fetchXml = FromQueryExpressionToFetchXml(queryToTransform);
@@ -165,7 +165,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             {
                 //var operatorValue = ConstantHelper.operatorsMapping.FirstOrDefault(x => x.Key == condition.Operator.ToString()).Value;
                 var formatedCondition = this.converterHelper.ConditionHandling("queryexpression", "webapi",
-                    condition.Operator.ToString(), condition.AttributeName, condition.Values);
+                    condition.Operator.ToString(), condition.AttributeName, condition.Values.ToList());
 
                 if (formatedCondition == null)
                     continue;
@@ -173,7 +173,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                 conditionExpressions.Add(formatedCondition);
             }
 
-            conditionsString += "(" + String.Join($" {logicalOperator.ToString().ToLower()} ", conditionExpressions) + ")";
+            conditionsString += "" + String.Join($" {logicalOperator.ToString().ToLower()} ", conditionExpressions) + "";
 
             if(depth < maxDepth)
             {

@@ -31,6 +31,9 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             stringq += $"EntityName = \"{entityName}\",";
             stringq += $"Distinct = {queryExpression.Distinct.ToString().ToLower()}";
 
+            if(queryExpression.TopCount != null)
+                stringq += $"TopCount = {queryExpression.TopCount}";
+
             // Manage columnset
             stringq += ManageColumset(queryExpression.ColumnSet);
 
@@ -163,7 +166,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             foreach (var condition in conditions)
             {
                 var formatedCondition = this.converterHelper.ConditionHandling("queryexpression", "queryexpression",
-                    condition.Operator.ToString(), condition.AttributeName, condition.Values);
+                    condition.Operator.ToString(), condition.AttributeName, condition.Values.ToList());
 
                 if(formatedCondition == null)
                 continue;

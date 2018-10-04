@@ -145,9 +145,10 @@ namespace Carfup.XTBPlugins.AppCode
                 return null;
 
             transformedCondition = transformedCondition.Replace("{propName}", attribute);
+            transformedCondition = transformedCondition.Replace("{operator}", operatorToken.SelectToken("operator").ToString());
 
             // If no values needed, return in this state
-            if(!transformedCondition.Contains("{value}"))
+            if (!transformedCondition.Contains("{value}"))
                 return transformedCondition;
 
             // Special case for operator which doesnt need a value
@@ -185,15 +186,11 @@ namespace Carfup.XTBPlugins.AppCode
                 if (toType == "webapi")
                     valueResult = valueResult.Replace("\"", "'");
 
-                if (new string[] {"ne"}.Contains(operatorCondition) && valueResult == "null")
-                {
-                    valueResult = "";
-                    operatorCondition = LookForOperator(fromType, toType, "ne null").SelectToken("operator").ToString();
-                }
+                
             }
 
             transformedCondition = transformedCondition.Replace("{value}", valueResult);
-            transformedCondition = transformedCondition.Replace("{operator}", operatorCondition);
+            
 
             return transformedCondition;
         }

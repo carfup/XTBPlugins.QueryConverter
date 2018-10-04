@@ -179,7 +179,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             {
                 depth++;
                 conditionsString += " and ";
-                conditionsString += ManageConditionsToWebApi(filterExpression.Filters[depth], conditionsString, depth, maxDepth);
+                conditionsString = ManageConditionsToWebApi(filterExpression.Filters[depth], conditionsString, depth, maxDepth);
             }
 
             return conditionsString;

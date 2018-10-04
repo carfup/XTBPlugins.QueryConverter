@@ -172,6 +172,10 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                     conditionattribute = matchResult.Groups[1]?.Value;
                     conditionOperator = matchResult.Groups[2]?.Value;
                     conditionValues = new List<object>() { JToken.Parse(matchResult.Groups[3]?.Value) };
+
+                    //Special case for notnull
+                    if (matchResult.Groups[3]?.Value == "null" && conditionOperator == "ne")
+                        conditionOperator = "ne null";
                 }
                 else if (invertedCondition.Match(conditionToCheck).Success)
                 {

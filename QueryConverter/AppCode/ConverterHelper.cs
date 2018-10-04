@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Carfup.XTBPlugins.AppCode.Converters;
 using Microsoft.Crm.Sdk.Messages;
@@ -118,8 +119,30 @@ namespace Carfup.XTBPlugins.AppCode
             }
         }
 
-        public JToken LookForOperator(string fromQueryType, string toQueryType, string operatorToSearch)
+        public JToken LookForOperator(string fromQueryType, string toQueryType, string operatorToSearch, object sampleValue)
         {
+            var potentialOperators = operators["operators"].Where(x =>
+                x.SelectToken(fromQueryType)?.SelectToken("operator").Value<string>() == operatorToSearch);
+
+            if (potentialOperators.Count() > 1)
+            {
+                foreach (var potentialOperator in potentialOperators)
+                {
+                    if(potentialOperator.SelectToken(fromQueryType)?.SelectToken("valuepattern") != null)
+                    {
+                        var pattern = new Regex(potentialOperator.SelectToken(fromQueryType).SelectToken("valuepattern").Value<string>());
+                        if (pattern.Match(sampleValue.ToString()).Success)
+                        {
+                            return potentialOperator.SelectToken(toQueryType);
+                        }
+                    }
+                }
+
+                return null;
+            }
+
+            return potentialOperators.FirstOrDefault().SelectToken(toQueryType);
+
             foreach (JToken ope in operators["operators"])
             {
                 if (ope.SelectToken(fromQueryType)?.SelectToken("operator").Value<string>() == operatorToSearch)
@@ -133,12 +156,9 @@ namespace Carfup.XTBPlugins.AppCode
 
         public string ConditionHandling(string fromType, string toType, string operatorToLookFor, string attribute, List<object> valuesList)
         {
-            var operatorToken = LookForOperator(fromType, toType, operatorToLookFor);
-            // If operator is missing, then we skip it for now
-            if (operatorToken == null)
-                return null;
-
-            var transformedCondition = operatorToken.SelectToken("conditionpattern")?.ToString();
+            var operatorToken = LookForOperator(fromType, toType, operatorToLookFor, valuesList.FirstOrDefault());
+            
+            var transformedCondition = operatorToken?.SelectToken("conditionpattern")?.ToString();
 
             // If condition pattern is missing, then we skip it for now
             if (transformedCondition == null)

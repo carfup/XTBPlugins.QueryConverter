@@ -153,13 +153,13 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             conditionsString += $", Criteria = {{ Conditions = {{";
 
             List<string> conditionExpressions = new List<string>();
-            foreach (var condition in filtersList.Split(new string[] { "or", "and" }, StringSplitOptions.None))
+            foreach (var condition in filtersList.Split(new string[] { " or ", " and " }, StringSplitOptions.None))
             {
                 var conditionToCheck = condition.TrimStart().TrimEnd();
 
                 var simpleCondition = new Regex(@"(\w+)\s(\w+)\s('?(\w+)?'?)"); // attr = g1, operator = g2, value = g3
-                var invertedCondition = new Regex(@"(.+)\('?(\w+)'?,\s?('?\w+'?)\)"); // operator = g1, attr = g2, value = g3
-                var complexCondition = new Regex(@"(.+)\(PropertyName='?(\w+)?',PropertyValues=(\[?.+\]?)\)"); // operator = g1, attr = g2, value = g3
+                var invertedCondition = new Regex(@"(.+)\('?(\w+)'?,\s?('?.+'?)\)"); // operator = g1, attr = g2, value = g3
+                var complexCondition = new Regex(@"(.+)\(PropertyName='?(\w+)?',PropertyValues?=(\[?.+\]?)\)"); // operator = g1, attr = g2, value = g3
 
                 string conditionattribute = null;
                 string conditionOperator = null;
@@ -189,7 +189,11 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                     matchResult = complexCondition.Match(conditionToCheck);
                     conditionOperator = matchResult.Groups[1]?.Value;
                     conditionattribute = matchResult.Groups[2]?.Value;
-                    conditionValues = JToken.Parse(matchResult.Groups[3]?.Value).Select(x => x.ToString()).ToList<object>();
+                    var tempValue = JToken.Parse(matchResult.Groups[3]?.Value);
+
+                    // complex conditions can have one or multiple values
+                    conditionValues = !tempValue.Any() ? new List<object>() { tempValue } :
+                        tempValue.Select(x => x.ToString()).ToList<object>();
                 }
 
                 var formatedCondition = this.converterHelper.ConditionHandling("webapi", "queryexpression",

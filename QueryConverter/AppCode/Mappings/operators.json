@@ -738,7 +738,7 @@
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.ThisMonth",
-        "conditionpattern": "{operator}(PropertyName='{propName})"
+        "conditionpattern": "{operator}(PropertyName='{propName}')"
       }
     },
     {
@@ -748,7 +748,7 @@
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.ThisWeek",
-        "conditionpattern": "{operator}(PropertyName='{propName})"
+        "conditionpattern": "{operator}(PropertyName='{propName}')"
       }
     },
     {
@@ -758,7 +758,7 @@
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.ThisYear",
-        "conditionpattern": "{operator}(PropertyName='{propName})"
+        "conditionpattern": "{operator}(PropertyName='{propName}')"
       }
     },
     {
@@ -768,7 +768,7 @@
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.Today",
-        "conditionpattern": "{operator}(PropertyName='{propName})"
+        "conditionpattern": "{operator}(PropertyName='{propName}')"
       }
     },
     {
@@ -778,7 +778,7 @@
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.Tomorrow",
-        "conditionpattern": "{operator}(PropertyName='{propName})"
+        "conditionpattern": "{operator}(PropertyName='{propName}')"
       }
     },
     {
@@ -788,7 +788,7 @@
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.Yesterday",
-        "conditionpattern": "{operator}(PropertyName='{propName})"
+        "conditionpattern": "{operator}(PropertyName='{propName}')"
       }
     }
 

@@ -141,12 +141,12 @@ namespace Carfup.XTBPlugins.AppCode
                 return null;
             }
 
-            return potentialOperators.FirstOrDefault().SelectToken(toQueryType);
+            return potentialOperators?.FirstOrDefault()?.SelectToken(toQueryType);
         }
 
         public string ConditionHandling(string fromType, string toType, string operatorToLookFor, string attribute, List<object> valuesList)
         {
-            var operatorToken = LookForOperator(fromType, toType, operatorToLookFor, valuesList.FirstOrDefault());
+            var operatorToken = LookForOperator(fromType, toType, operatorToLookFor, valuesList?.FirstOrDefault());
             
             var transformedCondition = operatorToken?.SelectToken("conditionpattern")?.ToString();
 

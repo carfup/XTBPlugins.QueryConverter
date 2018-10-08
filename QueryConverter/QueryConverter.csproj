@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\ILRepack.2.0.16\build\ILRepack.props" Condition="Exists('..\packages\ILRepack.2.0.16\build\ILRepack.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -12,6 +13,8 @@
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,6 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AceWinforms, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\AceWinforms.dll</HintPath>
+    </Reference>
     <Reference Include="McTools.Xrm.Connection, Version=1.2017.10.15, Culture=neutral, PublicKeyToken=96037217801d9658, processorArchitecture=MSIL">
       <HintPath>..\packages\MscrmTools.Xrm.Connection.1.2017.10.15\lib\net462\McTools.Xrm.Connection.dll</HintPath>
     </Reference>
@@ -259,11 +266,29 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\ILRepack.2.0.16\build\ILRepack.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILRepack.2.0.16\build\ILRepack.props'))" />
+  </Target>
+  <Target Name="ILRepack" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+    <MakeDir Directories="$(OutputPath)\Merged" />
+    <ItemGroup>
+      <MergeAssemblies Include="$(OutputPath)\AceWinforms.dll" />
+    </ItemGroup>
+    <ItemGroup>
+      <ILRepackPackage Include="..\packages\ilrepack.*\tools\ilrepack.exe" />
+    </ItemGroup>
+    <Error Condition="!Exists(@(ILRepackPackage->'%(FullPath)'))" Text="You are trying to use the ILRepack&#xD;&#xA;  package, but it is not installed or at the correct location" />
+    <Exec Command="@(ILRepackPackage->'%(fullpath)') /out:$(OutputPath)Merged\$(AssemblyName).dll /target:library $(OutputPath)$(AssemblyName).dll @(MergeAssemblies->'%(FullPath)', ' ')" />
+  </Target>
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Debug (
   IF NOT EXIST Plugins mkdir Plugins
-  move /Y Carfup.XTBPlugins.*.dll Plugins
-  move /Y Carfup.XTBPlugins.*.pdb Plugins
+  move /Y Merged\Carfup.XTBPlugins.*.dll Plugins
+  move /Y Merged\Carfup.XTBPlugins.*.pdb Plugins
 )</PostBuildEvent>
   </PropertyGroup>
 </Project>

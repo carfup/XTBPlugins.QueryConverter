@@ -176,7 +176,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
 
                 foreach (var condition in group.Split(new string[] {" or ", " and "}, StringSplitOptions.None))
                 {
-                    var conditionToCheck = condition.TrimStart().TrimEnd();
+                    var conditionToCheck = condition.TrimStart(' ','(').TrimEnd();
 
                     var simpleCondition =
                         new Regex(@"(\w+)\s(\w+)\s('?(\w+)?'?)"); // attr = g1, operator = g2, value = g3
@@ -184,7 +184,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                         new Regex(@"(.+)\('?(\w+)'?,\s?('?.+'?)\)"); // operator = g1, attr = g2, value = g3
                     var complexCondition =
                         new Regex(
-                            @"(.+)\(PropertyName='?(\w+)?',PropertyValues?=(\[?.+\]?)\)"); // operator = g1, attr = g2, value = g3
+                            @"(.+)\(PropertyName='?(\w+)?'(,PropertyValues?=(\[?.+\]?))?\)"); // operator = g1, attr = g2, value = g3
 
                     string conditionattribute = null;
                     string conditionOperator = null;
@@ -214,7 +214,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                         matchResult = complexCondition.Match(conditionToCheck);
                         conditionOperator = matchResult.Groups[1]?.Value;
                         conditionattribute = matchResult.Groups[2]?.Value;
-                        var tempValue = JToken.Parse(matchResult.Groups[3]?.Value);
+                        var tempValue = matchResult.Groups[4]?.Value == "" ? "" : JToken.Parse(matchResult.Groups[4]?.Value);
 
                         // complex conditions can have one or multiple values
                         conditionValues = !tempValue.Any()

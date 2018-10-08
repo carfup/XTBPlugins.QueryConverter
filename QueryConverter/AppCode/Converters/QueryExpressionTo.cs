@@ -13,28 +13,30 @@ using Microsoft.Xrm.Sdk.Client;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
+using Microsoft.Xrm.Tooling.Connector;
+using Newtonsoft.Json.Linq;
 
 namespace Carfup.XTBPlugins.AppCode.Converters
 {
     class QueryExpressionTo
     {
-        public ConverterHelper convertHelper = null;
+        public ConverterHelper converterHelper = null;
 
         public QueryExpressionTo(ConverterHelper convertHelper)
         {
-            this.convertHelper = convertHelper;
+            this.converterHelper = convertHelper;
         }
 
-        public string processToFetchXml(string input)
+        public string ProcessToFetchXml(string input)
         {
-            var queryToTransform = fromStringToQueryExpression(input);
-            var fetchXml = fromQueryExpressionToFetchXml(queryToTransform);
+            var queryToTransform = this.FromStringToQueryExpression(input);
+            var fetchXml = FromQueryExpressionToFetchXml(queryToTransform);
             XDocument doc = XDocument.Parse(fetchXml);
 
             return doc.ToString();
         }
 
-        public string fromQueryExpressionToFetchXml(QueryExpression query)
+        public string FromQueryExpressionToFetchXml(QueryExpression query)
         {
             // Convert the FetchXML into a query expression.
             var conversionRequest = new QueryExpressionToFetchXmlRequest
@@ -43,14 +45,20 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             };
 
             var conversionResponse =
-                (QueryExpressionToFetchXmlResponse)this.convertHelper.service.Execute(conversionRequest);
+                (QueryExpressionToFetchXmlResponse)this.converterHelper.service.Execute(conversionRequest);
 
             return conversionResponse.FetchXml;
         }
 
-        public QueryExpression fromStringToQueryExpression(string input)
+        public QueryExpression FromStringToQueryExpression(string input)
         {
-            List<object> ll = new List<object>();
+            List<object> convertVariable = new List<object>();
+
+            //Making sure the String has a variable name to convert it into a QueryExpression
+            if (input.ToLower().StartsWith("new queryexpression"))
+            {
+                input = "var query = " + input;
+            }
 
             var result = Task.Run<object>(async () =>
             {
@@ -64,7 +72,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                 Console.WriteLine("inspecting defined variables:");
                 foreach (var variable in s.Variables)
                 {
-                    ll.Add(variable.Value);
+                    convertVariable.Add(variable.Value);
                 }
                 return s;
 
@@ -72,28 +80,25 @@ namespace Carfup.XTBPlugins.AppCode.Converters
 
             QueryExpression queryToTransform = null;
 
-            foreach (var v in ll)
-            {
-                if (ll.FirstOrDefault().GetType() == typeof(QueryExpression))
-                    queryToTransform = v as QueryExpression;
-            }
+            if (convertVariable.FirstOrDefault().GetType() == typeof(QueryExpression))
+                queryToTransform = convertVariable.FirstOrDefault() as QueryExpression;
 
             return queryToTransform;
         }
 
-        public string processToWebApi(string input)
+        public string ProcessToWebApi(string input)
         {
-            QueryExpressionTo queryExpressionTo = new QueryExpressionTo(this.convertHelper);
+           // QueryExpressionTo queryExpressionTo = new QueryExpressionTo(this.convertHelper);
 
-            var queryExpression = queryExpressionTo.fromStringToQueryExpression(input);
+            var queryExpression = this.FromStringToQueryExpression(input);
 
-            var url = ((OrganizationServiceProxy)this.convertHelper.service).EndpointSwitch.PrimaryEndpoint.Host;
-            var completeLink = $"https://{url}/api/v{getCrmVersion()}/{getEntityPlural(queryExpression.EntityName.ToLower())}?";
+            var url = ((OrganizationServiceProxy)this.converterHelper.service).EndpointSwitch.PrimaryEndpoint.Host;
+            var completeLink = $"https://{url}/api/data/v{this.converterHelper.GetCrmVersion()}/{this.converterHelper.GetEntityPlural(queryExpression.EntityName.ToLower())}?";
 
             // We go for the FetchXml WebApi
             if (queryExpression.LinkEntities.Count > 0)
             {
-                var fetchXml = queryExpressionTo.fromQueryExpressionToFetchXml(queryExpression);
+                var fetchXml = this.FromQueryExpressionToFetchXml(queryExpression);
 
                 // working the url encoded here
                 fetchXml = WebUtility.UrlEncode(fetchXml);
@@ -102,9 +107,9 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             }
             else // we might go for the url
             {
-                var conditions = manageConditions(queryExpression.Criteria);
-                var columns = manageColumset(queryExpression.ColumnSet);
-                var order = manageOrders(queryExpression.Orders);
+                var conditions = ManageConditionsToWebApi(queryExpression.Criteria, "");
+                var columns = ManageColumsetToWebApi(queryExpression.ColumnSet);
+                var order = ManageOrdersToWebApi(queryExpression.Orders);
                 var pageInfo = queryExpression.PageInfo;
 
                 completeLink += $"{(columns != "" ? columns : "")}";
@@ -115,33 +120,9 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             return completeLink;
         }
 
+        
 
-
-        public string getCrmVersion()
-        {
-            RetrieveVersionRequest req = new RetrieveVersionRequest();
-            RetrieveVersionResponse resp = (RetrieveVersionResponse)this.convertHelper.service.Execute(req);
-            //assigns the version to a string
-            var VersionNumber = resp.Version.Split('.');
-
-            return $"{VersionNumber[0]}.{VersionNumber[1]}";
-        }
-
-        public string getEntityPlural(string entity)
-        {
-            var request = new RetrieveEntityRequest()
-            {
-                LogicalName = entity,
-                EntityFilters = EntityFilters.Entity,
-                RetrieveAsIfPublished = true
-            };
-
-            var result = ((RetrieveEntityResponse)this.convertHelper.service.Execute(request));
-
-            return result.EntityMetadata.CollectionSchemaName.ToLower();
-        }
-
-        public string manageOrders(DataCollection<OrderExpression> orderExpressions)
+        public string ManageOrdersToWebApi(DataCollection<OrderExpression> orderExpressions)
         {
             var ordersString = "";
 
@@ -161,41 +142,54 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             return ordersString;
         }
 
-        public string manageConditions(FilterExpression filterExpression)
+        public string ManageConditionsToWebApi(FilterExpression filterExpression, string conditionsString, int depth = 0, int maxDepth = 0)
         {
-            var conditionsString = "";
+            
             var logicalOperator = filterExpression.FilterOperator;
             var conditions = filterExpression.Conditions;
 
-            if (conditions.Count == 0)
+            if (conditions.Count == 0 && filterExpression.Filters.Count > 0 && depth <= maxDepth)
+            {
+                // if maxdepth is already defined, we dont update it.
+                maxDepth = maxDepth == 0 ? filterExpression.Filters.Count - 1 : maxDepth;
+                conditions = filterExpression.Filters[0].Conditions;
+            }
+            else if (conditions.Count == 0)
                 return conditionsString;
 
-            conditionsString = "$filter=";
+            if(depth == 0)
+                conditionsString = "$filter=(";
 
             List<string> conditionExpressions = new List<string>();
             foreach (var condition in conditions)
             {
-                var values = String.Join(",", condition.Values);
-                values = values.Count() > 1 ? string.Join(",", values.Split(',').Select(x => string.Format("{0}", x)).ToList()) : values;
-                var operatorValue = ConstantHelper.operatorsMapping.Where(x => x.Key == condition.Operator.ToString()).First().Value;
+                //var operatorValue = ConstantHelper.operatorsMapping.FirstOrDefault(x => x.Key == condition.Operator.ToString()).Value;
+                var formatedCondition = this.converterHelper.ConditionHandling("queryexpression", "webapi",
+                    condition.Operator.ToString(), condition.AttributeName, condition.Values.ToList());
 
-                // Handling special cases :
-                if (operatorValue == "contains" || operatorValue == "startswith" || operatorValue == "endswith")
-                    conditionExpressions.Add($"{operatorValue}({condition.AttributeName}, '{values}')");
-                else
-                    conditionExpressions.Add($"{condition.AttributeName} {operatorValue} {values}");
+                if (formatedCondition == null)
+                    continue;
+
+                conditionExpressions.Add(formatedCondition);
             }
 
+            conditionsString += "" + String.Join($" {logicalOperator.ToString().ToLower()} ", conditionExpressions) + "";
 
-            conditionsString += String.Join($"{logicalOperator.ToString().ToLower()} ", conditionExpressions);
+            if(depth < maxDepth)
+            {
+                depth++;
+                conditionsString += ") and (";
+                conditionsString = ManageConditionsToWebApi(filterExpression.Filters[depth], conditionsString, depth, maxDepth) + ")";
+            }
 
             return conditionsString;
         }
 
-        public string manageColumset(ColumnSet columnSet, bool linkEntity = false)
+        public string ManageColumsetToWebApi(ColumnSet columnSet, bool linkEntity = false)
         {
             var columns = "";
 
+            // If all column or not selected, no need to go further
             if (columnSet.AllColumns || columnSet.Columns.Count == 0)
                 return columns;
 
@@ -209,6 +203,22 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             var stringq = $"$select={columns}";
 
             return stringq;
+        }
+
+        public JObject FormatConditionForMapper(ConditionExpression condition)
+        {
+            dynamic operatorMapping = new JObject();
+            
+            var values = (condition.Values.Count == 0) ? null : String.Join(",", condition.Values);
+            if (values == "") // handling empty values
+                values = "''";
+            else if (values != null)
+                values = values.Count() > 1 ? string.Join(",", values.Split(',').Select(x => $"{x}").ToList()) : values;
+
+            operatorMapping[condition.Operator.ToString()] = values;
+            
+
+            return operatorMapping;
         }
     }
 }

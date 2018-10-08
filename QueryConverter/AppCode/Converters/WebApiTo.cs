@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
+using Newtonsoft.Json.Linq;
 
 namespace Carfup.XTBPlugins.AppCode.Converters
 {
@@ -15,21 +17,21 @@ namespace Carfup.XTBPlugins.AppCode.Converters
         static string columns = null;
         static string filters = null;
         static string orders = null;
-        ConverterHelper convertHelper = null;
+        ConverterHelper converterHelper = null;
 
         public WebApiTo(ConverterHelper convertHelper)
         {
-            this.convertHelper = convertHelper;
+            this.converterHelper = convertHelper;
         }
 
-        public string processToFetch(string input)
+        public string ProcessToFetchXml(string input)
         {
-            var queryExpressionStringValue = processToQueryExpression(input);
-            var fetch = this.convertHelper.queryExpressionTo.processToFetchXml(queryExpressionStringValue);
+            var queryExpressionStringValue = ProcessToQueryExpression(input);
+            var fetch = this.converterHelper.queryExpressionTo.ProcessToFetchXml(queryExpressionStringValue);
 
             return fetch;
         }
-        public string processToQueryExpression(string input)
+        public string ProcessToQueryExpression(string input)
         {
             var urlParts = input.Split('/');
             var interestingUrlPart = urlParts[urlParts.Length - 1];
@@ -54,20 +56,26 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                     switch (leftSide)
                     {
                         case "select":
-                            columns = manageColumns(dunno[1]);
+                            columns = ManageColumns(dunno[1]);
                             break;
                         case "filter":
-                            filters = manageFilters(dunno[1]);
+                            filters = ManageFilters(cleanedDetail);
                             break;
                         case "orderby":
-                            orders = managerOrders(dunno[1]);
+                            orders = ManagerOrders(dunno[1]);
+                            break;
+                        case "top":
+                            orders = ManagerOrders(dunno[1]);
+                            break;
+                        case "apply":
+                            orders = ManagerOrders(dunno[1]);
                             break;
                     }
                 }
             }
 
             string stringq = $"QueryExpression query = new QueryExpression() {{ ";
-            stringq += $"EntityName = \"{getEntityName(entityName)}\"";
+            stringq += $"EntityName = \"{GetEntityName(entityName)}\"";
             //stringq += $"Distinct = {query.Distinct.ToString().ToLower()}";
 
             // Manage columnset
@@ -87,7 +95,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
         }
 
 
-        public string managerOrders(string ordersList)
+        public string ManagerOrders(string ordersList)
         {
 
             var orders = "";
@@ -114,7 +122,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
 
             return orders;
         }
-        public static string manageColumns(string columnsList)
+        public static string ManageColumns(string columnsList)
         {
             var columns = "";
             var columnsCount = columnsList.Split(',').Count();
@@ -133,8 +141,9 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             return stringq;
         }
 
-        public string manageFilters(string filtersList)
+        public string ManageFilters(string filtersList)
         {
+            filtersList = filtersList.Replace("filter=", "");
             var conditionsString = "";
             var filtersCount = filtersList.Split(',').Count();
 
@@ -144,25 +153,94 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             conditionsString += $", Criteria = {{ Conditions = {{";
 
             List<string> conditionExpressions = new List<string>();
-            foreach (var condition in filtersList.Split(new string[] { "or", "and" }, StringSplitOptions.None))
+
+            //checking if there are groups
+            var groups = filtersList.Split(new string[] { ") and (" }, StringSplitOptions.None);
+
+            for (int i = 0; i < groups.Length; i++)
             {
-                var conditionDetailed = condition.Split(' ');
-                var attributeName = conditionDetailed[0];
-                var operatorName = conditionDetailed[1];
-                var valuesName = conditionDetailed[2];
-                var values = valuesName.Count() > 1 ? string.Join(",", valuesName.Split(',').Select(x => string.Format("\"{0}\"", x)).ToList()) : valuesName;
+                var group = groups[i];
+                // resetting the list
+                conditionExpressions = new List<string>();
 
-                conditionExpressions.Add($"new ConditionExpression(\"{attributeName}\", ConditionOperator.{ConstantHelper.operatorsMapping.Where(x => x.Value == operatorName).Select(x => x.Key).FirstOrDefault()}, {values})");
+                conditionsString += i == 0
+                    ? "new FilterExpression { Conditions = {"
+                    : ", new FilterExpression { Conditions = {";
+
+                var groupType = "And";
+                var subGroupAnd = group.Split(new string[] {" and "}, StringSplitOptions.None);
+                var subGroupOr = group.Split(new string[] {" or "}, StringSplitOptions.None);
+
+                if (subGroupOr.Length > 1 && subGroupAnd.Length == 1) // by default if no match return 1
+                    groupType = "Or";
+
+                foreach (var condition in group.Split(new string[] {" or ", " and "}, StringSplitOptions.None))
+                {
+                    var conditionToCheck = condition.TrimStart(' ','(').TrimEnd();
+
+                    var simpleCondition =
+                        new Regex(@"(\w+)\s(\w+)\s('?(\w+)?'?)"); // attr = g1, operator = g2, value = g3
+                    var invertedCondition =
+                        new Regex(@"(.+)\('?(\w+)'?,\s?('?.+'?)\)"); // operator = g1, attr = g2, value = g3
+                    var complexCondition =
+                        new Regex(
+                            @"(.+)\(PropertyName='?(\w+)?'(,PropertyValues?=(\[?.+\]?))?\)"); // operator = g1, attr = g2, value = g3
+
+                    string conditionattribute = null;
+                    string conditionOperator = null;
+                    List<object> conditionValues = null;
+
+                    var matchResult = simpleCondition.Match(conditionToCheck);
+
+                    if (simpleCondition.Match(conditionToCheck).Success)
+                    {
+                        conditionattribute = matchResult.Groups[1]?.Value;
+                        conditionOperator = matchResult.Groups[2]?.Value;
+                        conditionValues = new List<object>() {JToken.Parse(matchResult.Groups[3]?.Value)};
+
+                        //Special case for notnull
+                        if (matchResult.Groups[3]?.Value == "null" && conditionOperator == "ne")
+                            conditionOperator = "ne null";
+                    }
+                    else if (invertedCondition.Match(conditionToCheck).Success)
+                    {
+                        matchResult = invertedCondition.Match(conditionToCheck);
+                        conditionOperator = matchResult.Groups[1]?.Value;
+                        conditionattribute = matchResult.Groups[2]?.Value;
+                        conditionValues = new List<object>() {JToken.Parse(matchResult.Groups[3]?.Value.TrimEnd(')'))};
+                    }
+                    else if (complexCondition.Match(conditionToCheck).Success)
+                    {
+                        matchResult = complexCondition.Match(conditionToCheck);
+                        conditionOperator = matchResult.Groups[1]?.Value;
+                        conditionattribute = matchResult.Groups[2]?.Value;
+                        var tempValue = matchResult.Groups[4]?.Value == "" ? "" : JToken.Parse(matchResult.Groups[4]?.Value);
+
+                        // complex conditions can have one or multiple values
+                        conditionValues = !tempValue.Any()
+                            ? new List<object>() {tempValue}
+                            : tempValue.Select(x => x.ToString()).ToList<object>();
+                    }
+
+                    var formatedCondition = this.converterHelper.ConditionHandling("webapi", "queryexpression",
+                        conditionOperator, conditionattribute, conditionValues);
+
+                    if (formatedCondition == null)
+                        continue;
+
+                    conditionExpressions.Add($"new ConditionExpression({formatedCondition})");
+                }
+
+                conditionsString += String.Join($",", conditionExpressions);
+                conditionsString = $"{conditionsString},FilterOperator = LogicalOperator.{groupType} }}}}";
             }
-
-            conditionsString += String.Join($",", conditionExpressions);
 
             conditionsString += "} }";
 
             return conditionsString;
         }
 
-        public string getEntityName(string entityName)
+        public string GetEntityName(string entityName)
         {
             RetrieveAllEntitiesRequest request = new RetrieveAllEntitiesRequest()
             {
@@ -171,7 +249,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             };
 
             // Retrieve the MetaData.
-            var response = this.convertHelper.service.Execute(request).Results;
+            var response = this.converterHelper.service.Execute(request).Results;
 
             var entitiesList = ((EntityMetadata[])response.Values.FirstOrDefault()).ToList();
 

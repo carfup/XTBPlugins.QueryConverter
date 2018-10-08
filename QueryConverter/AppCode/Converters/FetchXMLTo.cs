@@ -24,24 +24,27 @@ namespace Carfup.XTBPlugins.AppCode.Converters
         /// </summary>
         /// <param name="queryExpression">QueryExpression to parse</param>
         /// <returns>Related QueryExpression in string format</returns>
-        public string processToQueryExpression(QueryExpression queryExpression)
+        public string ProcessToQueryExpression(QueryExpression queryExpression)
         {
             entityName = queryExpression.EntityName;
             string stringq = $"QueryExpression query = new QueryExpression() {{ ";
             stringq += $"EntityName = \"{entityName}\",";
             stringq += $"Distinct = {queryExpression.Distinct.ToString().ToLower()}";
 
+            if(queryExpression.TopCount != null)
+                stringq += $"TopCount = {queryExpression.TopCount}";
+
             // Manage columnset
-            stringq += manageColumset(queryExpression.ColumnSet);
+            stringq += ManageColumset(queryExpression.ColumnSet);
 
             // Criteria
-            stringq += manageCriteria(queryExpression.Criteria);
+            stringq += ManageCriteria(queryExpression.Criteria);
 
             // Linkentities
-            stringq += manageLinkEntities(queryExpression.LinkEntities);
+            stringq += ManageLinkEntities(queryExpression.LinkEntities);
 
             //Orders
-            stringq += managerOrders(queryExpression.Orders);
+            stringq += ManagerOrders(queryExpression.Orders);
 
             stringq += "};";
 
@@ -53,7 +56,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
         /// </summary>
         /// <param name="input">FetchXml query to parse</param>
         /// <returns>Related WebApi link</returns>
-        public string processToWebApi(string input)
+        public string ProcessToWebApi(string input)
         {
             var conversionRequest = new FetchXmlToQueryExpressionRequest
             {
@@ -67,12 +70,12 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             // request to Microsoft Dynamics CRM.
             QueryExpression queryExpression = conversionResponse.Query;
 
-            var result = this.converterHelper.queryExpressionTo.processToWebApi(this.converterHelper.fetchXmlTo.processToQueryExpression(queryExpression));
+            var result = this.converterHelper.queryExpressionTo.ProcessToWebApi(this.converterHelper.fetchXmlTo.ProcessToQueryExpression(queryExpression));
 
             return result;
         }
 
-        public QueryExpression fromStringToQueryExpression(string input)
+        public QueryExpression FromStringToQueryExpression(string input)
         {
             var conversionRequest = new FetchXmlToQueryExpressionRequest
             {
@@ -88,7 +91,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
 
             return queryExpression;
         }
-        public string managerOrders(DataCollection<OrderExpression> ordersList)
+        public string ManagerOrders(DataCollection<OrderExpression> ordersList)
         {
             var orders = "";
 
@@ -111,7 +114,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
         }
 
 
-        public string manageCriteria(FilterExpression criteria, bool linkEntity = false)
+        public string ManageCriteria(FilterExpression criteria, bool linkEntity = false)
         {
             var conditions = "";
 
@@ -132,7 +135,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                     {
                         var filterExpressionString = $"new FilterExpression {{";
                         filterExpressionString += $"FilterOperator = LogicalOperator.{filter.FilterOperator.ToString()},";
-                        filterExpressionString += manageConditions(filter.Conditions);
+                        filterExpressionString += ManageConditions(filter.Conditions);
                         filterExpressionString += "}";
                         filterExpressions.Add(filterExpressionString);
                     }
@@ -141,7 +144,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                 }
                 else
                 {
-                    conditions += manageConditions(criteria.Conditions);
+                    conditions += ManageConditions(criteria.Conditions);
                 }
 
                 // end criteria
@@ -154,7 +157,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             return conditions;
         }
 
-        public string manageConditions(DataCollection<ConditionExpression> conditions)
+        public string ManageConditions(DataCollection<ConditionExpression> conditions)
         {
             var conditionsString = "";
             conditionsString += $"Conditions = {{";
@@ -162,9 +165,13 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             List<string> conditionExpressions = new List<string>();
             foreach (var condition in conditions)
             {
-                var values = String.Join(",", condition.Values);
-                values = values.Count() > 1 ? string.Join(",", values.Split(',').Select(x => string.Format("\"{0}\"", x)).ToList()) : values;
-                conditionExpressions.Add($"new ConditionExpression(\"{condition.AttributeName}\", ConditionOperator.{condition.Operator.ToString()}, {values})");
+                var formatedCondition = this.converterHelper.ConditionHandling("queryexpression", "queryexpression",
+                    condition.Operator.ToString(), condition.AttributeName, condition.Values.ToList());
+
+                if(formatedCondition == null)
+                continue;
+
+                conditionExpressions.Add($"new ConditionExpression({formatedCondition})");
             }
 
             conditionsString += String.Join($",", conditionExpressions);
@@ -174,7 +181,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             return conditionsString;
         }
 
-        public string manageColumset(ColumnSet columnSet, bool linkEntity = false)
+        public string ManageColumset(ColumnSet columnSet, bool linkEntity = false)
         {
             var columns = "";
 
@@ -201,7 +208,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             return stringq;
         }
 
-        public string manageLinkEntities(DataCollection<LinkEntity> linkEntities, string result = null, bool depth = false, string entityNameFrom = null)
+        public string ManageLinkEntities(DataCollection<LinkEntity> linkEntities, string result = null, bool depth = false, string entityNameFrom = null)
         {
             if (linkEntities.Count == 0)
                 return result;
@@ -218,11 +225,11 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                 linkentityString += $"LinkToAttributeName = \"{le.LinkToAttributeName}\",";
                 linkentityString += (le.EntityAlias != null) ? $"EntityAlias = {le.EntityAlias}," : "";
                 linkentityString += $"JoinOperator = JoinOperator.{le.JoinOperator.ToString()}";
-                linkentityString += $"{manageColumset(le.Columns, true)}";
-                linkentityString += $"{manageCriteria(le.LinkCriteria, true)}";
+                linkentityString += $"{ManageColumset(le.Columns, true)}";
+                linkentityString += $"{ManageCriteria(le.LinkCriteria, true)}";
 
                 if (le.LinkEntities.Count > 0)
-                    linkentityString = manageLinkEntities(le.LinkEntities, linkentityString, true, le.LinkToEntityName);
+                    linkentityString = ManageLinkEntities(le.LinkEntities, linkentityString, true, le.LinkToEntityName);
 
                 linkentityString += "}";
 

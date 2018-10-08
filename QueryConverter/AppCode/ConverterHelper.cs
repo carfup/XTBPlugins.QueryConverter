@@ -142,16 +142,6 @@ namespace Carfup.XTBPlugins.AppCode
             }
 
             return potentialOperators.FirstOrDefault().SelectToken(toQueryType);
-
-            foreach (JToken ope in operators["operators"])
-            {
-                if (ope.SelectToken(fromQueryType)?.SelectToken("operator").Value<string>() == operatorToSearch)
-                {
-                    return ope.SelectToken(toQueryType);
-                }
-            }
-
-            return null;
         }
 
         public string ConditionHandling(string fromType, string toType, string operatorToLookFor, string attribute, List<object> valuesList)

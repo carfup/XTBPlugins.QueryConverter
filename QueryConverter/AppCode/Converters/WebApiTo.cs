@@ -153,60 +153,87 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             conditionsString += $", Criteria = {{ Conditions = {{";
 
             List<string> conditionExpressions = new List<string>();
-            foreach (var condition in filtersList.Split(new string[] { " or ", " and " }, StringSplitOptions.None))
+
+            //checking if there are groups
+            var groups = filtersList.Split(new string[] { ") and (" }, StringSplitOptions.None);
+
+            for (int i = 0; i < groups.Length; i++)
             {
-                var conditionToCheck = condition.TrimStart().TrimEnd();
+                var group = groups[i];
+                // resetting the list
+                conditionExpressions = new List<string>();
 
-                var simpleCondition = new Regex(@"(\w+)\s(\w+)\s('?(\w+)?'?)"); // attr = g1, operator = g2, value = g3
-                var invertedCondition = new Regex(@"(.+)\('?(\w+)'?,\s?('?.+'?)\)"); // operator = g1, attr = g2, value = g3
-                var complexCondition = new Regex(@"(.+)\(PropertyName='?(\w+)?',PropertyValues?=(\[?.+\]?)\)"); // operator = g1, attr = g2, value = g3
+                conditionsString += i == 0
+                    ? "new FilterExpression { Conditions = {"
+                    : ", new FilterExpression { Conditions = {";
 
-                string conditionattribute = null;
-                string conditionOperator = null;
-                List<object> conditionValues = null;
+                var groupType = "And";
+                var subGroupAnd = group.Split(new string[] {" and "}, StringSplitOptions.None);
+                var subGroupOr = group.Split(new string[] {" or "}, StringSplitOptions.None);
 
-                var matchResult = simpleCondition.Match(conditionToCheck);
+                if (subGroupOr.Length > 1 && subGroupAnd.Length == 1) // by default if no match return 1
+                    groupType = "Or";
 
-                if (simpleCondition.Match(conditionToCheck).Success)
+                foreach (var condition in group.Split(new string[] {" or ", " and "}, StringSplitOptions.None))
                 {
-                    conditionattribute = matchResult.Groups[1]?.Value;
-                    conditionOperator = matchResult.Groups[2]?.Value;
-                    conditionValues = new List<object>() { JToken.Parse(matchResult.Groups[3]?.Value) };
+                    var conditionToCheck = condition.TrimStart().TrimEnd();
 
-                    //Special case for notnull
-                    if (matchResult.Groups[3]?.Value == "null" && conditionOperator == "ne")
-                        conditionOperator = "ne null";
+                    var simpleCondition =
+                        new Regex(@"(\w+)\s(\w+)\s('?(\w+)?'?)"); // attr = g1, operator = g2, value = g3
+                    var invertedCondition =
+                        new Regex(@"(.+)\('?(\w+)'?,\s?('?.+'?)\)"); // operator = g1, attr = g2, value = g3
+                    var complexCondition =
+                        new Regex(
+                            @"(.+)\(PropertyName='?(\w+)?',PropertyValues?=(\[?.+\]?)\)"); // operator = g1, attr = g2, value = g3
+
+                    string conditionattribute = null;
+                    string conditionOperator = null;
+                    List<object> conditionValues = null;
+
+                    var matchResult = simpleCondition.Match(conditionToCheck);
+
+                    if (simpleCondition.Match(conditionToCheck).Success)
+                    {
+                        conditionattribute = matchResult.Groups[1]?.Value;
+                        conditionOperator = matchResult.Groups[2]?.Value;
+                        conditionValues = new List<object>() {JToken.Parse(matchResult.Groups[3]?.Value)};
+
+                        //Special case for notnull
+                        if (matchResult.Groups[3]?.Value == "null" && conditionOperator == "ne")
+                            conditionOperator = "ne null";
+                    }
+                    else if (invertedCondition.Match(conditionToCheck).Success)
+                    {
+                        matchResult = invertedCondition.Match(conditionToCheck);
+                        conditionOperator = matchResult.Groups[1]?.Value;
+                        conditionattribute = matchResult.Groups[2]?.Value;
+                        conditionValues = new List<object>() {JToken.Parse(matchResult.Groups[3]?.Value.TrimEnd(')'))};
+                    }
+                    else if (complexCondition.Match(conditionToCheck).Success)
+                    {
+                        matchResult = complexCondition.Match(conditionToCheck);
+                        conditionOperator = matchResult.Groups[1]?.Value;
+                        conditionattribute = matchResult.Groups[2]?.Value;
+                        var tempValue = JToken.Parse(matchResult.Groups[3]?.Value);
+
+                        // complex conditions can have one or multiple values
+                        conditionValues = !tempValue.Any()
+                            ? new List<object>() {tempValue}
+                            : tempValue.Select(x => x.ToString()).ToList<object>();
+                    }
+
+                    var formatedCondition = this.converterHelper.ConditionHandling("webapi", "queryexpression",
+                        conditionOperator, conditionattribute, conditionValues);
+
+                    if (formatedCondition == null)
+                        continue;
+
+                    conditionExpressions.Add($"new ConditionExpression({formatedCondition})");
                 }
-                else if (invertedCondition.Match(conditionToCheck).Success)
-                {
-                    matchResult = invertedCondition.Match(conditionToCheck);
-                    conditionOperator = matchResult.Groups[1]?.Value;
-                    conditionattribute = matchResult.Groups[2]?.Value;
-                    conditionValues = new List<object>() { JToken.Parse(matchResult.Groups[3]?.Value) };
-                }
-                else if (complexCondition.Match(conditionToCheck).Success)
-                {
-                    matchResult = complexCondition.Match(conditionToCheck);
-                    conditionOperator = matchResult.Groups[1]?.Value;
-                    conditionattribute = matchResult.Groups[2]?.Value;
-                    var tempValue = JToken.Parse(matchResult.Groups[3]?.Value);
 
-                    // complex conditions can have one or multiple values
-                    conditionValues = !tempValue.Any() ? new List<object>() { tempValue } :
-                        tempValue.Select(x => x.ToString()).ToList<object>();
-                }
-
-                var formatedCondition = this.converterHelper.ConditionHandling("webapi", "queryexpression",
-                    conditionOperator, conditionattribute, conditionValues);
-
-                if (formatedCondition == null)
-                    continue;
-
-                conditionExpressions.Add($"new ConditionExpression({formatedCondition})");
-
+                conditionsString += String.Join($",", conditionExpressions);
+                conditionsString = $"{conditionsString},FilterOperator = LogicalOperator.{groupType} }}}}";
             }
-
-            conditionsString += String.Join($",", conditionExpressions);
 
             conditionsString += "} }";
 

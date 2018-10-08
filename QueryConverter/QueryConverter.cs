@@ -26,21 +26,9 @@ namespace Carfup.XTBPlugins.QueryConverter
         #region varibables
         ConverterHelper converter = null;
 
-        public string RepositoryName
-        {
-            get
-            {
-                return "XTBPlugins.QueryConverter";
-            }
-        }
+        public string RepositoryName { get; } = "XTBPlugins.QueryConverter";
 
-        public string UserName
-        {
-            get
-            {
-                return "carfup";
-            }
-        }
+        public string UserName { get; } = "carfup";
 
         #endregion
         public QueryConverter()
@@ -101,7 +89,7 @@ namespace Carfup.XTBPlugins.QueryConverter
 
             WorkAsync(new WorkAsyncInfo
             {
-                Message = "Conversion in progress...",
+                Message = "Converting the query...",
                 Work = (bw, e) =>
                 {
                     if (converter == null)
@@ -135,7 +123,6 @@ namespace Carfup.XTBPlugins.QueryConverter
         {
             var inputData = inputCodeEditor.Text;
             var outputData = outputCodeEditor.Text;
-            var theme = "";
 
             WorkAsync(new WorkAsyncInfo
             {

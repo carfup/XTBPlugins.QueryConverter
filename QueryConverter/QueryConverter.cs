@@ -54,9 +54,20 @@ namespace Carfup.XTBPlugins.QueryConverter
 
         private void buttonConvert_Click(object sender, EventArgs evt)
         {
+            DetectQueryType(inputCodeEditor.Text);
             ExecuteMethod(ProcessToConversion);
         }
 
+        private void DetectQueryType(string query)
+        {
+            var inputTypeQuery = "QueryExpression";
+            if (query.ToLower().StartsWith("https://") || query.ToLower().StartsWith("http://")) // Webapi !
+                inputTypeQuery = "WebApi";
+            else if(query.ToLower().StartsWith("<fetch"))
+                inputTypeQuery = "FetchXml";
+
+            comboBoxInput.SelectedItem = inputTypeQuery;
+        }
 
         private string GetCodeEditorHighlight(string type)
         {
@@ -85,7 +96,7 @@ namespace Carfup.XTBPlugins.QueryConverter
         {
             string inputType = comboBoxInput.Text;
             string outputType = comboBoxOutput.Text;
-            string inputQuery = inputCodeEditor.Text; //textBoxQueryInput.Text;
+            string inputQuery = inputCodeEditor.Text;
 
             WorkAsync(new WorkAsyncInfo
             {
@@ -151,6 +162,12 @@ namespace Carfup.XTBPlugins.QueryConverter
                 },
                 ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
             });
+        }
+
+        private void ContentEditorChanged(object sender, EventArgs e)
+        {
+           
+            var lol = "";
         }
     }
 }

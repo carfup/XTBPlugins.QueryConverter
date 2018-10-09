@@ -82,11 +82,11 @@
             this.tableLayoutPanel1.Controls.Add(this.groupBox4, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.groupBox3, 1, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(13, 28);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 28);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1026, 425);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1039, 461);
             this.tableLayoutPanel1.TabIndex = 3;
             // 
             // groupBox4
@@ -95,9 +95,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox4.Controls.Add(this.outputCodeEditor);
-            this.groupBox4.Location = new System.Drawing.Point(616, 3);
+            this.groupBox4.Location = new System.Drawing.Point(622, 3);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(407, 419);
+            this.groupBox4.Size = new System.Drawing.Size(414, 455);
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Output";
@@ -112,7 +112,7 @@
             this.outputCodeEditor.MinIeVersion = "10";
             this.outputCodeEditor.MinimumSize = new System.Drawing.Size(20, 20);
             this.outputCodeEditor.Name = "outputCodeEditor";
-            this.outputCodeEditor.Size = new System.Drawing.Size(395, 394);
+            this.outputCodeEditor.Size = new System.Drawing.Size(402, 430);
             this.outputCodeEditor.TabIndex = 4;
             this.outputCodeEditor.Theme = "monokai";
             // 
@@ -124,7 +124,7 @@
             this.groupBox1.Controls.Add(this.inputCodeEditor);
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(407, 419);
+            this.groupBox1.Size = new System.Drawing.Size(413, 455);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Input";
@@ -139,7 +139,7 @@
             this.inputCodeEditor.MinIeVersion = "10";
             this.inputCodeEditor.MinimumSize = new System.Drawing.Size(20, 20);
             this.inputCodeEditor.Name = "inputCodeEditor";
-            this.inputCodeEditor.Size = new System.Drawing.Size(395, 394);
+            this.inputCodeEditor.Size = new System.Drawing.Size(401, 430);
             this.inputCodeEditor.TabIndex = 5;
             this.inputCodeEditor.Theme = "monokai";
             // 
@@ -154,9 +154,9 @@
             this.groupBox3.Controls.Add(this.buttonConvert);
             this.groupBox3.Controls.Add(this.comboBoxOutput);
             this.groupBox3.Controls.Add(this.comboBoxInput);
-            this.groupBox3.Location = new System.Drawing.Point(416, 3);
+            this.groupBox3.Location = new System.Drawing.Point(422, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(194, 419);
+            this.groupBox3.Size = new System.Drawing.Size(194, 455);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Comparaison settings";
@@ -164,7 +164,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 352);
+            this.label3.Location = new System.Drawing.Point(9, 376);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(40, 13);
             this.label3.TabIndex = 6;
@@ -173,7 +173,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 57);
+            this.label2.Location = new System.Drawing.Point(9, 77);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(20, 13);
             this.label2.TabIndex = 5;
@@ -182,7 +182,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 19);
+            this.label1.Location = new System.Drawing.Point(9, 26);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(30, 13);
             this.label1.TabIndex = 4;
@@ -218,7 +218,7 @@
             "tomorrow_night_eighties",
             "twilight",
             "vibrant_ink"});
-            this.comboBoxTheme.Location = new System.Drawing.Point(6, 368);
+            this.comboBoxTheme.Location = new System.Drawing.Point(6, 392);
             this.comboBoxTheme.Name = "comboBoxTheme";
             this.comboBoxTheme.Size = new System.Drawing.Size(182, 21);
             this.comboBoxTheme.TabIndex = 3;
@@ -226,7 +226,7 @@
             // 
             // buttonConvert
             // 
-            this.buttonConvert.Location = new System.Drawing.Point(6, 97);
+            this.buttonConvert.Location = new System.Drawing.Point(6, 126);
             this.buttonConvert.Name = "buttonConvert";
             this.buttonConvert.Size = new System.Drawing.Size(182, 247);
             this.buttonConvert.TabIndex = 2;
@@ -240,9 +240,9 @@
             this.comboBoxOutput.Items.AddRange(new object[] {
             "FetchXml",
             "QueryExpression",
-            "Linq",
-            "WebApi"});
-            this.comboBoxOutput.Location = new System.Drawing.Point(6, 70);
+            "WebApi",
+            "Linq"});
+            this.comboBoxOutput.Location = new System.Drawing.Point(6, 90);
             this.comboBoxOutput.Name = "comboBoxOutput";
             this.comboBoxOutput.Size = new System.Drawing.Size(182, 21);
             this.comboBoxOutput.TabIndex = 1;
@@ -250,13 +250,14 @@
             // 
             // comboBoxInput
             // 
+            this.comboBoxInput.Enabled = false;
             this.comboBoxInput.FormattingEnabled = true;
             this.comboBoxInput.Items.AddRange(new object[] {
             "FetchXml",
             "QueryExpression",
             "Linq",
             "WebApi"});
-            this.comboBoxInput.Location = new System.Drawing.Point(6, 33);
+            this.comboBoxInput.Location = new System.Drawing.Point(6, 43);
             this.comboBoxInput.Name = "comboBoxInput";
             this.comboBoxInput.Size = new System.Drawing.Size(182, 21);
             this.comboBoxInput.TabIndex = 0;

@@ -195,13 +195,10 @@ namespace Carfup.XTBPlugins.AppCode
 
                 if (toType == "webapi")
                     valueResult = valueResult.Replace("\"", "'");
-
-                
             }
 
             transformedCondition = transformedCondition.Replace("{value}", valueResult);
             
-
             return transformedCondition;
         }
     }

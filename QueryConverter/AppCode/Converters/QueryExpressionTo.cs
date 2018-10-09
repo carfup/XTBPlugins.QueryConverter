@@ -158,7 +158,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                 return conditionsString;
 
             if(depth == 0)
-                conditionsString = "$filter=(";
+                conditionsString = "$filter=";
 
             List<string> conditionExpressions = new List<string>();
             foreach (var condition in conditions)
@@ -173,13 +173,13 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                 conditionExpressions.Add(formatedCondition);
             }
 
-            conditionsString += "" + String.Join($" {logicalOperator.ToString().ToLower()} ", conditionExpressions) + "";
+            conditionsString += "(" + String.Join($" {logicalOperator.ToString().ToLower()} ", conditionExpressions) + ")";
 
             if(depth < maxDepth)
             {
                 depth++;
-                conditionsString += ") and (";
-                conditionsString = ManageConditionsToWebApi(filterExpression.Filters[depth], conditionsString, depth, maxDepth) + ")";
+                conditionsString += " and ";
+                conditionsString = ManageConditionsToWebApi(filterExpression.Filters[depth], conditionsString, depth, maxDepth);
             }
 
             return conditionsString;

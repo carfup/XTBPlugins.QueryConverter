@@ -150,7 +150,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             if (filtersCount == 0)
                 return conditionsString;
 
-            conditionsString += $", Criteria = {{ Conditions = {{";
+            conditionsString += $", Criteria = {{ Filters = {{";
 
             List<string> conditionExpressions = new List<string>();
 
@@ -214,7 +214,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                         matchResult = complexCondition.Match(conditionToCheck);
                         conditionOperator = matchResult.Groups[1]?.Value;
                         conditionattribute = matchResult.Groups[2]?.Value;
-                        var tempValue = matchResult.Groups[4]?.Value == "" ? "" : JToken.Parse(matchResult.Groups[4]?.Value);
+                        var tempValue = matchResult.Groups[4]?.Value == "" ? "" : JToken.Parse(matchResult.Groups[4]?.Value.TrimEnd(')'));
 
                         // complex conditions can have one or multiple values
                         conditionValues = !tempValue.Any()

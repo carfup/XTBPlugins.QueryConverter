@@ -28,7 +28,8 @@
       },
       "webapi": {
         "operator": "startswith",
-        "conditionpattern": "{operator}({propName}, {value})"
+        "conditionpattern": "{operator}({propName}, {value})",
+        "valuepattern": "(.*)%$"
       }
     },
     {
@@ -68,7 +69,8 @@
       },
       "webapi": {
         "operator": "not endswith",
-        "conditionpattern": "{operator}({propName}, {value})"
+        "conditionpattern": "{operator}({propName}, {value})",
+        "valuepattern": "^%(.*)%$"
       }
     },
     {
@@ -78,7 +80,8 @@
       },
       "webapi": {
         "operator": "endswith",
-        "conditionpattern": "{operator}({propName}, {value})"
+        "conditionpattern": "{operator}({propName}, {value})",
+        "valuepattern": "^%(.*)%$"
       }
     },
     {
@@ -369,7 +372,8 @@
       },
       "webapi": {
         "operator": "contains",
-        "conditionpattern": "{operator}({propName}, {value})"
+        "conditionpattern": "{operator}({propName}, {value})",
+        "valuepattern": "^%(.*)%$"
       }
     },
     {
@@ -380,7 +384,8 @@
       },
       "webapi": {
         "operator": "startswith",
-        "conditionpattern": "{operator}({propName}, {value})"
+        "conditionpattern": "{operator}({propName}, {value})",
+        "valuepattern": "(.*)%$"
       }
     },
     {
@@ -593,7 +598,8 @@
       },
       "webapi": {
         "operator": "not startswith",
-        "conditionpattern": "{operator}({propName}, {value})"
+        "conditionpattern": "{operator}({propName}, {value})",
+        "valuepattern": "(.*)%$"
       }
     },
     {

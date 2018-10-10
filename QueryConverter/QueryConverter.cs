@@ -14,10 +14,12 @@ using XrmToolBox.Extensibility.Interfaces;
 using System.Collections.Generic;
 using Microsoft.Xrm.Sdk.Client;
 using System;
+using System.Diagnostics;
 using Microsoft.Xrm.Sdk.Messages;
 using Carfup.XTBPlugins.AppCode;
 using Microsoft.Crm.Sdk.Messages;
 using AceWinforms;
+using Carfup.XTBPlugins.Forms;
 
 namespace Carfup.XTBPlugins.QueryConverter
 {
@@ -25,6 +27,8 @@ namespace Carfup.XTBPlugins.QueryConverter
     {
         #region varibables
         ConverterHelper converter = null;
+        internal PluginSettings settings = new PluginSettings();
+        public LogUsage log = null;
 
         public string RepositoryName { get; } = "XTBPlugins.QueryConverter";
 
@@ -38,13 +42,13 @@ namespace Carfup.XTBPlugins.QueryConverter
 
         private void QueryConverter_Load(object sender, EventArgs e)
         {
-            inputCodeEditor.Theme = "twilight";
-            inputCodeEditor.HighlighterMode = "csharp";
-            inputCodeEditor.Load();
+            log = new LogUsage(this);
+            log.LogData(EventType.Event, LogAction.PluginOpened);
+            LoadSetting();
 
-            outputCodeEditor.Theme = "twilight";
+            inputCodeEditor.HighlighterMode = "csharp";
             outputCodeEditor.HighlighterMode = "csharp";
-            outputCodeEditor.Load();
+            UpdateThemeDisplayed();
         }
 
         private void toolStripButtonCloseTool_Click(object sender, System.EventArgs e)
@@ -60,13 +64,24 @@ namespace Carfup.XTBPlugins.QueryConverter
 
         private void DetectQueryType(string query)
         {
-            var inputTypeQuery = "QueryExpression";
-            if (query.ToLower().StartsWith("https://") || query.ToLower().StartsWith("http://")) // Webapi !
-                inputTypeQuery = "WebApi";
-            else if(query.ToLower().StartsWith("<fetch"))
-                inputTypeQuery = "FetchXml";
+            try
+            {
+                var inputTypeQuery = "QueryExpression";
+                if (query.ToLower().StartsWith("https://") || query.ToLower().StartsWith("http://")) // Webapi !
+                    inputTypeQuery = "WebApi";
+                else if (query.ToLower().StartsWith("<fetch"))
+                    inputTypeQuery = "FetchXml";
 
-            comboBoxInput.SelectedItem = inputTypeQuery;
+                comboBoxInput.SelectedItem = inputTypeQuery;
+
+                this.log.LogData(EventType.Event, LogAction.InputQueryTypeDetected);
+
+            }
+            catch (Exception e)
+            {
+                this.log.LogData(EventType.Exception, LogAction.InputQueryTypeDetected, e);
+            }
+            
         }
 
         private string GetCodeEditorHighlight(string type)
@@ -113,10 +128,12 @@ namespace Carfup.XTBPlugins.QueryConverter
                     if (e.Error != null)
                     {
                         MessageBox.Show(this, e.Error.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        this.log.LogData(EventType.Exception, LogAction.QueryConverted, e.Error);
                         return;
                     }
 
                     outputCodeEditor.Text = e.Result.ToString();
+                    this.log.LogData(EventType.Event, LogAction.QueryConverted);
                 },
                 ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
             });
@@ -130,7 +147,7 @@ namespace Carfup.XTBPlugins.QueryConverter
             outputCodeEditor.Text = data;
         }
 
-        private void comboBoxTheme_TextChanged(object sender, EventArgs evt)
+        public void UpdateThemeDisplayed()
         {
             var inputData = inputCodeEditor.Text;
             var outputData = outputCodeEditor.Text;
@@ -142,11 +159,17 @@ namespace Carfup.XTBPlugins.QueryConverter
                 {
                     Invoke(new Action(() =>
                     {
-                        inputCodeEditor.Theme = comboBoxTheme.SelectedItem.ToString();
-                        inputCodeEditor.Load();
+                        if(inputCodeEditor.Theme != this.settings.FavoriteTheme)
+                        {
+                            inputCodeEditor.Theme = this.settings.FavoriteTheme;
+                            inputCodeEditor.Load();
+                        }
 
-                        outputCodeEditor.Theme = comboBoxTheme.SelectedItem.ToString();
-                        outputCodeEditor.Load();
+                        if(outputCodeEditor.Theme != this.settings.FavoriteTheme)
+                        {
+                            outputCodeEditor.Theme = this.settings.FavoriteTheme;
+                            outputCodeEditor.Load();
+                        }
                     }));
                 },
                 PostWorkCallBack = e =>
@@ -154,20 +177,83 @@ namespace Carfup.XTBPlugins.QueryConverter
                     if (e.Error != null)
                     {
                         MessageBox.Show(this, e.Error.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        this.log.LogData(EventType.Exception, LogAction.ThemeModified, e.Error);
                         return;
                     }
 
                     inputCodeEditor.Text = inputData;
                     outputCodeEditor.Text = outputData;
+
+                    this.log.LogData(EventType.Event, LogAction.ThemeModified);
                 },
                 ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
             });
         }
 
-        private void ContentEditorChanged(object sender, EventArgs e)
+        public void SaveSettings()
         {
-           
-            var lol = "";
+            log.LogData(EventType.Event, LogAction.SettingsSaved);
+            SettingsManager.Instance.Save(typeof(QueryConverter), settings);
+            UpdateThemeDisplayed();
+        }
+
+        private void LoadSetting()
+        {
+            try
+            {
+                if (SettingsManager.Instance.TryLoad<PluginSettings>(typeof(QueryConverter), out settings))
+                {
+                    return;
+                }
+                else
+                    settings = new PluginSettings();
+
+            }
+            catch (InvalidOperationException ex)
+            {
+                log.LogData(EventType.Exception, LogAction.SettingLoaded, ex);
+            }
+
+            log.LogData(EventType.Event, LogAction.SettingLoaded);
+
+            if (!settings.AllowLogUsage.HasValue)
+            {
+                log.PromptToLog();
+                SaveSettings();
+            }
+        }
+
+        public static string CurrentVersion
+        {
+            get
+            {
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+                return fileVersionInfo.ProductVersion;
+            }
+        }
+
+        private void toolStripButtonOptions_Click(object sender, EventArgs e)
+        {
+            var allowLogUsage = settings.AllowLogUsage;
+            var optionDlg = new Options(this);
+            if (optionDlg.ShowDialog(this) == DialogResult.OK)
+            {
+                settings = optionDlg.GetSettings();
+                if (allowLogUsage != settings.AllowLogUsage)
+                {
+                    if (settings.AllowLogUsage == true)
+                    {
+                        this.log.updateForceLog();
+                        this.log.LogData(EventType.Event, LogAction.StatsAccepted);
+                    }
+                    else if (!settings.AllowLogUsage == true)
+                    {
+                        this.log.updateForceLog();
+                        this.log.LogData(EventType.Event, LogAction.StatsDenied);
+                    }
+                }
+            }
         }
     }
 }

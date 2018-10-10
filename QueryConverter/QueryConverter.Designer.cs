@@ -29,20 +29,19 @@
         private void InitializeComponent()
         {
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripButtonCloseTool = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.outputCodeEditor = new AceWinforms.CodeEditor();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.inputCodeEditor = new AceWinforms.CodeEditor();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.comboBoxTheme = new System.Windows.Forms.ComboBox();
             this.buttonConvert = new System.Windows.Forms.Button();
             this.comboBoxOutput = new System.Windows.Forms.ComboBox();
             this.comboBoxInput = new System.Windows.Forms.ComboBox();
+            this.toolStripButtonCloseTool = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonOptions = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -53,22 +52,13 @@
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButtonCloseTool});
+            this.toolStripButtonCloseTool,
+            this.toolStripButtonOptions});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1042, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
-            // 
-            // toolStripButtonCloseTool
-            // 
-            this.toolStripButtonCloseTool.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonCloseTool.Image = global::Carfup.XTBPlugins.Properties.Resources.close;
-            this.toolStripButtonCloseTool.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonCloseTool.Name = "toolStripButtonCloseTool";
-            this.toolStripButtonCloseTool.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonCloseTool.Text = "Close";
-            this.toolStripButtonCloseTool.Click += new System.EventHandler(this.toolStripButtonCloseTool_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -147,10 +137,8 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Controls.Add(this.label2);
             this.groupBox3.Controls.Add(this.label1);
-            this.groupBox3.Controls.Add(this.comboBoxTheme);
             this.groupBox3.Controls.Add(this.buttonConvert);
             this.groupBox3.Controls.Add(this.comboBoxOutput);
             this.groupBox3.Controls.Add(this.comboBoxInput);
@@ -160,15 +148,6 @@
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Comparaison settings";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 376);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(40, 13);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Theme";
             // 
             // label2
             // 
@@ -187,42 +166,6 @@
             this.label1.Size = new System.Drawing.Size(30, 13);
             this.label1.TabIndex = 4;
             this.label1.Text = "From";
-            // 
-            // comboBoxTheme
-            // 
-            this.comboBoxTheme.FormattingEnabled = true;
-            this.comboBoxTheme.Items.AddRange(new object[] {
-            "chrome",
-            "clouds",
-            "crimson_editor",
-            "dawn",
-            "dreamweaver",
-            "eclipse",
-            "github",
-            "solarized_light",
-            "textmate",
-            "tomorrow",
-            "xcode",
-            "ambiance",
-            "chaos",
-            "clouds_midnight",
-            "cobalt",
-            "idle_fingers",
-            "kr_theme",
-            "merbivore",
-            "merbivore_soft",
-            "terminal",
-            "tomorrow_night",
-            "tomorrow_night_blue",
-            "tomorrow_night_bright",
-            "tomorrow_night_eighties",
-            "twilight",
-            "vibrant_ink"});
-            this.comboBoxTheme.Location = new System.Drawing.Point(6, 392);
-            this.comboBoxTheme.Name = "comboBoxTheme";
-            this.comboBoxTheme.Size = new System.Drawing.Size(182, 21);
-            this.comboBoxTheme.TabIndex = 3;
-            this.comboBoxTheme.TextChanged += new System.EventHandler(this.comboBoxTheme_TextChanged);
             // 
             // buttonConvert
             // 
@@ -263,6 +206,25 @@
             this.comboBoxInput.TabIndex = 0;
             this.comboBoxInput.TextChanged += new System.EventHandler(this.comboBoxInput_TextChanged);
             // 
+            // toolStripButtonCloseTool
+            // 
+            this.toolStripButtonCloseTool.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonCloseTool.Image = global::Carfup.XTBPlugins.Properties.Resources.close;
+            this.toolStripButtonCloseTool.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonCloseTool.Name = "toolStripButtonCloseTool";
+            this.toolStripButtonCloseTool.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonCloseTool.Text = "Close";
+            this.toolStripButtonCloseTool.Click += new System.EventHandler(this.toolStripButtonCloseTool_Click);
+            // 
+            // toolStripButtonOptions
+            // 
+            this.toolStripButtonOptions.Image = global::Carfup.XTBPlugins.Properties.Resources.gear;
+            this.toolStripButtonOptions.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonOptions.Name = "toolStripButtonOptions";
+            this.toolStripButtonOptions.Size = new System.Drawing.Size(69, 22);
+            this.toolStripButtonOptions.Text = "Options";
+            this.toolStripButtonOptions.Click += new System.EventHandler(this.toolStripButtonOptions_Click);
+            // 
             // QueryConverter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -297,9 +259,8 @@
         private System.Windows.Forms.Button buttonConvert;
         private AceWinforms.CodeEditor outputCodeEditor;
         private AceWinforms.CodeEditor inputCodeEditor;
-        private System.Windows.Forms.ComboBox comboBoxTheme;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStripButton toolStripButtonOptions;
     }
 }

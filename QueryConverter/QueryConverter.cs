@@ -14,6 +14,7 @@ using XrmToolBox.Extensibility.Interfaces;
 using System.Collections.Generic;
 using Microsoft.Xrm.Sdk.Client;
 using System;
+using System.Diagnostics;
 using Microsoft.Xrm.Sdk.Messages;
 using Carfup.XTBPlugins.AppCode;
 using Microsoft.Crm.Sdk.Messages;
@@ -25,6 +26,8 @@ namespace Carfup.XTBPlugins.QueryConverter
     {
         #region varibables
         ConverterHelper converter = null;
+        internal PluginSettings settings = new PluginSettings();
+        public LogUsage log = null;
 
         public string RepositoryName { get; } = "XTBPlugins.QueryConverter";
 
@@ -38,6 +41,10 @@ namespace Carfup.XTBPlugins.QueryConverter
 
         private void QueryConverter_Load(object sender, EventArgs e)
         {
+            log = new LogUsage(this);
+            log.LogData(EventType.Event, LogAction.PluginOpened);
+            LoadSetting();
+
             inputCodeEditor.Theme = "twilight";
             inputCodeEditor.HighlighterMode = "csharp";
             inputCodeEditor.Load();
@@ -60,13 +67,24 @@ namespace Carfup.XTBPlugins.QueryConverter
 
         private void DetectQueryType(string query)
         {
-            var inputTypeQuery = "QueryExpression";
-            if (query.ToLower().StartsWith("https://") || query.ToLower().StartsWith("http://")) // Webapi !
-                inputTypeQuery = "WebApi";
-            else if(query.ToLower().StartsWith("<fetch"))
-                inputTypeQuery = "FetchXml";
+            try
+            {
+                var inputTypeQuery = "QueryExpression";
+                if (query.ToLower().StartsWith("https://") || query.ToLower().StartsWith("http://")) // Webapi !
+                    inputTypeQuery = "WebApi";
+                else if (query.ToLower().StartsWith("<fetch"))
+                    inputTypeQuery = "FetchXml";
 
-            comboBoxInput.SelectedItem = inputTypeQuery;
+                comboBoxInput.SelectedItem = inputTypeQuery;
+
+                this.log.LogData(EventType.Event, LogAction.InputQueryTypeDetected);
+
+            }
+            catch (Exception e)
+            {
+                this.log.LogData(EventType.Exception, LogAction.InputQueryTypeDetected, e);
+            }
+            
         }
 
         private string GetCodeEditorHighlight(string type)
@@ -113,10 +131,12 @@ namespace Carfup.XTBPlugins.QueryConverter
                     if (e.Error != null)
                     {
                         MessageBox.Show(this, e.Error.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        this.log.LogData(EventType.Exception, LogAction.QueryConverted, e.Error);
                         return;
                     }
 
                     outputCodeEditor.Text = e.Result.ToString();
+                    this.log.LogData(EventType.Event, LogAction.QueryConverted);
                 },
                 ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
             });
@@ -154,20 +174,59 @@ namespace Carfup.XTBPlugins.QueryConverter
                     if (e.Error != null)
                     {
                         MessageBox.Show(this, e.Error.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        this.log.LogData(EventType.Exception, LogAction.ThemeModified, e.Error);
                         return;
                     }
 
                     inputCodeEditor.Text = inputData;
                     outputCodeEditor.Text = outputData;
+
+                    this.log.LogData(EventType.Event, LogAction.ThemeModified);
                 },
                 ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
             });
         }
 
-        private void ContentEditorChanged(object sender, EventArgs e)
+        public void SaveSettings()
         {
-           
-            var lol = "";
+            log.LogData(EventType.Event, LogAction.SettingsSaved);
+            SettingsManager.Instance.Save(typeof(QueryConverter), settings);
+        }
+
+        private void LoadSetting()
+        {
+            try
+            {
+                if (SettingsManager.Instance.TryLoad<PluginSettings>(typeof(QueryConverter), out settings))
+                {
+                    return;
+                }
+                else
+                    settings = new PluginSettings();
+
+            }
+            catch (InvalidOperationException ex)
+            {
+                log.LogData(EventType.Exception, LogAction.SettingLoaded, ex);
+            }
+
+            log.LogData(EventType.Event, LogAction.SettingLoaded);
+
+            if (!settings.AllowLogUsage.HasValue)
+            {
+                log.PromptToLog();
+                SaveSettings();
+            }
+        }
+
+        public static string CurrentVersion
+        {
+            get
+            {
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+                return fileVersionInfo.ProductVersion;
+            }
         }
     }
 }

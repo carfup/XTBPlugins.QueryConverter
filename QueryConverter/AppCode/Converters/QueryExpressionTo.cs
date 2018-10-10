@@ -86,6 +86,123 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             return queryToTransform;
         }
 
+        #region Linq
+        public string ProcessToLinq(QueryExpression query)
+        {
+            var entitySet = query.EntityName + "Set";
+            var conditions = ManageCriteriaLinq(query.Criteria);
+            var columns = ManageColumsetToLinq(query.ColumnSet);
+            var order = ManageOrdersToLinq(query.Orders);
+            return entitySet + conditions + columns + order;
+        }
+
+        public string ManageCriteriaLinq(FilterExpression criteria, bool linkEntity = false)
+        {
+            var conditions = "";
+
+            if (criteria.Conditions.Count == 0 && criteria.Filters.Count == 0)
+                return conditions;
+
+            if (criteria.Conditions.Count > 0 || criteria.Filters.Count > 0)
+            {
+                // start criteria + conditions
+                conditions += $"{Environment.NewLine}.Where(w => ";
+
+                // Managing filterExpression
+                if (!linkEntity && criteria.Filters.Count > 0)
+                {
+                    List<string> filterExpressions = new List<string>();
+                    foreach (var filter in criteria.Filters)
+                    {
+                        var filterExpressionString = ManageConditionsToLinq(filter.Conditions, filter.FilterOperator);
+                        filterExpressions.Add(filterExpressionString);
+                    }
+                    conditions += String.Join($" {criteria.FilterOperator.ToString().ToLower()} ", filterExpressions);
+                }
+                else
+                {
+                    conditions += ManageConditionsToLinq(criteria.Conditions, criteria.FilterOperator);
+                }
+
+                // end criteria
+                conditions += ")";
+            }
+
+            return conditions;
+        }
+
+        public string ManageConditionsToLinq(DataCollection<ConditionExpression> conditions, LogicalOperator logicalOperator)
+        {
+            var conditionsString = "(";
+
+            List<string> conditionExpressions = new List<string>();
+            foreach (var condition in conditions)
+            {
+                var formatedCondition = this.converterHelper.ConditionHandling("queryexpression", "linq",
+                    condition.Operator.ToString(), condition.AttributeName, condition.Values.ToList());
+
+                if (formatedCondition == null)
+                    continue;
+
+                conditionExpressions.Add($"{formatedCondition}");
+            }
+
+            conditionsString += String.Join($" {logicalOperator.ToString().ToLower()} ", conditionExpressions);
+            conditionsString += ")";
+
+            return conditionsString;
+        }
+
+        public string ManageColumsetToLinq(ColumnSet columnSet)
+        {
+            var columns = "";
+
+            if (columnSet.AllColumns || columnSet.Columns.Count == 0)
+                return columns;
+
+            if (columnSet.Columns.Count > 0)
+            {
+                var columnslist = columnSet.Columns;
+                columns = String.Join(",", columnslist);
+                columns = columns.Count() > 1 ? string.Join(",", columns.Split(',').Select(x => string.Format("col.Attributes[\"{0}\"]", x)).ToList()) : columns;
+            }
+
+            var stringq = $"{Environment.NewLine}.Select(col => {columns})";
+
+            return stringq;
+        }
+
+        public string ManageOrdersToLinq(DataCollection<OrderExpression> ordersList)
+        {
+            var orders = "";
+
+            if (ordersList.Count == 0)
+                return orders;
+
+            orders += Environment.NewLine;
+
+            for (int i = 0; i < ordersList.Count; i++)
+            {
+                var order = ordersList[i];
+
+                var prefix = "OrderBy";
+                if (i == 0 && order.OrderType == OrderType.Descending)
+                    prefix = "OrderByDescending";
+                else if (i > 0)
+                {
+                    if (order.OrderType == OrderType.Ascending)
+                        prefix = "ThenBy";
+                    else if (order.OrderType == OrderType.Descending)
+                        prefix = "ThenByDescending";
+                }
+                orders += $".{prefix}(ord => ord.Attributes[\"{order.AttributeName}\"])";
+            }
+
+            return orders;
+        }
+        #endregion
+
+        #region WebApi
         public string ProcessToWebApi(string input)
         {
            // QueryExpressionTo queryExpressionTo = new QueryExpressionTo(this.convertHelper);
@@ -119,8 +236,6 @@ namespace Carfup.XTBPlugins.AppCode.Converters
 
             return completeLink;
         }
-
-        
 
         public string ManageOrdersToWebApi(DataCollection<OrderExpression> orderExpressions)
         {
@@ -204,6 +319,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
 
             return stringq;
         }
+        #endregion
 
         public JObject FormatConditionForMapper(ConditionExpression condition)
         {

@@ -92,6 +92,10 @@
       "webapi": {
         "operator": "eq",
         "conditionpattern": "{propName} {operator} {value}"
+      },
+      "linq": {
+        "operator": "==",
+        "conditionpattern": "w.Attributes[\"{propName}\"] {operator} {value}"
       }
     },
     {
@@ -547,6 +551,10 @@
       "webapi": {
         "operator": "ne",
         "conditionpattern": "{propName} {operator} {value}"
+      },
+      "linq": {
+        "operator": "!=",
+        "conditionpattern": "w.Attributes[\"{propName}\"] {operator} {value}"
       }
     },
     {

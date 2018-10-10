@@ -66,11 +66,13 @@ namespace Carfup.XTBPlugins.QueryConverter
         {
             try
             {
-                var inputTypeQuery = "QueryExpression";
+                var inputTypeQuery = "Linq";
                 if (query.ToLower().StartsWith("https://") || query.ToLower().StartsWith("http://")) // Webapi !
                     inputTypeQuery = "WebApi";
                 else if (query.ToLower().StartsWith("<fetch"))
                     inputTypeQuery = "FetchXml";
+                else if (query.ToLower().Contains("new QueryExpression("))
+                    inputTypeQuery = "QueryExpression";
 
                 comboBoxInput.SelectedItem = inputTypeQuery;
 
@@ -89,6 +91,7 @@ namespace Carfup.XTBPlugins.QueryConverter
             switch (type.ToLower())
             {
                 case "queryexpression":
+                case "linq":
                     return "csharp";
                 case "fetchxml":
                     return "xml";

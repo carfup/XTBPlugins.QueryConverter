@@ -54,6 +54,11 @@ namespace Carfup.XTBPlugins.AppCode
             {
                 outputQuery = this.queryExpressionTo.ProcessToWebApi(inputQuery);
             }
+            else if (this.inputType == ConstantHelper.QueryExpression && this.outputType == ConstantHelper.Linq) // WebApi to FetchXML
+            {
+                var queryExpression = this.queryExpressionTo.FromStringToQueryExpression(inputQuery);
+                outputQuery = this.queryExpressionTo.ProcessToLinq(queryExpression);
+            }
             else if (this.inputType == ConstantHelper.FetchXml && this.outputType == ConstantHelper.QueryExpression) // FetchXML to QueryExpression
             {
 
@@ -67,6 +72,11 @@ namespace Carfup.XTBPlugins.AppCode
             {
                 outputQuery = this.fetchXmlTo.ProcessToWebApi(inputQuery);
             }
+            else if (this.inputType == ConstantHelper.FetchXml && this.outputType == ConstantHelper.Linq) // WebApi to FetchXML
+            {
+                QueryExpression query = this.fetchXmlTo.FromStringToQueryExpression(inputQuery);
+                outputQuery = this.queryExpressionTo.ProcessToLinq(query);
+            }
             else if (this.inputType == ConstantHelper.WebApi && this.outputType == ConstantHelper.QueryExpression) // WebApi to QueryExpression
             {
                 CodeBeautifier.input = this.webApiTo.ProcessToQueryExpression(inputQuery);
@@ -76,6 +86,12 @@ namespace Carfup.XTBPlugins.AppCode
             else if (this.inputType == ConstantHelper.WebApi && this.outputType == ConstantHelper.FetchXml) // WebApi to FetchXML
             {
                 outputQuery = this.webApiTo.ProcessToFetchXml(inputQuery);
+            }
+            else if (this.inputType == ConstantHelper.WebApi && this.outputType == ConstantHelper.FetchXml) // WebApi to Linq
+            {
+                var queryExpressionString = this.webApiTo.ProcessToQueryExpression(inputQuery);
+                var queryExpression = this.queryExpressionTo.FromStringToQueryExpression(queryExpressionString);
+                outputQuery = this.queryExpressionTo.ProcessToLinq(queryExpression);
             }
 
             return outputQuery;

@@ -33,5 +33,7 @@ namespace Carfup.XTBPlugins.AppCode
         public const string PluginOpened = "PluginOpened";
         public const string SettingLoaded = "SettingLoaded";
         public const string SettingsSaved = "SettingsSaved";
+        public const string StatsAccepted = "StatsAccepted";
+        public const string StatsDenied = "StatsDenied";
     }
 }

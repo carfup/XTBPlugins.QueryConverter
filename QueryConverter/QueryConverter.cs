@@ -19,6 +19,7 @@ using Microsoft.Xrm.Sdk.Messages;
 using Carfup.XTBPlugins.AppCode;
 using Microsoft.Crm.Sdk.Messages;
 using AceWinforms;
+using Carfup.XTBPlugins.Forms;
 
 namespace Carfup.XTBPlugins.QueryConverter
 {
@@ -45,13 +46,9 @@ namespace Carfup.XTBPlugins.QueryConverter
             log.LogData(EventType.Event, LogAction.PluginOpened);
             LoadSetting();
 
-            inputCodeEditor.Theme = "twilight";
             inputCodeEditor.HighlighterMode = "csharp";
-            inputCodeEditor.Load();
-
-            outputCodeEditor.Theme = "twilight";
             outputCodeEditor.HighlighterMode = "csharp";
-            outputCodeEditor.Load();
+            UpdateThemeDisplayed();
         }
 
         private void toolStripButtonCloseTool_Click(object sender, System.EventArgs e)
@@ -150,7 +147,7 @@ namespace Carfup.XTBPlugins.QueryConverter
             outputCodeEditor.Text = data;
         }
 
-        private void comboBoxTheme_TextChanged(object sender, EventArgs evt)
+        public void UpdateThemeDisplayed()
         {
             var inputData = inputCodeEditor.Text;
             var outputData = outputCodeEditor.Text;
@@ -162,11 +159,17 @@ namespace Carfup.XTBPlugins.QueryConverter
                 {
                     Invoke(new Action(() =>
                     {
-                        inputCodeEditor.Theme = comboBoxTheme.SelectedItem.ToString();
-                        inputCodeEditor.Load();
+                        if(inputCodeEditor.Theme != this.settings.FavoriteTheme)
+                        {
+                            inputCodeEditor.Theme = this.settings.FavoriteTheme;
+                            inputCodeEditor.Load();
+                        }
 
-                        outputCodeEditor.Theme = comboBoxTheme.SelectedItem.ToString();
-                        outputCodeEditor.Load();
+                        if(outputCodeEditor.Theme != this.settings.FavoriteTheme)
+                        {
+                            outputCodeEditor.Theme = this.settings.FavoriteTheme;
+                            outputCodeEditor.Load();
+                        }
                     }));
                 },
                 PostWorkCallBack = e =>
@@ -191,6 +194,7 @@ namespace Carfup.XTBPlugins.QueryConverter
         {
             log.LogData(EventType.Event, LogAction.SettingsSaved);
             SettingsManager.Instance.Save(typeof(QueryConverter), settings);
+            UpdateThemeDisplayed();
         }
 
         private void LoadSetting()
@@ -226,6 +230,29 @@ namespace Carfup.XTBPlugins.QueryConverter
                 Assembly assembly = Assembly.GetExecutingAssembly();
                 FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
                 return fileVersionInfo.ProductVersion;
+            }
+        }
+
+        private void toolStripButtonOptions_Click(object sender, EventArgs e)
+        {
+            var allowLogUsage = settings.AllowLogUsage;
+            var optionDlg = new Options(this);
+            if (optionDlg.ShowDialog(this) == DialogResult.OK)
+            {
+                settings = optionDlg.GetSettings();
+                if (allowLogUsage != settings.AllowLogUsage)
+                {
+                    if (settings.AllowLogUsage == true)
+                    {
+                        this.log.updateForceLog();
+                        this.log.LogData(EventType.Event, LogAction.StatsAccepted);
+                    }
+                    else if (!settings.AllowLogUsage == true)
+                    {
+                        this.log.updateForceLog();
+                        this.log.LogData(EventType.Event, LogAction.StatsDenied);
+                    }
+                }
             }
         }
     }

@@ -21,6 +21,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
     class QueryExpressionTo
     {
         public ConverterHelper converterHelper = null;
+        private EntityMetadata entityMetadata = null;
 
         public QueryExpressionTo(ConverterHelper convertHelper)
         {
@@ -57,7 +58,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             //Making sure the String has a variable name to convert it into a QueryExpression
             if (input.ToLower().StartsWith("new queryexpression"))
             {
-                input = "var query = " + input;
+                input = $"var {this.converterHelper.queryVariableName} = {input}";
             }
 
             var result = Task.Run<object>(async () =>
@@ -89,7 +90,8 @@ namespace Carfup.XTBPlugins.AppCode.Converters
         #region Linq
         public string ProcessToLinq(QueryExpression query)
         {
-            var entitySet = query.EntityName + "Set";
+            entityMetadata = LoadEntityMetadata(query.EntityName);
+            var entitySet = $"var {this.converterHelper.queryVariableName} = {this.converterHelper.serviceContextName}.{entityMetadata.SchemaName}Set";
             var conditions = ManageCriteriaLinq(query.Criteria);
             var columns = ManageColumsetToLinq(query.ColumnSet);
             var order = ManageOrdersToLinq(query.Orders);
@@ -117,7 +119,10 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                         var filterExpressionString = ManageConditionsToLinq(filter.Conditions, filter.FilterOperator);
                         filterExpressions.Add(filterExpressionString);
                     }
-                    conditions += String.Join($" {criteria.FilterOperator.ToString().ToLower()} ", filterExpressions);
+
+                    var logicalOperatorForLinq = criteria.FilterOperator.ToString().ToLower() == "and" ? "&&" : "||";
+
+                    conditions += String.Join($" {logicalOperatorForLinq} ", filterExpressions);
                 }
                 else
                 {
@@ -138,8 +143,11 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             List<string> conditionExpressions = new List<string>();
             foreach (var condition in conditions)
             {
+                var schemaAttributeName = entityMetadata.Attributes.Where(x => x.LogicalName == condition.AttributeName)
+                    .Select(x => x.SchemaName).FirstOrDefault();
+
                 var formatedCondition = this.converterHelper.ConditionHandling("queryexpression", "linq",
-                    condition.Operator.ToString(), condition.AttributeName, condition.Values.ToList());
+                    condition.Operator.ToString(), schemaAttributeName, condition.Values.ToList());
 
                 if (formatedCondition == null)
                     continue;
@@ -147,7 +155,9 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                 conditionExpressions.Add($"{formatedCondition}");
             }
 
-            conditionsString += String.Join($" {logicalOperator.ToString().ToLower()} ", conditionExpressions);
+            var logicalOperatorForLinq = logicalOperator.ToString().ToLower() == "and" ? "&&" : "||";
+
+            conditionsString += String.Join($" {logicalOperatorForLinq} ", conditionExpressions);
             conditionsString += ")";
 
             return conditionsString;
@@ -164,10 +174,11 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             {
                 var columnslist = columnSet.Columns;
                 columns = String.Join(",", columnslist);
-                columns = columns.Count() > 1 ? string.Join(",", columns.Split(',').Select(x => string.Format("col.Attributes[\"{0}\"]", x)).ToList()) : columns;
+                columns = columns.Count() > 1 ? string.Join(",", columns.Split(',').Select(x => string.Format("col.{0}", entityMetadata.Attributes.Where(xx => xx.LogicalName == x)
+                    .Select(xx => xx.SchemaName).FirstOrDefault())).ToList()) : columns;
             }
 
-            var stringq = $"{Environment.NewLine}.Select(col => {columns})";
+            var stringq = $"{Environment.NewLine}.Select(col => new {{{columns}}})";
 
             return stringq;
         }
@@ -321,20 +332,18 @@ namespace Carfup.XTBPlugins.AppCode.Converters
         }
         #endregion
 
-        public JObject FormatConditionForMapper(ConditionExpression condition)
+        private EntityMetadata LoadEntityMetadata(string entity)
         {
-            dynamic operatorMapping = new JObject();
-            
-            var values = (condition.Values.Count == 0) ? null : String.Join(",", condition.Values);
-            if (values == "") // handling empty values
-                values = "''";
-            else if (values != null)
-                values = values.Count() > 1 ? string.Join(",", values.Split(',').Select(x => $"{x}").ToList()) : values;
+            var request = new RetrieveEntityRequest
+            {
+                EntityFilters = EntityFilters.Attributes,
+                LogicalName = entity
+            };
 
-            operatorMapping[condition.Operator.ToString()] = values;
-            
-
-            return operatorMapping;
+            var attributesList = (RetrieveEntityResponse)this.converterHelper.service.Execute(request);
+            if (attributesList != null)
+                return attributesList.EntityMetadata;
+            else return null;
         }
     }
 }

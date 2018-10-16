@@ -34,5 +34,6 @@ namespace Carfup.XTBPlugins.AppCode
         public const string SettingsSaved = "SettingsSaved";
         public const string StatsAccepted = "StatsAccepted";
         public const string StatsDenied = "StatsDenied";
+        public const string InputQueryTypeNotFound = "InputQueryTypeNotFound";
     }
 }

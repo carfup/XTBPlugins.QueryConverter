@@ -67,24 +67,33 @@ namespace Carfup.XTBPlugins.QueryConverter
         {
             try
             {
-                var inputTypeQuery = "Linq";
+                var inputTypeQuery = "";
                 if (query.ToLower().StartsWith("https://") || query.ToLower().StartsWith("http://")) // Webapi !
                     inputTypeQuery = "WebApi";
                 else if (query.ToLower().StartsWith("<fetch"))
                     inputTypeQuery = "FetchXml";
                 else if (query.Contains("new QueryExpression("))
                     inputTypeQuery = "QueryExpression";
+                //else if (query.Contains(".Where(") || query.Contains(".Select"))
+                //    inputTypeQuery = "Linq";
 
-                comboBoxInput.SelectedItem = inputTypeQuery;
+                if (inputTypeQuery == "")
+                {
+                    MessageBox.Show("Query not supported", "Query Not supported !", MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    this.log.LogData(EventType.Event, LogAction.InputQueryTypeNotFound);
+                }
+                else
+                {
+                    comboBoxInput.SelectedItem = inputTypeQuery;
 
-                this.log.LogData(EventType.Event, LogAction.InputQueryTypeDetected);
-
+                    this.log.LogData(EventType.Event, LogAction.InputQueryTypeDetected);
+                }
             }
             catch (Exception e)
             {
                 this.log.LogData(EventType.Exception, LogAction.InputQueryTypeDetected, e);
-            }
-            
+            }   
         }
 
         private string GetCodeEditorHighlight(string type)

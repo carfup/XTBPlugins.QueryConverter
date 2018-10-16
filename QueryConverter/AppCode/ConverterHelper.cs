@@ -146,29 +146,36 @@ namespace Carfup.XTBPlugins.AppCode
             }
         }
 
-        public JToken LookForOperator(string fromQueryType, string toQueryType, string operatorToSearch, object sampleValue)
+        private JToken LookForOperator(string fromQueryType, string toQueryType, string operatorToSearch, object sampleValue)
         {
-            var potentialOperators = operators["operators"].Where(x =>
-                x.SelectToken(fromQueryType)?.SelectToken("operator").Value<string>() == operatorToSearch);
-
-            if (potentialOperators.Count() > 1)
+            try
             {
-                foreach (var potentialOperator in potentialOperators)
+                var potentialOperators = operators["operators"].Where(x =>
+                    x.SelectToken(fromQueryType)?.SelectToken("operator").Value<string>() == operatorToSearch);
+
+                if (potentialOperators.Count() > 1)
                 {
-                    if(potentialOperator.SelectToken(fromQueryType)?.SelectToken("valuepattern") != null)
+                    foreach (var potentialOperator in potentialOperators)
                     {
-                        var pattern = new Regex(potentialOperator.SelectToken(fromQueryType).SelectToken("valuepattern").Value<string>());
-                        if (pattern.Match(sampleValue.ToString()).Success)
+                        if (potentialOperator.SelectToken(fromQueryType)?.SelectToken("valuepattern") != null)
                         {
-                            return potentialOperator.SelectToken(toQueryType);
+                            var pattern = new Regex(potentialOperator.SelectToken(fromQueryType).SelectToken("valuepattern").Value<string>());
+                            if (pattern.Match(sampleValue.ToString()).Success)
+                            {
+                                return potentialOperator.SelectToken(toQueryType);
+                            }
                         }
                     }
+
+                    return null;
                 }
 
-                return null;
+                return potentialOperators?.FirstOrDefault()?.SelectToken(toQueryType);
             }
-
-            return potentialOperators?.FirstOrDefault()?.SelectToken(toQueryType);
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public string ConditionHandling(string fromType, string toType, string operatorToLookFor, string attribute, List<object> valuesList)

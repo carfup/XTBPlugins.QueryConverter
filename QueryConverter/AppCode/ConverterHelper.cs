@@ -28,6 +28,8 @@ namespace Carfup.XTBPlugins.AppCode
         public string outputType { get; set; } = null;
         public string inputQuery { get; set; } = null;
         public JObject operators = null;
+        public string queryVariableName = "query";
+        public string serviceContextName = "ServiceContext";
 
         public ConverterHelper(IOrganizationService service)
         {
@@ -46,20 +48,24 @@ namespace Carfup.XTBPlugins.AppCode
 
             string outputQuery = "";
 
-            if(this.inputType == ConstantHelper.QueryExpression && this.outputType == ConstantHelper.FetchXml) // QueryExpression to FetchXML
+            // QueryExpression to FetchXML
+            if (this.inputType == ConstantHelper.QueryExpression && this.outputType == ConstantHelper.FetchXml) 
             {
                 outputQuery = this.queryExpressionTo.ProcessToFetchXml(inputQuery);
             }
-            else if (this.inputType == ConstantHelper.QueryExpression && this.outputType == ConstantHelper.WebApi) // QueryExpression to WebApi
+            // QueryExpression to WebApi
+            else if (this.inputType == ConstantHelper.QueryExpression && this.outputType == ConstantHelper.WebApi) 
             {
                 outputQuery = this.queryExpressionTo.ProcessToWebApi(inputQuery);
             }
-            else if (this.inputType == ConstantHelper.QueryExpression && this.outputType == ConstantHelper.Linq) // WebApi to FetchXML
+            // QueryExpression to Linq
+            else if (this.inputType == ConstantHelper.QueryExpression && this.outputType == ConstantHelper.Linq) 
             {
                 var queryExpression = this.queryExpressionTo.FromStringToQueryExpression(inputQuery);
                 outputQuery = this.queryExpressionTo.ProcessToLinq(queryExpression);
             }
-            else if (this.inputType == ConstantHelper.FetchXml && this.outputType == ConstantHelper.QueryExpression) // FetchXML to QueryExpression
+            // FetchXML to QueryExpression
+            else if (this.inputType == ConstantHelper.FetchXml && this.outputType == ConstantHelper.QueryExpression) 
             {
 
                 QueryExpression query = this.fetchXmlTo.FromStringToQueryExpression(inputQuery);
@@ -68,26 +74,31 @@ namespace Carfup.XTBPlugins.AppCode
 
                 outputQuery = codeBeautifier;
             }
-            else if (this.inputType == ConstantHelper.FetchXml && this.outputType == ConstantHelper.WebApi) // FetchXML to WebApi
+            // FetchXML to WebApi
+            else if (this.inputType == ConstantHelper.FetchXml && this.outputType == ConstantHelper.WebApi) 
             {
                 outputQuery = this.fetchXmlTo.ProcessToWebApi(inputQuery);
             }
-            else if (this.inputType == ConstantHelper.FetchXml && this.outputType == ConstantHelper.Linq) // WebApi to FetchXML
+            // FetchXML to Linq
+            else if (this.inputType == ConstantHelper.FetchXml && this.outputType == ConstantHelper.Linq) 
             {
                 QueryExpression query = this.fetchXmlTo.FromStringToQueryExpression(inputQuery);
                 outputQuery = this.queryExpressionTo.ProcessToLinq(query);
             }
-            else if (this.inputType == ConstantHelper.WebApi && this.outputType == ConstantHelper.QueryExpression) // WebApi to QueryExpression
+            // WebApi to QueryExpression
+            else if (this.inputType == ConstantHelper.WebApi && this.outputType == ConstantHelper.QueryExpression) 
             {
                 CodeBeautifier.input = this.webApiTo.ProcessToQueryExpression(inputQuery);
                 var codeBeautifier = CodeBeautifier.doIt();
                 outputQuery = codeBeautifier;
             }
-            else if (this.inputType == ConstantHelper.WebApi && this.outputType == ConstantHelper.FetchXml) // WebApi to FetchXML
+            // WebApi to FetchXML
+            else if (this.inputType == ConstantHelper.WebApi && this.outputType == ConstantHelper.FetchXml) 
             {
                 outputQuery = this.webApiTo.ProcessToFetchXml(inputQuery);
             }
-            else if (this.inputType == ConstantHelper.WebApi && this.outputType == ConstantHelper.FetchXml) // WebApi to Linq
+            // WebApi to Linq
+            else if (this.inputType == ConstantHelper.WebApi && this.outputType == ConstantHelper.Linq) 
             {
                 var queryExpressionString = this.webApiTo.ProcessToQueryExpression(inputQuery);
                 var queryExpression = this.queryExpressionTo.FromStringToQueryExpression(queryExpressionString);

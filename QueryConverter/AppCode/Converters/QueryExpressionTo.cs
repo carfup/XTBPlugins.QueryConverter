@@ -95,7 +95,17 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             var conditions = ManageCriteriaLinq(query.Criteria);
             var columns = ManageColumsetToLinq(query.ColumnSet);
             var order = ManageOrdersToLinq(query.Orders);
-            return entitySet + conditions + columns + order;
+            var topCount = ManageTopCountToLinq(query.TopCount);
+            return entitySet + conditions + columns + order + topCount;
+        }
+
+        private string ManageTopCountToLinq(int? topCount)
+        {
+            var result = "";
+            if (topCount != null)
+                result = $"{Environment.NewLine}.Take({topCount.Value})";
+
+            return result;
         }
 
         public string ManageCriteriaLinq(FilterExpression criteria, bool linkEntity = false)
@@ -163,7 +173,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             return conditionsString;
         }
 
-        public string ManageColumsetToLinq(ColumnSet columnSet)
+        private string ManageColumsetToLinq(ColumnSet columnSet)
         {
             var columns = "";
 
@@ -174,7 +184,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             {
                 var columnslist = columnSet.Columns;
                 columns = String.Join(",", columnslist);
-                columns = columns.Count() > 1 ? string.Join(",", columns.Split(',').Select(x => string.Format("col.{0}", entityMetadata.Attributes.Where(xx => xx.LogicalName == x)
+                columns = columns.Count() > 1 ? string.Join(", ", columns.Split(',').Select(x => string.Format("col.{0}", entityMetadata.Attributes.Where(xx => xx.LogicalName == x)
                     .Select(xx => xx.SchemaName).FirstOrDefault())).ToList()) : columns;
             }
 
@@ -183,7 +193,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             return stringq;
         }
 
-        public string ManageOrdersToLinq(DataCollection<OrderExpression> ordersList)
+        private string ManageOrdersToLinq(DataCollection<OrderExpression> ordersList)
         {
             var orders = "";
 

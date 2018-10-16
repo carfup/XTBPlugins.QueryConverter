@@ -29,6 +29,7 @@ namespace Carfup.XTBPlugins.QueryConverter
         ConverterHelper converter = null;
         internal PluginSettings settings = new PluginSettings();
         public LogUsage log = null;
+        
 
         public string RepositoryName { get; } = "XTBPlugins.QueryConverter";
 
@@ -71,7 +72,7 @@ namespace Carfup.XTBPlugins.QueryConverter
                     inputTypeQuery = "WebApi";
                 else if (query.ToLower().StartsWith("<fetch"))
                     inputTypeQuery = "FetchXml";
-                else if (query.ToLower().Contains("new QueryExpression("))
+                else if (query.Contains("new QueryExpression("))
                     inputTypeQuery = "QueryExpression";
 
                 comboBoxInput.SelectedItem = inputTypeQuery;
@@ -148,6 +149,32 @@ namespace Carfup.XTBPlugins.QueryConverter
             outputCodeEditor.HighlighterMode = GetCodeEditorHighlight(comboBoxOutput.Text);
             outputCodeEditor.Load();
             outputCodeEditor.Text = data;
+
+            ManageMandatoryFields(comboBoxOutput.Text);
+        }
+
+        private void ManageMandatoryFields(string type)
+        {
+            switch (type.ToLower())
+            {
+                case "queryexpression":
+                    groupBoxConversionDetails.Visible = true;
+                    textBoxCrmContext.Visible = false;
+                    labelCrmContext.Visible = false;
+                    textBoxQueryVariable.Visible = true;
+                    labelQueryVariable.Visible = true;
+                    break;
+                case "linq":
+                    groupBoxConversionDetails.Visible = true;
+                    textBoxQueryVariable.Visible = true;
+                    labelQueryVariable.Visible = true;
+                    textBoxCrmContext.Visible = true;
+                    labelCrmContext.Visible = true;
+                    break;
+                default:
+                    groupBoxConversionDetails.Visible = false;
+                    break;
+            }
         }
 
         public void UpdateThemeDisplayed()
@@ -257,6 +284,16 @@ namespace Carfup.XTBPlugins.QueryConverter
                     }
                 }
             }
+        }
+
+        private void textBoxQueryVariable_TextChanged(object sender, EventArgs e)
+        {
+            this.converter.queryVariableName = textBoxQueryVariable.Text;
+        }
+
+        private void textBoxCrmContext_TextChanged(object sender, EventArgs e)
+        {
+            this.converter.serviceContextName = textBoxCrmContext.Text;
         }
     }
 }

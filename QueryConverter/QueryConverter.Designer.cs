@@ -29,24 +29,30 @@
         private void InitializeComponent()
         {
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripButtonCloseTool = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonOptions = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.outputCodeEditor = new AceWinforms.CodeEditor();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.inputCodeEditor = new AceWinforms.CodeEditor();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBoxConversionDetails = new System.Windows.Forms.GroupBox();
+            this.labelQueryVariable = new System.Windows.Forms.Label();
+            this.labelCrmContext = new System.Windows.Forms.Label();
+            this.textBoxQueryVariable = new System.Windows.Forms.TextBox();
+            this.textBoxCrmContext = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.buttonConvert = new System.Windows.Forms.Button();
             this.comboBoxOutput = new System.Windows.Forms.ComboBox();
             this.comboBoxInput = new System.Windows.Forms.ComboBox();
-            this.toolStripButtonCloseTool = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonOptions = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBoxConversionDetails.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -59,6 +65,25 @@
             this.toolStrip1.Size = new System.Drawing.Size(1042, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripButtonCloseTool
+            // 
+            this.toolStripButtonCloseTool.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonCloseTool.Image = global::Carfup.XTBPlugins.Properties.Resources.close;
+            this.toolStripButtonCloseTool.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonCloseTool.Name = "toolStripButtonCloseTool";
+            this.toolStripButtonCloseTool.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonCloseTool.Text = "Close";
+            this.toolStripButtonCloseTool.Click += new System.EventHandler(this.toolStripButtonCloseTool_Click);
+            // 
+            // toolStripButtonOptions
+            // 
+            this.toolStripButtonOptions.Image = global::Carfup.XTBPlugins.Properties.Resources.gear;
+            this.toolStripButtonOptions.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonOptions.Name = "toolStripButtonOptions";
+            this.toolStripButtonOptions.Size = new System.Drawing.Size(69, 22);
+            this.toolStripButtonOptions.Text = "Options";
+            this.toolStripButtonOptions.Click += new System.EventHandler(this.toolStripButtonOptions_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -76,7 +101,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1039, 461);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1042, 408);
             this.tableLayoutPanel1.TabIndex = 3;
             // 
             // groupBox4
@@ -85,24 +110,22 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox4.Controls.Add(this.outputCodeEditor);
-            this.groupBox4.Location = new System.Drawing.Point(622, 3);
+            this.groupBox4.Location = new System.Drawing.Point(624, 3);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(414, 455);
+            this.groupBox4.Size = new System.Drawing.Size(415, 402);
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Output";
             // 
             // outputCodeEditor
             // 
-            this.outputCodeEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.outputCodeEditor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.outputCodeEditor.HighlighterMode = "javascript";
-            this.outputCodeEditor.Location = new System.Drawing.Point(6, 19);
+            this.outputCodeEditor.Location = new System.Drawing.Point(3, 16);
             this.outputCodeEditor.MinIeVersion = "10";
             this.outputCodeEditor.MinimumSize = new System.Drawing.Size(20, 20);
             this.outputCodeEditor.Name = "outputCodeEditor";
-            this.outputCodeEditor.Size = new System.Drawing.Size(402, 430);
+            this.outputCodeEditor.Size = new System.Drawing.Size(409, 383);
             this.outputCodeEditor.TabIndex = 4;
             this.outputCodeEditor.Theme = "monokai";
             // 
@@ -114,64 +137,113 @@
             this.groupBox1.Controls.Add(this.inputCodeEditor);
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(413, 455);
+            this.groupBox1.Size = new System.Drawing.Size(415, 402);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Input";
             // 
             // inputCodeEditor
             // 
-            this.inputCodeEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.inputCodeEditor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.inputCodeEditor.HighlighterMode = "javascript";
-            this.inputCodeEditor.Location = new System.Drawing.Point(6, 19);
+            this.inputCodeEditor.Location = new System.Drawing.Point(3, 16);
             this.inputCodeEditor.MinIeVersion = "10";
             this.inputCodeEditor.MinimumSize = new System.Drawing.Size(20, 20);
             this.inputCodeEditor.Name = "inputCodeEditor";
-            this.inputCodeEditor.Size = new System.Drawing.Size(401, 430);
+            this.inputCodeEditor.Size = new System.Drawing.Size(409, 383);
             this.inputCodeEditor.TabIndex = 5;
             this.inputCodeEditor.Theme = "monokai";
             // 
             // groupBox3
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox3.Controls.Add(this.groupBoxConversionDetails);
             this.groupBox3.Controls.Add(this.label2);
             this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Controls.Add(this.buttonConvert);
             this.groupBox3.Controls.Add(this.comboBoxOutput);
             this.groupBox3.Controls.Add(this.comboBoxInput);
-            this.groupBox3.Location = new System.Drawing.Point(422, 3);
+            this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox3.Location = new System.Drawing.Point(424, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(194, 455);
+            this.groupBox3.Size = new System.Drawing.Size(194, 402);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Comparaison settings";
+            // 
+            // groupBoxConversionDetails
+            // 
+            this.groupBoxConversionDetails.AutoSize = true;
+            this.groupBoxConversionDetails.Controls.Add(this.labelQueryVariable);
+            this.groupBoxConversionDetails.Controls.Add(this.labelCrmContext);
+            this.groupBoxConversionDetails.Controls.Add(this.textBoxQueryVariable);
+            this.groupBoxConversionDetails.Controls.Add(this.textBoxCrmContext);
+            this.groupBoxConversionDetails.Location = new System.Drawing.Point(-6, 129);
+            this.groupBoxConversionDetails.Name = "groupBoxConversionDetails";
+            this.groupBoxConversionDetails.Size = new System.Drawing.Size(206, 114);
+            this.groupBoxConversionDetails.TabIndex = 6;
+            this.groupBoxConversionDetails.TabStop = false;
+            this.groupBoxConversionDetails.Text = "Conversion details :";
+            // 
+            // labelQueryVariable
+            // 
+            this.labelQueryVariable.AutoSize = true;
+            this.labelQueryVariable.Location = new System.Drawing.Point(12, 59);
+            this.labelQueryVariable.Name = "labelQueryVariable";
+            this.labelQueryVariable.Size = new System.Drawing.Size(110, 13);
+            this.labelQueryVariable.TabIndex = 16;
+            this.labelQueryVariable.Text = "Query variable name :";
+            // 
+            // labelCrmContext
+            // 
+            this.labelCrmContext.AutoSize = true;
+            this.labelCrmContext.Location = new System.Drawing.Point(12, 18);
+            this.labelCrmContext.Name = "labelCrmContext";
+            this.labelCrmContext.Size = new System.Drawing.Size(67, 13);
+            this.labelCrmContext.TabIndex = 15;
+            this.labelCrmContext.Text = "CrmContext :";
+            // 
+            // textBoxQueryVariable
+            // 
+            this.textBoxQueryVariable.Location = new System.Drawing.Point(12, 75);
+            this.textBoxQueryVariable.Name = "textBoxQueryVariable";
+            this.textBoxQueryVariable.Size = new System.Drawing.Size(182, 20);
+            this.textBoxQueryVariable.TabIndex = 20;
+            this.textBoxQueryVariable.Text = "query";
+            this.textBoxQueryVariable.TextChanged += new System.EventHandler(this.textBoxQueryVariable_TextChanged);
+            // 
+            // textBoxCrmContext
+            // 
+            this.textBoxCrmContext.Location = new System.Drawing.Point(12, 34);
+            this.textBoxCrmContext.Name = "textBoxCrmContext";
+            this.textBoxCrmContext.Size = new System.Drawing.Size(182, 20);
+            this.textBoxCrmContext.TabIndex = 17;
+            this.textBoxCrmContext.Text = "ServiceContext";
+            this.textBoxCrmContext.TextChanged += new System.EventHandler(this.textBoxCrmContext_TextChanged);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(9, 77);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(20, 13);
+            this.label2.Size = new System.Drawing.Size(70, 13);
             this.label2.TabIndex = 5;
-            this.label2.Text = "To";
+            this.label2.Text = "Convert into :";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(9, 26);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(30, 13);
+            this.label1.Size = new System.Drawing.Size(73, 13);
             this.label1.TabIndex = 4;
-            this.label1.Text = "From";
+            this.label1.Text = "Convert from :";
             // 
             // buttonConvert
             // 
-            this.buttonConvert.Location = new System.Drawing.Point(6, 126);
+            this.buttonConvert.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.buttonConvert.Location = new System.Drawing.Point(3, 309);
             this.buttonConvert.Name = "buttonConvert";
-            this.buttonConvert.Size = new System.Drawing.Size(182, 247);
+            this.buttonConvert.Size = new System.Drawing.Size(188, 90);
             this.buttonConvert.TabIndex = 2;
             this.buttonConvert.Text = "Convert";
             this.buttonConvert.UseVisualStyleBackColor = true;
@@ -206,25 +278,6 @@
             this.comboBoxInput.TabIndex = 0;
             this.comboBoxInput.TextChanged += new System.EventHandler(this.comboBoxInput_TextChanged);
             // 
-            // toolStripButtonCloseTool
-            // 
-            this.toolStripButtonCloseTool.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonCloseTool.Image = global::Carfup.XTBPlugins.Properties.Resources.close;
-            this.toolStripButtonCloseTool.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonCloseTool.Name = "toolStripButtonCloseTool";
-            this.toolStripButtonCloseTool.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonCloseTool.Text = "Close";
-            this.toolStripButtonCloseTool.Click += new System.EventHandler(this.toolStripButtonCloseTool_Click);
-            // 
-            // toolStripButtonOptions
-            // 
-            this.toolStripButtonOptions.Image = global::Carfup.XTBPlugins.Properties.Resources.gear;
-            this.toolStripButtonOptions.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonOptions.Name = "toolStripButtonOptions";
-            this.toolStripButtonOptions.Size = new System.Drawing.Size(69, 22);
-            this.toolStripButtonOptions.Text = "Options";
-            this.toolStripButtonOptions.Click += new System.EventHandler(this.toolStripButtonOptions_Click);
-            // 
             // QueryConverter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -232,7 +285,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.toolStrip1);
             this.Name = "QueryConverter";
-            this.Size = new System.Drawing.Size(1042, 492);
+            this.Size = new System.Drawing.Size(1042, 439);
             this.Load += new System.EventHandler(this.QueryConverter_Load);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
@@ -241,6 +294,8 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBoxConversionDetails.ResumeLayout(false);
+            this.groupBoxConversionDetails.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -262,5 +317,10 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripButton toolStripButtonOptions;
+        private System.Windows.Forms.GroupBox groupBoxConversionDetails;
+        private System.Windows.Forms.TextBox textBoxQueryVariable;
+        private System.Windows.Forms.TextBox textBoxCrmContext;
+        private System.Windows.Forms.Label labelQueryVariable;
+        private System.Windows.Forms.Label labelCrmContext;
     }
 }

@@ -23,7 +23,7 @@ using Carfup.XTBPlugins.Forms;
 
 namespace Carfup.XTBPlugins.QueryConverter
 {
-    public partial class QueryConverter : PluginControlBase, IGitHubPlugin
+    public partial class QueryConverter : PluginControlBase, IGitHubPlugin, IMessageBusHost
     {
         #region varibables
         ConverterHelper converter = null;
@@ -38,6 +38,16 @@ namespace Carfup.XTBPlugins.QueryConverter
         public QueryConverter()
         {
             InitializeComponent();
+        }
+
+        public event EventHandler<MessageBusEventArgs> OnOutgoingMessage;
+
+        public void OnIncomingMessage(MessageBusEventArgs message)
+        {
+            if (message.SourcePlugin == "FetchXML Builder" && message.TargetArgument is string)
+            {
+                inputCodeEditor.Text = (message.TargetArgument); 
+            }
         }
 
         private void QueryConverter_Load(object sender, EventArgs e)
@@ -62,7 +72,7 @@ namespace Carfup.XTBPlugins.QueryConverter
             ExecuteMethod(ProcessToConversion);
         }
 
-        private void DetectQueryType(string query)
+        private string DetectQueryType(string query)
         {
             try
             {
@@ -76,10 +86,13 @@ namespace Carfup.XTBPlugins.QueryConverter
 
                 this.log.LogData(EventType.Event, LogAction.InputQueryTypeDetected);
 
+                return inputTypeQuery;
+
             }
             catch (Exception e)
             {
                 this.log.LogData(EventType.Exception, LogAction.InputQueryTypeDetected, e);
+                return "";
             }
             
         }
@@ -253,6 +266,35 @@ namespace Carfup.XTBPlugins.QueryConverter
                         this.log.LogData(EventType.Event, LogAction.StatsDenied);
                     }
                 }
+            }
+        }
+
+        private void toolStripButtonOpenFXB_Click(object sender, EventArgs e)
+        {
+            // TEMP AND UGLY FIX, removing useraworderby="false" programmatically
+            var fetchXml = inputCodeEditor.Text;
+
+            var inputType = DetectQueryType(fetchXml);
+            if (inputType == "FetchXml" && fetchXml != null)
+            {
+                fetchXml = fetchXml.Replace("useraworderby=\"false\"", "").Replace("useraworderby=\"true\"", "");
+
+                var messageBusEventArgs = new MessageBusEventArgs("FetchXML Builder")
+                {
+                    SourcePlugin = "QueryConverter",
+                    TargetArgument = fetchXml
+                };
+                OnOutgoingMessage(this, messageBusEventArgs);
+            }
+            else
+            {
+                var messageBusEventArgs = new MessageBusEventArgs("FetchXML Builder")
+                {
+                    SourcePlugin = "QueryConverter",
+                    TargetArgument = ""
+                };
+                OnOutgoingMessage(this, messageBusEventArgs);
+
             }
         }
     }

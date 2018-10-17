@@ -20,8 +20,7 @@ namespace Carfup.XTBPlugins.AppCode
 
     public static class CustomParameter
     {
-        //public static string INSIGHTS_INTRUMENTATIONKEY = "INSIGHTS_INTRUMENTATIONKEY_TOREPLACE";
-        public static string INSIGHTS_INTRUMENTATIONKEY = "80afe47d-768b-4485-a2b1-ab1693bb97b4";
+        public static string INSIGHTS_INTRUMENTATIONKEY = "INSIGHTS_INTRUMENTATIONKEY_TOREPLACE";
     }
 
     // EventType to qualify which action was performed by the plugin
@@ -35,5 +34,6 @@ namespace Carfup.XTBPlugins.AppCode
         public const string SettingsSaved = "SettingsSaved";
         public const string StatsAccepted = "StatsAccepted";
         public const string StatsDenied = "StatsDenied";
+        public const string InputQueryTypeNotFound = "InputQueryTypeNotFound";
     }
 }

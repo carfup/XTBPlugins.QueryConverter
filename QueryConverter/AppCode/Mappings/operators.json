@@ -30,6 +30,10 @@
         "operator": "startswith",
         "conditionpattern": "{operator}({propName}, {value})",
         "valuepattern": "(.*)%$"
+      },
+      "linq": {
+        "operator": "StartsWith",
+        "conditionpattern": "w.{propName}.{operator}({value})"
       }
     },
     {
@@ -50,6 +54,10 @@
       "webapi": {
         "operator": "not startswith",
         "conditionpattern": "{operator}({propName}, {value})"
+      },
+      "linq": {
+        "operator": "!StartsWith",
+        "conditionpattern": "!w.{propName}.StartsWith({value})"
       }
     },
     {
@@ -60,6 +68,10 @@
       "webapi": {
         "operator": "not contains",
         "conditionpattern": "{operator}({propName}, {value})"
+      },
+      "linq": {
+        "operator": "!Contains",
+        "conditionpattern": "!w.{propName}.Contains({value})"
       }
     },
     {
@@ -71,6 +83,10 @@
         "operator": "not endswith",
         "conditionpattern": "{operator}({propName}, {value})",
         "valuepattern": "^%(.*)%$"
+      },
+      "linq": {
+        "operator": "!EndsWith",
+        "conditionpattern": "!w.{propName}.EndsWith({value})"
       }
     },
     {
@@ -82,6 +98,10 @@
         "operator": "endswith",
         "conditionpattern": "{operator}({propName}, {value})",
         "valuepattern": "^%(.*)%$"
+      },
+      "linq": {
+        "operator": "EndsWith",
+        "conditionpattern": "w.{propName}.{operator}({value})"
       }
     },
     {
@@ -92,6 +112,10 @@
       "webapi": {
         "operator": "eq",
         "conditionpattern": "{propName} {operator} {value}"
+      },
+      "linq": {
+        "operator": "==",
+        "conditionpattern": "w.{propName} {operator} {value}"
       }
     },
     {
@@ -172,6 +196,10 @@
       "webapi": {
         "operator": "ge",
         "conditionpattern": "{propName} {operator} {value}"
+      },
+      "linq": {
+        "operator": ">=",
+        "conditionpattern": "w.{propName} {operator} {value}"
       }
     },
     {
@@ -182,6 +210,10 @@
       "webapi": {
         "operator": "gt",
         "conditionpattern": "{propName} {operator} {value}"
+      },
+      "linq": {
+        "operator": ">",
+        "conditionpattern": "w.{propName} {operator} {value}"
       }
     },
     {
@@ -192,6 +224,10 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.In",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValues=[{value}])"
+      },
+      "linq": {
+        "operator": "Contains",
+        "conditionpattern": "new object[] {{value}}.{operator}(w.{propName})"
       }
     },
     {
@@ -352,6 +388,10 @@
       "webapi": {
         "operator": "le",
         "conditionpattern": "{propName} {operator} {value}"
+      },
+      "linq": {
+        "operator": "<=",
+        "conditionpattern": "w.{propName} {operator} {value}"
       }
     },
     {
@@ -362,6 +402,10 @@
       "webapi": {
         "operator": "lt",
         "conditionpattern": "{propName} {operator} {value}"
+      },
+      "linq": {
+        "operator": "<",
+        "conditionpattern": "w.{propName} {operator} {value}"
       }
     },
     {
@@ -374,6 +418,10 @@
         "operator": "contains",
         "conditionpattern": "{operator}({propName}, {value})",
         "valuepattern": "^%(.*)%$"
+      },
+      "linq": {
+        "operator": "Contains",
+        "conditionpattern": "w.{propName}.{operator}({value})"
       }
     },
     {
@@ -386,6 +434,10 @@
         "operator": "startswith",
         "conditionpattern": "{operator}({propName}, {value})",
         "valuepattern": "(.*)%$"
+      },
+      "linq": {
+        "operator": "StartsWith",
+        "conditionpattern": "w.{propName}.{operator}({value})"
       }
     },
     {
@@ -397,6 +449,10 @@
       "webapi": {
         "operator": "endswith",
         "conditionpattern": "{operator}({propName}, {value})"
+      },
+      "linq": {
+        "operator": "EndsWith",
+        "conditionpattern": "w.{propName}.{operator}({value})"
       }
     },
     {
@@ -547,6 +603,10 @@
       "webapi": {
         "operator": "ne",
         "conditionpattern": "{propName} {operator} {value}"
+      },
+      "linq": {
+        "operator": "!=",
+        "conditionpattern": "w.{propName} {operator} {value}"
       }
     },
     {
@@ -577,6 +637,10 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NotIn",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValues=[{value}])"
+      },
+      "linq": {
+        "operator": "!Contains",
+        "conditionpattern": "!new object[] {{value}}.Contains(w.{propName})"
       }
     },
     {
@@ -588,6 +652,10 @@
       "webapi": {
         "operator": "not contains",
         "conditionpattern": "{operator}({propName}, {value})"
+      },
+      "linq": {
+        "operator": "!Contains",
+        "conditionpattern": "!w.{propName}.Contains({value})"
       }
     },
     {
@@ -600,6 +668,10 @@
         "operator": "not startswith",
         "conditionpattern": "{operator}({propName}, {value})",
         "valuepattern": "(.*)%$"
+      },
+      "linq": {
+        "operator": "!StartsWith",
+        "conditionpattern": "!w.{propName}.StartsWith({value})"
       }
     },
     {
@@ -611,6 +683,10 @@
       "webapi": {
         "operator": "not endswith",
         "conditionpattern": "{operator}({propName}, {value})"
+      },
+      "linq": {
+        "operator": "!EndsWith",
+        "conditionpattern": "!w.{propName}.EndsWith({value})"
       }
     },
     {
@@ -625,6 +701,10 @@
       "fetchxml": {
         "operator": "not-null",
         "conditionpattern": "{propName} {operator}"
+      },
+      "linq": {
+        "operator": "!= null",
+        "conditionpattern": "w.{propName} {operator}"
       }
     },
     {
@@ -645,6 +725,10 @@
       "webapi": {
         "operator": "eq null",
         "conditionpattern": "{propName} {operator}"
+      },
+      "linq": {
+        "operator": "== null",
+        "conditionpattern": "w.{propName} {operator}"
       }
     },
     {

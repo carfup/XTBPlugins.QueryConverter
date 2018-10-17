@@ -225,6 +225,7 @@
     <Compile Include="AppCode\ConstantHelper.cs" />
     <Compile Include="AppCode\ConverterHelper.cs" />
     <Compile Include="AppCode\Converters\FetchXMLTo.cs" />
+    <Compile Include="AppCode\Converters\LinqTo.cs" />
     <Compile Include="AppCode\Converters\QueryExpressionTo.cs" />
     <Compile Include="AppCode\Converters\WebApiTo.cs" />
     <Compile Include="AppCode\LogUsage.cs" />

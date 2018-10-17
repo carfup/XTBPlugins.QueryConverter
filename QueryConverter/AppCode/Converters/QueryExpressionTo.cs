@@ -21,6 +21,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
     class QueryExpressionTo
     {
         public ConverterHelper converterHelper = null;
+        private EntityMetadata entityMetadata = null;
 
         public QueryExpressionTo(ConverterHelper convertHelper)
         {
@@ -57,7 +58,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             //Making sure the String has a variable name to convert it into a QueryExpression
             if (input.ToLower().StartsWith("new queryexpression"))
             {
-                input = "var query = " + input;
+                input = $"var {this.converterHelper.queryVariableName} = {input}";
             }
 
             var result = Task.Run<object>(async () =>
@@ -86,6 +87,143 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             return queryToTransform;
         }
 
+        #region Linq
+        public string ProcessToLinq(QueryExpression query)
+        {
+            entityMetadata = LoadEntityMetadata(query.EntityName);
+            var entitySet = $"var {this.converterHelper.queryVariableName} = {this.converterHelper.serviceContextName}.{entityMetadata.SchemaName}Set";
+            var conditions = ManageCriteriaLinq(query.Criteria);
+            var columns = ManageColumsetToLinq(query.ColumnSet);
+            var order = ManageOrdersToLinq(query.Orders);
+            var topCount = ManageTopCountToLinq(query.TopCount);
+            return entitySet + conditions + columns + order + topCount;
+        }
+
+        private string ManageTopCountToLinq(int? topCount)
+        {
+            var result = "";
+            if (topCount != null)
+                result = $"{Environment.NewLine}.Take({topCount.Value})";
+
+            return result;
+        }
+
+        public string ManageCriteriaLinq(FilterExpression criteria, bool linkEntity = false)
+        {
+            var conditions = "";
+
+            if (criteria.Conditions.Count == 0 && criteria.Filters.Count == 0)
+                return conditions;
+
+            if (criteria.Conditions.Count > 0 || criteria.Filters.Count > 0)
+            {
+                // start criteria + conditions
+                conditions += $"{Environment.NewLine}.Where(w => ";
+
+                // Managing filterExpression
+                if (!linkEntity && criteria.Filters.Count > 0)
+                {
+                    List<string> filterExpressions = new List<string>();
+                    foreach (var filter in criteria.Filters)
+                    {
+                        var filterExpressionString = ManageConditionsToLinq(filter.Conditions, filter.FilterOperator);
+                        filterExpressions.Add(filterExpressionString);
+                    }
+
+                    var logicalOperatorForLinq = criteria.FilterOperator.ToString().ToLower() == "and" ? "&&" : "||";
+
+                    conditions += String.Join($" {logicalOperatorForLinq} ", filterExpressions);
+                }
+                else
+                {
+                    conditions += ManageConditionsToLinq(criteria.Conditions, criteria.FilterOperator);
+                }
+
+                // end criteria
+                conditions += ")";
+            }
+
+            return conditions;
+        }
+
+        public string ManageConditionsToLinq(DataCollection<ConditionExpression> conditions, LogicalOperator logicalOperator)
+        {
+            var conditionsString = "(";
+
+            List<string> conditionExpressions = new List<string>();
+            foreach (var condition in conditions)
+            {
+                var schemaAttributeName = entityMetadata.Attributes.Where(x => x.LogicalName == condition.AttributeName)
+                    .Select(x => x.SchemaName).FirstOrDefault();
+
+                var formatedCondition = this.converterHelper.ConditionHandling("queryexpression", "linq",
+                    condition.Operator.ToString(), schemaAttributeName, condition.Values.ToList());
+
+                if (formatedCondition == null)
+                    continue;
+
+                conditionExpressions.Add($"{formatedCondition}");
+            }
+
+            var logicalOperatorForLinq = logicalOperator.ToString().ToLower() == "and" ? "&&" : "||";
+
+            conditionsString += String.Join($" {logicalOperatorForLinq} ", conditionExpressions);
+            conditionsString += ")";
+
+            return conditionsString;
+        }
+
+        private string ManageColumsetToLinq(ColumnSet columnSet)
+        {
+            var columns = "";
+
+            if (columnSet.AllColumns || columnSet.Columns.Count == 0)
+                return columns;
+
+            if (columnSet.Columns.Count > 0)
+            {
+                var columnslist = columnSet.Columns;
+                columns = String.Join(",", columnslist);
+                columns = columns.Count() > 1 ? string.Join(", ", columns.Split(',').Select(x => string.Format("col.{0}", entityMetadata.Attributes.Where(xx => xx.LogicalName == x)
+                    .Select(xx => xx.SchemaName).FirstOrDefault())).ToList()) : columns;
+            }
+
+            var stringq = $"{Environment.NewLine}.Select(col => new {{{columns}}})";
+
+            return stringq;
+        }
+
+        private string ManageOrdersToLinq(DataCollection<OrderExpression> ordersList)
+        {
+            var orders = "";
+
+            if (ordersList.Count == 0)
+                return orders;
+
+            orders += Environment.NewLine;
+
+            for (int i = 0; i < ordersList.Count; i++)
+            {
+                var order = ordersList[i];
+
+                var prefix = "OrderBy";
+                if (i == 0 && order.OrderType == OrderType.Descending)
+                    prefix = "OrderByDescending";
+                else if (i > 0)
+                {
+                    if (order.OrderType == OrderType.Ascending)
+                        prefix = "ThenBy";
+                    else if (order.OrderType == OrderType.Descending)
+                        prefix = "ThenByDescending";
+                }
+                orders += $".{prefix}(ord => ord.Attributes[\"{order.AttributeName}\"])";
+            }
+
+            return orders;
+        }
+        #endregion
+
+        #region WebApi
         public string ProcessToWebApi(string input)
         {
            // QueryExpressionTo queryExpressionTo = new QueryExpressionTo(this.convertHelper);
@@ -119,8 +257,6 @@ namespace Carfup.XTBPlugins.AppCode.Converters
 
             return completeLink;
         }
-
-        
 
         public string ManageOrdersToWebApi(DataCollection<OrderExpression> orderExpressions)
         {
@@ -204,21 +340,20 @@ namespace Carfup.XTBPlugins.AppCode.Converters
 
             return stringq;
         }
+        #endregion
 
-        public JObject FormatConditionForMapper(ConditionExpression condition)
+        private EntityMetadata LoadEntityMetadata(string entity)
         {
-            dynamic operatorMapping = new JObject();
-            
-            var values = (condition.Values.Count == 0) ? null : String.Join(",", condition.Values);
-            if (values == "") // handling empty values
-                values = "''";
-            else if (values != null)
-                values = values.Count() > 1 ? string.Join(",", values.Split(',').Select(x => $"{x}").ToList()) : values;
+            var request = new RetrieveEntityRequest
+            {
+                EntityFilters = EntityFilters.Attributes,
+                LogicalName = entity
+            };
 
-            operatorMapping[condition.Operator.ToString()] = values;
-            
-
-            return operatorMapping;
+            var attributesList = (RetrieveEntityResponse)this.converterHelper.service.Execute(request);
+            if (attributesList != null)
+                return attributesList.EntityMetadata;
+            else return null;
         }
     }
 }

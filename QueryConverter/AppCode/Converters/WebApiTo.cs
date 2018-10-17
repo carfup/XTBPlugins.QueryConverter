@@ -74,7 +74,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                 }
             }
 
-            string stringq = $"QueryExpression query = new QueryExpression() {{ ";
+            string stringq = $"QueryExpression {this.converterHelper.queryVariableName} = new QueryExpression() {{ ";
             stringq += $"EntityName = \"{GetEntityName(entityName)}\"";
             //stringq += $"Distinct = {query.Distinct.ToString().ToLower()}";
 
@@ -232,7 +232,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                 }
 
                 conditionsString += String.Join($",", conditionExpressions);
-                conditionsString = $"{conditionsString},FilterOperator = LogicalOperator.{groupType} }}}}";
+                conditionsString = $"{conditionsString} }} ,FilterOperator = LogicalOperator.{groupType} }}";
             }
 
             conditionsString += "} }";

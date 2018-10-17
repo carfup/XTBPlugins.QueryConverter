@@ -29,6 +29,7 @@ namespace Carfup.XTBPlugins.QueryConverter
         ConverterHelper converter = null;
         internal PluginSettings settings = new PluginSettings();
         public LogUsage log = null;
+        
 
         public string RepositoryName { get; } = "XTBPlugins.QueryConverter";
 
@@ -76,25 +77,35 @@ namespace Carfup.XTBPlugins.QueryConverter
         {
             try
             {
-                var inputTypeQuery = "QueryExpression";
+                var inputTypeQuery = "";
                 if (query.ToLower().StartsWith("https://") || query.ToLower().StartsWith("http://")) // Webapi !
                     inputTypeQuery = "WebApi";
                 else if (query.ToLower().StartsWith("<fetch"))
                     inputTypeQuery = "FetchXml";
+                else if (query.Contains("new QueryExpression("))
+                    inputTypeQuery = "QueryExpression";
+                //else if (query.Contains(".Where(") || query.Contains(".Select"))
+                //    inputTypeQuery = "Linq";
 
-                comboBoxInput.SelectedItem = inputTypeQuery;
-
-                this.log.LogData(EventType.Event, LogAction.InputQueryTypeDetected);
+                if (inputTypeQuery == "")
+                {
+                    MessageBox.Show("Query not supported", "Query Not supported !", MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    this.log.LogData(EventType.Event, LogAction.InputQueryTypeNotFound);
+                }
+                else
+                {
+                    comboBoxInput.SelectedItem = inputTypeQuery;
+                    this.log.LogData(EventType.Event, LogAction.InputQueryTypeDetected);
+                }
 
                 return inputTypeQuery;
-
             }
             catch (Exception e)
             {
                 this.log.LogData(EventType.Exception, LogAction.InputQueryTypeDetected, e);
-                return "";
-            }
-            
+            }   
+            return "";            
         }
 
         private string GetCodeEditorHighlight(string type)
@@ -102,6 +113,7 @@ namespace Carfup.XTBPlugins.QueryConverter
             switch (type.ToLower())
             {
                 case "queryexpression":
+                case "linq":
                     return "csharp";
                 case "fetchxml":
                     return "xml";
@@ -158,6 +170,32 @@ namespace Carfup.XTBPlugins.QueryConverter
             outputCodeEditor.HighlighterMode = GetCodeEditorHighlight(comboBoxOutput.Text);
             outputCodeEditor.Load();
             outputCodeEditor.Text = data;
+
+            ManageMandatoryFields(comboBoxOutput.Text);
+        }
+
+        private void ManageMandatoryFields(string type)
+        {
+            switch (type.ToLower())
+            {
+                case "queryexpression":
+                    groupBoxConversionDetails.Visible = true;
+                    textBoxCrmContext.Visible = false;
+                    labelCrmContext.Visible = false;
+                    textBoxQueryVariable.Visible = true;
+                    labelQueryVariable.Visible = true;
+                    break;
+                case "linq":
+                    groupBoxConversionDetails.Visible = true;
+                    textBoxQueryVariable.Visible = true;
+                    labelQueryVariable.Visible = true;
+                    textBoxCrmContext.Visible = true;
+                    labelCrmContext.Visible = true;
+                    break;
+                default:
+                    groupBoxConversionDetails.Visible = false;
+                    break;
+            }
         }
 
         public void UpdateThemeDisplayed()
@@ -267,6 +305,17 @@ namespace Carfup.XTBPlugins.QueryConverter
                     }
                 }
             }
+        }
+
+
+        private void textBoxQueryVariable_TextChanged(object sender, EventArgs e)
+        {
+            this.converter.queryVariableName = textBoxQueryVariable.Text;
+        }
+
+        private void textBoxCrmContext_TextChanged(object sender, EventArgs e)
+        {
+            this.converter.serviceContextName = textBoxCrmContext.Text;
         }
 
         private void toolStripButtonOpenFXB_Click(object sender, EventArgs e)

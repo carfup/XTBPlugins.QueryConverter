@@ -17,6 +17,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
         static string columns = null;
         static string filters = null;
         static string orders = null;
+        static string topCount = null;
         ConverterHelper converterHelper = null;
 
         public WebApiTo(ConverterHelper convertHelper)
@@ -65,7 +66,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                             orders = ManagerOrders(dunno[1]);
                             break;
                         case "top":
-                            orders = ManagerOrders(dunno[1]);
+                            topCount = ManageTopCount(dunno[1]);
                             break;
                         case "apply":
                             orders = ManagerOrders(dunno[1]);
@@ -79,12 +80,20 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             //stringq += $"Distinct = {query.Distinct.ToString().ToLower()}";
 
             // Manage columnset
+            if (columns == null)
+            {
+                columns = $", ColumnSet = new ColumSet(true)";
+            }
             stringq += columns;
+
             // Criteria
             stringq += filters;
 
             //order
             stringq += orders;
+
+            //top
+            stringq += topCount;
 
             // Linkentities
             //stringq += manageLinkEntities(query.LinkEntities);
@@ -94,6 +103,15 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             return stringq;
         }
 
+        private string ManageTopCount(string top)
+        {
+            var topCount = "";
+
+            if (top != null || top != "")
+                topCount = $", TopCount = {top}";
+
+            return topCount;
+        }
 
         public string ManagerOrders(string ordersList)
         {

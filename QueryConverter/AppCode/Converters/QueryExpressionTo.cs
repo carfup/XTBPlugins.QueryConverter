@@ -96,7 +96,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             var columns = ManageColumsetToLinq(query.ColumnSet);
             var order = ManageOrdersToLinq(query.Orders);
             var topCount = ManageTopCountToLinq(query.TopCount);
-            return entitySet + conditions + columns + order + topCount;
+            return entitySet + conditions + columns + order + topCount + ";";
         }
 
         private string ManageTopCountToLinq(int? topCount)
@@ -249,13 +249,23 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                 var columns = ManageColumsetToWebApi(queryExpression.ColumnSet);
                 var order = ManageOrdersToWebApi(queryExpression.Orders);
                 var pageInfo = queryExpression.PageInfo;
+                var topCount = queryExpression.TopCount == null ? "" : $"$top={queryExpression.TopCount.Value}";
 
-                completeLink += $"{(columns != "" ? columns : "")}";
-                completeLink += $"{(conditions != "" ? "&" + conditions : "")}";
-                completeLink += $"{(order != "" ? "&" + order : "")}";
+                completeLink += $"{(columns != "" ? exclaOrIntePoint(completeLink) + columns : "")}";
+                completeLink += $"{(conditions != "" ? exclaOrIntePoint(completeLink) + conditions : "")}";
+                completeLink += $"{(order != "" ? exclaOrIntePoint(completeLink) + order : "")}";
+                completeLink += $"{(topCount != "" ? exclaOrIntePoint(completeLink) + topCount : "")}";
             }
 
             return completeLink;
+        }
+
+        private string exclaOrIntePoint(string link)
+        {
+            if (link.EndsWith("?"))
+                return "";
+            else
+                return "&";
         }
 
         public string ManageOrdersToWebApi(DataCollection<OrderExpression> orderExpressions)

@@ -93,8 +93,8 @@
             this.toolStripButtonOpenFXB.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonOpenFXB.Image")));
             this.toolStripButtonOpenFXB.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonOpenFXB.Name = "toolStripButtonOpenFXB";
-            this.toolStripButtonOpenFXB.Size = new System.Drawing.Size(206, 22);
-            this.toolStripButtonOpenFXB.Text = "Open or build in FetchXMLBuilder";
+            this.toolStripButtonOpenFXB.Size = new System.Drawing.Size(139, 22);
+            this.toolStripButtonOpenFXB.Text = "Use FetchXMLBuilder";
             this.toolStripButtonOpenFXB.ToolTipText = "Open or build in FetchXMLBuilder";
             this.toolStripButtonOpenFXB.Click += new System.EventHandler(this.toolStripButtonOpenFXB_Click);
             // 

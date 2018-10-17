@@ -73,13 +73,13 @@ namespace Carfup.XTBPlugins.QueryConverter
             ExecuteMethod(ProcessToConversion);
         }
 
-        private string DetectQueryType(string query)
+        private string DetectQueryType(string query, bool displayAlert = true)
         {
             try
             {
                 var inputTypeQuery = "";
                 if (query.ToLower().StartsWith("https://") || query.ToLower().StartsWith("http://")) // Webapi !
-                    inputTypeQuery = "WebApi";
+                    inputTypeQuery = "WebApi"; 
                 else if (query.ToLower().StartsWith("<fetch"))
                     inputTypeQuery = "FetchXml";
                 else if (query.Contains("new QueryExpression("))
@@ -87,7 +87,7 @@ namespace Carfup.XTBPlugins.QueryConverter
                 //else if (query.Contains(".Where(") || query.Contains(".Select"))
                 //    inputTypeQuery = "Linq";
 
-                if (inputTypeQuery == "")
+                if (inputTypeQuery == "" && displayAlert )
                 {
                     MessageBox.Show("Query not supported", "Query Not supported !", MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
@@ -323,7 +323,7 @@ namespace Carfup.XTBPlugins.QueryConverter
             // TEMP AND UGLY FIX, removing useraworderby="false" programmatically
             var fetchXml = inputCodeEditor.Text;
 
-            var inputType = DetectQueryType(fetchXml);
+            var inputType = DetectQueryType(fetchXml, false);
             if (inputType == "FetchXml" && fetchXml != null)
             {
                 fetchXml = fetchXml.Replace("useraworderby=\"false\"", "").Replace("useraworderby=\"true\"", "");

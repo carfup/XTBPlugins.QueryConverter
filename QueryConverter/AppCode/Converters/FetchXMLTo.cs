@@ -32,7 +32,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             stringq += $"Distinct = {queryExpression.Distinct.ToString().ToLower()}";
 
             if(queryExpression.TopCount != null)
-                stringq += $"TopCount = {queryExpression.TopCount}";
+                stringq += $", TopCount = {queryExpression.TopCount}";
 
             // Manage columnset
             stringq += ManageColumset(queryExpression.ColumnSet);
@@ -187,8 +187,7 @@ namespace Carfup.XTBPlugins.AppCode.Converters
 
             if (columnSet.AllColumns)
                 columns += "true";
-
-            if (columnSet.Columns.Count > 0)
+            else if (columnSet.Columns.Count > 0)
             {
                 var columnslist = columnSet.Columns;
                 columns = String.Join(",", columnslist);

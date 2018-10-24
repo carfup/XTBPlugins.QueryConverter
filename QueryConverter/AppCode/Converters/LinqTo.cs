@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Carfup.XTBPlugins.AppCode.Converters
+namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
 {
     class LinqTo
     {

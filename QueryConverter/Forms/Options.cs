@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Carfup.XTBPlugins.AppCode;
+using Carfup.XTBPlugins.QueryConverter.AppCode;
 
 namespace Carfup.XTBPlugins.Forms
 {

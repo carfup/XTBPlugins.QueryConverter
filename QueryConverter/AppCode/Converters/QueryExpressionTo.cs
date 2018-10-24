@@ -16,9 +16,9 @@ using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Tooling.Connector;
 using Newtonsoft.Json.Linq;
 
-namespace Carfup.XTBPlugins.AppCode.Converters
+namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
 {
-    class QueryExpressionTo
+    public class QueryExpressionTo
     {
         public ConverterHelper converterHelper = null;
         private EntityMetadata entityMetadata = null;
@@ -247,9 +247,9 @@ namespace Carfup.XTBPlugins.AppCode.Converters
             {
                 var conditions = ManageConditionsToWebApi(queryExpression.Criteria, "");
                 var columns = ManageColumsetToWebApi(queryExpression.ColumnSet);
-                var order = ManageOrdersToWebApi(queryExpression.Orders);
+                var order = ManageOrdersToWebApi(queryExpression.Orders.ToList());
                 var pageInfo = queryExpression.PageInfo;
-                var topCount = queryExpression.TopCount == null ? "" : $"$top={queryExpression.TopCount.Value}";
+                var topCount = ManageTopCountToWebApi(queryExpression.TopCount);
 
                 completeLink += $"{(columns != "" ? exclaOrIntePoint(completeLink) + columns : "")}";
                 completeLink += $"{(conditions != "" ? exclaOrIntePoint(completeLink) + conditions : "")}";
@@ -268,7 +268,12 @@ namespace Carfup.XTBPlugins.AppCode.Converters
                 return "&";
         }
 
-        public string ManageOrdersToWebApi(DataCollection<OrderExpression> orderExpressions)
+        public string ManageTopCountToWebApi(int? topCount)
+        {
+            return topCount == null ? "" : $"$top={topCount.Value}";
+        }
+
+        public string ManageOrdersToWebApi(List<OrderExpression> orderExpressions)
         {
             var ordersString = "";
 

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xrm.Sdk.Query;
 
-namespace Carfup.XTBPlugins.AppCode
+namespace Carfup.XTBPlugins.QueryConverter.AppCode
 {
     class ConstantHelper
     {

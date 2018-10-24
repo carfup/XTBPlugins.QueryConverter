@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Carfup.XTBPlugins.AppCode.Converters;
+using Carfup.XTBPlugins.QueryConverter.AppCode.Converters;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
@@ -15,9 +15,9 @@ using Microsoft.Xrm.Sdk.Query;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Carfup.XTBPlugins.AppCode
+namespace Carfup.XTBPlugins.QueryConverter.AppCode
 {
-    class ConverterHelper
+    public class ConverterHelper
     {
       
         public IOrganizationService service { get; set; } = null;

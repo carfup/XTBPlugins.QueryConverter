@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QueryConverter));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButtonCloseTool = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonOptions = new System.Windows.Forms.ToolStripButton();
@@ -40,21 +39,23 @@
             this.inputCodeEditor = new AceWinforms.CodeEditor();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBoxConversionDetails = new System.Windows.Forms.GroupBox();
-            this.labelQueryVariable = new System.Windows.Forms.Label();
-            this.labelCrmContext = new System.Windows.Forms.Label();
-            this.textBoxQueryVariable = new System.Windows.Forms.TextBox();
-            this.textBoxCrmContext = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.buttonConvert = new System.Windows.Forms.Button();
             this.comboBoxOutput = new System.Windows.Forms.ComboBox();
             this.comboBoxInput = new System.Windows.Forms.ComboBox();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.labelQueryVariable = new System.Windows.Forms.Label();
+            this.textBoxQueryVariable = new System.Windows.Forms.TextBox();
+            this.labelCrmContext = new System.Windows.Forms.Label();
+            this.textBoxCrmContext = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBoxConversionDetails.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -90,7 +91,7 @@
             // 
             // toolStripButtonOpenFXB
             // 
-            this.toolStripButtonOpenFXB.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonOpenFXB.Image")));
+            this.toolStripButtonOpenFXB.Image = global::Carfup.XTBPlugins.Properties.Resources.fxb;
             this.toolStripButtonOpenFXB.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonOpenFXB.Name = "toolStripButtonOpenFXB";
             this.toolStripButtonOpenFXB.Size = new System.Drawing.Size(139, 22);
@@ -186,52 +187,13 @@
             // groupBoxConversionDetails
             // 
             this.groupBoxConversionDetails.AutoSize = true;
-            this.groupBoxConversionDetails.Controls.Add(this.labelQueryVariable);
-            this.groupBoxConversionDetails.Controls.Add(this.labelCrmContext);
-            this.groupBoxConversionDetails.Controls.Add(this.textBoxQueryVariable);
-            this.groupBoxConversionDetails.Controls.Add(this.textBoxCrmContext);
-            this.groupBoxConversionDetails.Location = new System.Drawing.Point(-6, 129);
+            this.groupBoxConversionDetails.Controls.Add(this.flowLayoutPanel1);
+            this.groupBoxConversionDetails.Location = new System.Drawing.Point(0, 130);
             this.groupBoxConversionDetails.Name = "groupBoxConversionDetails";
-            this.groupBoxConversionDetails.Size = new System.Drawing.Size(206, 114);
+            this.groupBoxConversionDetails.Size = new System.Drawing.Size(194, 160);
             this.groupBoxConversionDetails.TabIndex = 6;
             this.groupBoxConversionDetails.TabStop = false;
             this.groupBoxConversionDetails.Text = "Conversion details :";
-            // 
-            // labelQueryVariable
-            // 
-            this.labelQueryVariable.AutoSize = true;
-            this.labelQueryVariable.Location = new System.Drawing.Point(12, 59);
-            this.labelQueryVariable.Name = "labelQueryVariable";
-            this.labelQueryVariable.Size = new System.Drawing.Size(110, 13);
-            this.labelQueryVariable.TabIndex = 16;
-            this.labelQueryVariable.Text = "Query variable name :";
-            // 
-            // labelCrmContext
-            // 
-            this.labelCrmContext.AutoSize = true;
-            this.labelCrmContext.Location = new System.Drawing.Point(12, 18);
-            this.labelCrmContext.Name = "labelCrmContext";
-            this.labelCrmContext.Size = new System.Drawing.Size(67, 13);
-            this.labelCrmContext.TabIndex = 15;
-            this.labelCrmContext.Text = "CrmContext :";
-            // 
-            // textBoxQueryVariable
-            // 
-            this.textBoxQueryVariable.Location = new System.Drawing.Point(12, 75);
-            this.textBoxQueryVariable.Name = "textBoxQueryVariable";
-            this.textBoxQueryVariable.Size = new System.Drawing.Size(182, 20);
-            this.textBoxQueryVariable.TabIndex = 20;
-            this.textBoxQueryVariable.Text = "query";
-            this.textBoxQueryVariable.TextChanged += new System.EventHandler(this.textBoxQueryVariable_TextChanged);
-            // 
-            // textBoxCrmContext
-            // 
-            this.textBoxCrmContext.Location = new System.Drawing.Point(12, 34);
-            this.textBoxCrmContext.Name = "textBoxCrmContext";
-            this.textBoxCrmContext.Size = new System.Drawing.Size(182, 20);
-            this.textBoxCrmContext.TabIndex = 17;
-            this.textBoxCrmContext.Text = "ServiceContext";
-            this.textBoxCrmContext.TextChanged += new System.EventHandler(this.textBoxCrmContext_TextChanged);
             // 
             // label2
             // 
@@ -291,6 +253,51 @@
             this.comboBoxInput.TabIndex = 0;
             this.comboBoxInput.TextChanged += new System.EventHandler(this.comboBoxInput_TextChanged);
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.labelQueryVariable);
+            this.flowLayoutPanel1.Controls.Add(this.textBoxQueryVariable);
+            this.flowLayoutPanel1.Controls.Add(this.labelCrmContext);
+            this.flowLayoutPanel1.Controls.Add(this.textBoxCrmContext);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(9, 19);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(179, 122);
+            this.flowLayoutPanel1.TabIndex = 0;
+            // 
+            // labelQueryVariable
+            // 
+            this.labelQueryVariable.AutoSize = true;
+            this.labelQueryVariable.Location = new System.Drawing.Point(3, 0);
+            this.labelQueryVariable.Name = "labelQueryVariable";
+            this.labelQueryVariable.Size = new System.Drawing.Size(110, 13);
+            this.labelQueryVariable.TabIndex = 31;
+            this.labelQueryVariable.Text = "Query variable name :";
+            // 
+            // textBoxQueryVariable
+            // 
+            this.textBoxQueryVariable.Location = new System.Drawing.Point(3, 16);
+            this.textBoxQueryVariable.Name = "textBoxQueryVariable";
+            this.textBoxQueryVariable.Size = new System.Drawing.Size(154, 20);
+            this.textBoxQueryVariable.TabIndex = 32;
+            this.textBoxQueryVariable.Text = "query";
+            // 
+            // labelCrmContext
+            // 
+            this.labelCrmContext.AutoSize = true;
+            this.labelCrmContext.Location = new System.Drawing.Point(3, 39);
+            this.labelCrmContext.Name = "labelCrmContext";
+            this.labelCrmContext.Size = new System.Drawing.Size(67, 13);
+            this.labelCrmContext.TabIndex = 33;
+            this.labelCrmContext.Text = "CrmContext :";
+            // 
+            // textBoxCrmContext
+            // 
+            this.textBoxCrmContext.Location = new System.Drawing.Point(3, 55);
+            this.textBoxCrmContext.Name = "textBoxCrmContext";
+            this.textBoxCrmContext.Size = new System.Drawing.Size(154, 20);
+            this.textBoxCrmContext.TabIndex = 34;
+            this.textBoxCrmContext.Text = "ServiceContext";
+            // 
             // QueryConverter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -308,7 +315,8 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBoxConversionDetails.ResumeLayout(false);
-            this.groupBoxConversionDetails.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -332,11 +340,11 @@
         private System.Windows.Forms.ToolStripButton toolStripButtonOptions;
 
         private System.Windows.Forms.GroupBox groupBoxConversionDetails;
-        private System.Windows.Forms.TextBox textBoxQueryVariable;
-        private System.Windows.Forms.TextBox textBoxCrmContext;
-        private System.Windows.Forms.Label labelQueryVariable;
-        private System.Windows.Forms.Label labelCrmContext;
         private System.Windows.Forms.ToolStripButton toolStripButtonOpenFXB;
-
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Label labelQueryVariable;
+        private System.Windows.Forms.TextBox textBoxQueryVariable;
+        private System.Windows.Forms.Label labelCrmContext;
+        private System.Windows.Forms.TextBox textBoxCrmContext;
     }
 }

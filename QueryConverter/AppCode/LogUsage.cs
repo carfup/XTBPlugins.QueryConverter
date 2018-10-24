@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 
-namespace Carfup.XTBPlugins.AppCode
+namespace Carfup.XTBPlugins.QueryConverter.AppCode
 {
     public class LogUsage
     {
@@ -13,14 +13,14 @@ namespace Carfup.XTBPlugins.AppCode
         private TelemetryClient telemetry = null;
         private bool forceLog { get; set; } = false;
 
-        private QueryConverter.QueryConverter qc = null;
-        public LogUsage(QueryConverter.QueryConverter qc)
+        private QueryConverter qc = null;
+        public LogUsage(QueryConverter qc)
         {
             this.qc = qc;
 
             TelemetryConfiguration.Active.InstrumentationKey = CustomParameter.INSIGHTS_INTRUMENTATIONKEY;
             this.telemetry = new TelemetryClient();
-            this.telemetry.Context.Component.Version = QueryConverter.QueryConverter.CurrentVersion;
+            this.telemetry.Context.Component.Version = QueryConverter.CurrentVersion;
             this.telemetry.Context.Device.Id = this.qc.GetType().Name;
             this.telemetry.Context.User.Id = Guid.NewGuid().ToString();
         }
@@ -67,7 +67,7 @@ namespace Carfup.XTBPlugins.AppCode
             {
                 { "plugin", telemetry.Context.Device.Id },
                 { "xtbversion", Assembly.GetEntryAssembly().GetName().Version.ToString() },
-                { "pluginversion", QueryConverter.QueryConverter.CurrentVersion }
+                { "pluginversion", QueryConverter.CurrentVersion }
             };
 
             if (action != null)

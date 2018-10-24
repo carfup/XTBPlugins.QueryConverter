@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Carfup.XTBPlugins.AppCode
+namespace Carfup.XTBPlugins.QueryConverter.AppCode
 {
     class CodeBeautifier
     {

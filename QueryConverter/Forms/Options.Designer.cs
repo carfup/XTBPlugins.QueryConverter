@@ -29,20 +29,19 @@
         private void InitializeComponent()
         {
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.comboBoxFavTheme = new System.Windows.Forms.ComboBox();
             this.bgStats = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.checkboxAllowStats = new System.Windows.Forms.CheckBox();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOk = new System.Windows.Forms.Button();
-            this.comboBoxFavTheme = new System.Windows.Forms.ComboBox();
             this.groupBox3.SuspendLayout();
             this.bgStats.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox3
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.AutoSize = true;
             this.groupBox3.Controls.Add(this.comboBoxFavTheme);
@@ -52,6 +51,42 @@
             this.groupBox3.TabIndex = 23;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Favorite Theme";
+            // 
+            // comboBoxFavTheme
+            // 
+            this.comboBoxFavTheme.FormattingEnabled = true;
+            this.comboBoxFavTheme.Items.AddRange(new object[] {
+            "chrome",
+            "clouds",
+            "crimson_editor",
+            "dawn",
+            "dreamweaver",
+            "eclipse",
+            "github",
+            "solarized_light",
+            "textmate",
+            "tomorrow",
+            "xcode",
+            "ambiance",
+            "chaos",
+            "clouds_midnight",
+            "cobalt",
+            "idle_fingers",
+            "kr_theme",
+            "merbivore",
+            "merbivore_soft",
+            "terminal",
+            "tomorrow_night",
+            "tomorrow_night_blue",
+            "tomorrow_night_bright",
+            "tomorrow_night_eighties",
+            "twilight",
+            "vibrant_ink"});
+            this.comboBoxFavTheme.Location = new System.Drawing.Point(11, 21);
+            this.comboBoxFavTheme.Name = "comboBoxFavTheme";
+            this.comboBoxFavTheme.Size = new System.Drawing.Size(155, 21);
+            this.comboBoxFavTheme.TabIndex = 0;
+            this.comboBoxFavTheme.TextChanged += new System.EventHandler(this.comboBoxFavTheme_TextChanged);
             // 
             // bgStats
             // 
@@ -114,42 +149,6 @@
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
             // 
-            // comboBoxFavTheme
-            // 
-            this.comboBoxFavTheme.FormattingEnabled = true;
-            this.comboBoxFavTheme.Items.AddRange(new object[] {
-            "chrome",
-            "clouds",
-            "crimson_editor",
-            "dawn",
-            "dreamweaver",
-            "eclipse",
-            "github",
-            "solarized_light",
-            "textmate",
-            "tomorrow",
-            "xcode",
-            "ambiance",
-            "chaos",
-            "clouds_midnight",
-            "cobalt",
-            "idle_fingers",
-            "kr_theme",
-            "merbivore",
-            "merbivore_soft",
-            "terminal",
-            "tomorrow_night",
-            "tomorrow_night_blue",
-            "tomorrow_night_bright",
-            "tomorrow_night_eighties",
-            "twilight",
-            "vibrant_ink"});
-            this.comboBoxFavTheme.Location = new System.Drawing.Point(11, 21);
-            this.comboBoxFavTheme.Name = "comboBoxFavTheme";
-            this.comboBoxFavTheme.Size = new System.Drawing.Size(155, 21);
-            this.comboBoxFavTheme.TabIndex = 0;
-            this.comboBoxFavTheme.TextChanged += new System.EventHandler(this.comboBoxFavTheme_TextChanged);
-            // 
             // Options
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -159,6 +158,8 @@
             this.Controls.Add(this.bgStats);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Options";
             this.ShowIcon = false;
             this.Text = "Options";

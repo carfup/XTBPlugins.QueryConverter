@@ -1,11 +1,11 @@
 ﻿using System.Windows.Forms;
 
-namespace Carfup.XTBPlugins.AppCode
+namespace Carfup.XTBPlugins.QueryConverter.AppCode
 {
     public class PluginSettings
     {
         public bool? AllowLogUsage { get; set; }
-        public string CurrentVersion { get; set; } = QueryConverter.QueryConverter.CurrentVersion;
+        public string CurrentVersion { get; set; } = QueryConverter.CurrentVersion;
         public string FavoriteTheme { get; set; } = "twilight";
     }
 

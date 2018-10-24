@@ -9,9 +9,9 @@ using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using Newtonsoft.Json.Linq;
 
-namespace Carfup.XTBPlugins.AppCode.Converters
+namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
 {
-    class WebApiTo
+    public class WebApiTo
     {
         static string entityName = null;
         static string columns = null;

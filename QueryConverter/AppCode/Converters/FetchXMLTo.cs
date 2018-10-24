@@ -7,9 +7,9 @@ using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 
-namespace Carfup.XTBPlugins.AppCode.Converters
+namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
 {
-    class FetchXMLTo
+    public class FetchXMLTo
     {
         public string entityName = null;
         public ConverterHelper converterHelper = null;

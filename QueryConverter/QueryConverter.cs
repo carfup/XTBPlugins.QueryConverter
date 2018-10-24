@@ -16,7 +16,7 @@ using Microsoft.Xrm.Sdk.Client;
 using System;
 using System.Diagnostics;
 using Microsoft.Xrm.Sdk.Messages;
-using Carfup.XTBPlugins.AppCode;
+using Carfup.XTBPlugins.QueryConverter.AppCode;
 using Microsoft.Crm.Sdk.Messages;
 using AceWinforms;
 using Carfup.XTBPlugins.Forms;

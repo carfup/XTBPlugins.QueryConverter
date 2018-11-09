@@ -10,8 +10,9 @@ using Test;
 namespace Carfup.XTBPlugins.Test
 {
     [TestClass]
-    public class ToWebApi
+    public class ToLinq
     {
+
         private CrmServiceClient crmSvc;
         private IOrganizationService service;
         private ConverterHelper converterHelper;
@@ -30,7 +31,7 @@ namespace Carfup.XTBPlugins.Test
         {
             var columnSet = new ColumnSet(true);
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageColumsetToWebApi(columnSet), "");
+            Assert.AreEqual(converterHelper.queryExpressionTo.ManageColumsetToLinq(columnSet), "");
         }
 
         [TestMethod]
@@ -38,7 +39,8 @@ namespace Carfup.XTBPlugins.Test
         {
             var columnSet = new ColumnSet("name", "opportunityid");
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageColumsetToWebApi(columnSet), "$select=name,opportunityid");
+            Assert.AreEqual(converterHelper.queryExpressionTo.ManageColumsetToLinq(columnSet),
+                $"{Environment.NewLine}.Select(col => new {{col.Name, col.OpportunityId}})");
         }
 
         [TestMethod]

@@ -90,7 +90,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         #region Linq
         public string ProcessToLinq(QueryExpression query)
         {
-            entityMetadata = LoadEntityMetadata(query.EntityName);
+            LoadEntityMetadata(query.EntityName);
             var entitySet = $"var {this.converterHelper.queryVariableName} = {this.converterHelper.serviceContextName}.{entityMetadata.SchemaName}Set";
             var conditions = ManageCriteriaLinq(query.Criteria);
             var columns = ManageColumsetToLinq(query.ColumnSet);
@@ -173,7 +173,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return conditionsString;
         }
 
-        private string ManageColumsetToLinq(ColumnSet columnSet)
+        public string ManageColumsetToLinq(ColumnSet columnSet)
         {
             var columns = "";
 
@@ -357,7 +357,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         }
         #endregion
 
-        private EntityMetadata LoadEntityMetadata(string entity)
+        public void LoadEntityMetadata(string entity)
         {
             var request = new RetrieveEntityRequest
             {
@@ -367,8 +367,8 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
 
             var attributesList = (RetrieveEntityResponse)this.converterHelper.service.Execute(request);
             if (attributesList != null)
-                return attributesList.EntityMetadata;
-            else return null;
+                entityMetadata = attributesList.EntityMetadata;
+            else entityMetadata = null;
         }
     }
 }

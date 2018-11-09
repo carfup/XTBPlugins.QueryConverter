@@ -10,7 +10,7 @@ using Test;
 namespace Carfup.XTBPlugins.QueryConverter.Test
 {
     [TestClass]
-    public class ToWebApi
+    public class ToQueryExpression
     {
         private CrmServiceClient crmSvc;
         private IOrganizationService service;

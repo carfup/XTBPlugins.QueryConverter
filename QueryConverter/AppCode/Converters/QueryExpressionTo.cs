@@ -94,12 +94,12 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             var entitySet = $"var {this.converterHelper.queryVariableName} = {this.converterHelper.serviceContextName}.{entityMetadata.SchemaName}Set";
             var conditions = ManageCriteriaLinq(query.Criteria);
             var columns = ManageColumsetToLinq(query.ColumnSet);
-            var order = ManageOrdersToLinq(query.Orders);
+            var order = ManageOrdersToLinq(query.Orders.ToList());
             var topCount = ManageTopCountToLinq(query.TopCount);
             return entitySet + conditions + columns + order + topCount + ";";
         }
 
-        private string ManageTopCountToLinq(int? topCount)
+        public string ManageTopCountToLinq(int? topCount)
         {
             var result = "";
             if (topCount != null)
@@ -193,7 +193,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return stringq;
         }
 
-        private string ManageOrdersToLinq(DataCollection<OrderExpression> ordersList)
+        public string ManageOrdersToLinq(List<OrderExpression> ordersList)
         {
             var orders = "";
 
@@ -216,7 +216,9 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
                     else if (order.OrderType == OrderType.Descending)
                         prefix = "ThenByDescending";
                 }
-                orders += $".{prefix}(ord => ord.Attributes[\"{order.AttributeName}\"])";
+
+                var attr = entityMetadata.Attributes.Where(xx => xx.LogicalName == order.AttributeName).Select(xx => xx.SchemaName).FirstOrDefault();
+                orders += $".{prefix}(ord => ord.{attr})";
             }
 
             return orders;

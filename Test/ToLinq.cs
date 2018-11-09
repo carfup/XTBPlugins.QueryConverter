@@ -4,10 +4,11 @@ using Carfup.XTBPlugins.QueryConverter.AppCode;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xrm.Tooling.Connector;
 using Test;
 
-namespace Carfup.XTBPlugins.Test
+namespace Carfup.XTBPlugins.QueryConverter.Test
 {
     [TestClass]
     public class ToLinq
@@ -50,7 +51,8 @@ namespace Carfup.XTBPlugins.Test
                 new OrderExpression("name", OrderType.Ascending)
             };
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageOrdersToWebApi(orderByAsc), "$orderby=name asc");
+            Assert.AreEqual(converterHelper.queryExpressionTo.ManageOrdersToLinq(orderByAsc), 
+                $"{Environment.NewLine}.OrderBy(ord => ord.Name)");
         }
 
         [TestMethod]
@@ -60,7 +62,8 @@ namespace Carfup.XTBPlugins.Test
                 new OrderExpression("name", OrderType.Descending)
             };
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageOrdersToWebApi(orderByDesc), "$orderby=name desc");
+            Assert.AreEqual(converterHelper.queryExpressionTo.ManageOrdersToLinq(orderByDesc),
+                $"{Environment.NewLine}.OrderByDescending(ord => ord.Name)");
         }
 
         [TestMethod]
@@ -71,7 +74,8 @@ namespace Carfup.XTBPlugins.Test
                 new OrderExpression("opportunityid", OrderType.Ascending),
             };
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageOrdersToWebApi(orderByAsc), "$orderby=name asc,opportunityid asc");
+            Assert.AreEqual(converterHelper.queryExpressionTo.ManageOrdersToLinq(orderByAsc),
+                $"{Environment.NewLine}.OrderBy(ord => ord.Name).ThenBy(ord => ord.OpportunityId)");
         }
 
         [TestMethod]
@@ -82,7 +86,8 @@ namespace Carfup.XTBPlugins.Test
                 new OrderExpression("opportunityid", OrderType.Descending)
             };
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageOrdersToWebApi(orderByDesc), "$orderby=name desc,opportunityid desc");
+            Assert.AreEqual(converterHelper.queryExpressionTo.ManageOrdersToLinq(orderByDesc),
+                $"{Environment.NewLine}.OrderByDescending(ord => ord.Name).ThenByDescending(ord => ord.OpportunityId)");
         }
 
         [TestMethod]
@@ -93,19 +98,20 @@ namespace Carfup.XTBPlugins.Test
                 new OrderExpression("opportunityid", OrderType.Ascending)
             };
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageOrdersToWebApi(orderByDesc), "$orderby=name desc,opportunityid asc");
+            Assert.AreEqual(converterHelper.queryExpressionTo.ManageOrdersToLinq(orderByDesc),
+                $"{Environment.NewLine}.OrderByDescending(ord => ord.Name).ThenBy(ord => ord.OpportunityId)");
         }
 
         [TestMethod]
         public void ShouldGetTopCountNull()
         {
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageTopCountToWebApi(null), "");
+            Assert.AreEqual(converterHelper.queryExpressionTo.ManageTopCountToLinq(null), "");
         }
 
         [TestMethod]
         public void ShouldGetTopCount()
         {
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageTopCountToWebApi(5), "$top=5");
+            Assert.AreEqual(converterHelper.queryExpressionTo.ManageTopCountToLinq(5), $"{Environment.NewLine}.Take(5)");
         }
 
         [TestMethod]
@@ -119,7 +125,8 @@ namespace Carfup.XTBPlugins.Test
                 }
             };
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageConditionsToWebApi(criteria, ""), "$filter=(name eq 'test')");
+            Assert.AreEqual(converterHelper.queryExpressionTo.ManageCriteriaLinq(criteria), 
+                $"{Environment.NewLine}.Where(w => (w.Name == \"test\"))");
         }
 
         [TestMethod]
@@ -134,7 +141,8 @@ namespace Carfup.XTBPlugins.Test
                 }
             };
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageConditionsToWebApi(criteria, ""), "$filter=(name eq 'test' and opportunityid eq 'guid')");
+            Assert.AreEqual(converterHelper.queryExpressionTo.ManageCriteriaLinq(criteria),
+                $"{Environment.NewLine}.Where(w => (w.Name == \"test\" && w.OpportunityId == \"guid\"))");
         }
 
         [TestMethod]
@@ -150,7 +158,8 @@ namespace Carfup.XTBPlugins.Test
                 FilterOperator = LogicalOperator.And
             };
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageConditionsToWebApi(criteria, ""), "$filter=(name eq 'test' and opportunityid eq 'guid')");
+            Assert.AreEqual(converterHelper.queryExpressionTo.ManageCriteriaLinq(criteria),
+                $"{Environment.NewLine}.Where(w => (w.Name == \"test\" && w.OpportunityId == \"guid\"))");
         }
 
         [TestMethod]
@@ -166,7 +175,8 @@ namespace Carfup.XTBPlugins.Test
                 FilterOperator = LogicalOperator.Or
             };
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageConditionsToWebApi(criteria, ""), "$filter=(name eq 'test' or opportunityid eq 'guid')");
+            Assert.AreEqual(converterHelper.queryExpressionTo.ManageCriteriaLinq(criteria),
+                $"{Environment.NewLine}.Where(w => (w.Name == \"test\" || w.OpportunityId == \"guid\"))");
         }
 
         [TestMethod]
@@ -197,7 +207,8 @@ namespace Carfup.XTBPlugins.Test
                 }
             };
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageConditionsToWebApi(query.Criteria, ""), "$filter=(name eq 'test' and opportunityid eq 'guid') and (name eq 'test' or opportunityid eq 'guid')");
+            Assert.AreEqual(converterHelper.queryExpressionTo.ManageCriteriaLinq(query.Criteria),
+                $"{Environment.NewLine}.Where(w => (w.Name == \"test\" && w.OpportunityId == \"guid\") && (w.Name == \"test\" || w.OpportunityId == \"guid\"))");
         }
     }
 }

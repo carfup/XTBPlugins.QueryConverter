@@ -98,6 +98,7 @@
   <ItemGroup>
     <Compile Include="PrivateFile.cs" />
     <Compile Include="ToLinq.cs" />
+    <Compile Include="ToQueryExpression.cs" />
     <Compile Include="ToWebApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

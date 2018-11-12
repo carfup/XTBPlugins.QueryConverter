@@ -210,7 +210,8 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
                 {
                     // Assuming we want an array here
                     var type = valuesList[0].GetType();
-                    if (type == typeof(int))
+                    var typeJValue = type == typeof(JValue) ? ((JValue) valuesList[0])?.Type : null;
+                    if (type == typeof(int) || typeJValue == JTokenType.Integer)
                     {
                         valueResult = String.Join(",", valuesList.ToArray());
                     }
@@ -222,10 +223,10 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
             }
             else
             {
-                var type = valuesList.FirstOrDefault()?.GetType();
-
+                var type = valuesList.FirstOrDefault().GetType();
+                var typeJValue = type == typeof(JValue) ? ((JValue)valuesList.FirstOrDefault())?.Type : null;
                 // If we have a int, no need of the double quotes
-                valueResult = (type == typeof(int)) ? valuesList.FirstOrDefault()?.ToString() : $"\"{valuesList.FirstOrDefault()}\"";
+                valueResult = (type == typeof(int) || typeJValue == JTokenType.Integer) ? valuesList.FirstOrDefault()?.ToString() : $"\"{valuesList.FirstOrDefault()}\"";
 
                 if (toType == "webapi")
                     valueResult = valueResult.Replace("\"", "'");

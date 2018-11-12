@@ -26,98 +26,95 @@ namespace Carfup.XTBPlugins.QueryConverter.Test
         }
 
         [TestMethod]
-        public void ShouldGetAllColumns()
+        public void ShouldGetAllColumnsFromWebApi()
         {
-            var columnSet = new ColumnSet(true);
+            var columns = "";
+            var columnsStar = "*";
+            string columnsNull = null;
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageColumsetToWebApi(columnSet), "");
+            Assert.AreEqual(converterHelper.webApiTo.ManageColumns(columns), "ColumnSet = new ColumnSet(true)");
+            Assert.AreEqual(converterHelper.webApiTo.ManageColumns(columnsStar), "ColumnSet = new ColumnSet(true)");
+            Assert.AreEqual(converterHelper.webApiTo.ManageColumns(columnsNull), "ColumnSet = new ColumnSet(true)");
         }
 
         [TestMethod]
         public void ShouldGetMultipleColumns()
         {
-            var columnSet = new ColumnSet("name", "opportunityid");
+            var columns = "name, opportunityid";
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageColumsetToWebApi(columnSet), "$select=name,opportunityid");
+            Assert.AreEqual(converterHelper.webApiTo.ManageColumns(columns), 
+                "ColumnSet = new ColumnSet(\"name\",\"opportunityid\")");
         }
 
         [TestMethod]
         public void ShouldGetSingleOrderByAsc()
         {
-            var orderByAsc = new List<OrderExpression>() {
-                new OrderExpression("name", OrderType.Ascending)
-            };
+            var orderByAsc = "orderby = name asc";
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageOrdersToWebApi(orderByAsc), "$orderby=name asc");
+            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(orderByAsc), 
+                "Orders = { new OrderExpression(\"name\", OrderType.Ascending)}");
         }
 
         [TestMethod]
         public void ShouldGetSingleOrderByDesc()
         {
-            var orderByDesc = new List<OrderExpression>() {
-                new OrderExpression("name", OrderType.Descending)
-            };
+            var orderByAsc = "orderby = name desc";
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageOrdersToWebApi(orderByDesc), "$orderby=name desc");
+            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(orderByAsc), 
+                "Orders = { new OrderExpression(\"name\", OrderType.Descending)}");
         }
 
         [TestMethod]
         public void ShouldGetMultipleOrderByAsc()
         {
-            var orderByAsc = new List<OrderExpression>() {
-                new OrderExpression("name", OrderType.Ascending),
-                new OrderExpression("opportunityid", OrderType.Ascending),
-            };
+            var orderByAsc = "orderby=name asc,opportunityid asc";
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageOrdersToWebApi(orderByAsc), "$orderby=name asc,opportunityid asc");
+            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(orderByAsc), 
+                "Orders = {new OrderExpression(\"name\", OrderType.Ascending),new OrderExpression(\"opportunityid\", OrderType.Ascending)}");
         }
 
         [TestMethod]
         public void ShouldGetMultipleOrderByDesc()
         {
-            var orderByDesc = new List<OrderExpression>() {
-                new OrderExpression("name", OrderType.Descending),
-                new OrderExpression("opportunityid", OrderType.Descending)
-            };
+            var orderByDesc = "orderby=name desc,opportunityid desc";
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageOrdersToWebApi(orderByDesc), "$orderby=name desc,opportunityid desc");
+            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(orderByDesc),
+                "Orders = {new OrderExpression(\"name\", OrderType.Descending),new OrderExpression(\"opportunityid\", OrderType.Descending)}");
         }
 
         [TestMethod]
         public void ShouldGetMultipleOrderByMix()
         {
-            var orderByDesc = new List<OrderExpression>() {
-                new OrderExpression("name", OrderType.Descending),
-                new OrderExpression("opportunityid", OrderType.Ascending)
-            };
+            var orderByDesc = "orderby=name asc,opportunityid desc";
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageOrdersToWebApi(orderByDesc), "$orderby=name desc,opportunityid asc");
+            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(orderByDesc),
+                "Orders = {new OrderExpression(\"name\", OrderType.Ascending),new OrderExpression(\"opportunityid\", OrderType.Descending)}");
         }
 
         [TestMethod]
         public void ShouldGetTopCountNull()
         {
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageTopCountToWebApi(null), "");
+            Assert.AreEqual(converterHelper.webApiTo.ManageTopCount(null), "");
+            Assert.AreEqual(converterHelper.webApiTo.ManageTopCount(""), "");
         }
 
         [TestMethod]
         public void ShouldGetTopCount()
         {
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageTopCountToWebApi(5), "$top=5");
+            Assert.AreEqual(converterHelper.webApiTo.ManageTopCount("5"), "TopCount = 5");
         }
 
+
+        /// <summary>
+        ///  TO COMPLETE FROM HERE
+        /// </summary>
         [TestMethod]
         public void ShouldGetSingleCondition()
         {
-            var criteria = new FilterExpression
-            {
-                Conditions =
-                {
-                    new ConditionExpression("name", ConditionOperator.Equal, "test"),
-                }
-            };
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageConditionsToWebApi(criteria, ""), "$filter=(name eq 'test')");
+            var criteria = "filter = (name eq 'test')";
+            
+            Assert.AreEqual(converterHelper.webApiTo.ManageFilters(criteria), "$filter=(name eq 'test')");
         }
 
         [TestMethod]

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -80,20 +81,16 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             //stringq += $"Distinct = {query.Distinct.ToString().ToLower()}";
 
             // Manage columnset
-            if (columns == null)
-            {
-                columns = $", ColumnSet = new ColumSet(true)";
-            }
-            stringq += columns;
+            stringq += columns != null ? $", {columns}" : "";
 
             // Criteria
-            stringq += filters;
+            stringq += filters != null ? $", {filters}" : ""; ;
 
             //order
-            stringq += orders;
+            stringq += orders != null ? $", {orders}" : ""; ;
 
             //top
-            stringq += topCount;
+            stringq += topCount != null ? $", {topCount}" : "";
 
             // Linkentities
             //stringq += manageLinkEntities(query.LinkEntities);
@@ -103,12 +100,12 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return stringq;
         }
 
-        private string ManageTopCount(string top)
+        public string ManageTopCount(string top)
         {
             var topCount = "";
-
+            
             if (top != null || top != "")
-                topCount = $", TopCount = {top}";
+                topCount = $"TopCount = {top}";
 
             return topCount;
         }
@@ -122,7 +119,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             if (filtersCount == 0)
                 return orders;
 
-            orders += $", Orders = {{";
+            orders += $"Orders = {{";
 
             List<string> orderExpressions = new List<string>();
             foreach (var order in ordersList.Split(','))
@@ -136,25 +133,21 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
 
             orders += String.Join($",", orderExpressions);
 
-            orders += "} ";
+            orders += "}";
 
             return orders;
         }
-        public static string ManageColumns(string columnsList)
+        public string ManageColumns(string columnsList)
         {
             var columns = "";
-            var columnsCount = columnsList.Split(',').Count();
-            if (columnsCount == 0)
+ 
+            var columnsCount = columnsList?.Split(',').Count() ?? 0;
+            if (columnsCount == 0 || columnsList == null || columnsList == "" || columnsList == "*")
                 columns = "true";
+            else if (columnsCount > 0)
+                columns = columnsCount > 1 ? string.Join(",", columnsList.Split(',').Select(x => string.Format("\"{0}\"", x)).ToList()) : $"{columnsList}";
 
-            if (columnsCount > 0)
-                columns = columnsList.Split(',').Count() > 1 ? string.Join(",", columnsList.Split(',').Select(x => string.Format("\"{0}\"", x)).ToList()) : columns;
-
-            var stringq = "ColumnSet";
-            stringq += $" = new ColumnSet({columns})";
-
-            if (stringq != "")
-                stringq = $", {stringq}";
+            var stringq = $"ColumnSet = new ColumnSet({columns})";
 
             return stringq;
         }
@@ -168,7 +161,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             if (filtersCount == 0)
                 return conditionsString;
 
-            conditionsString += $", Criteria = {{ Filters = {{";
+            conditionsString += $"Criteria = {{ Filters = {{";
 
             List<string> conditionExpressions = new List<string>();
 

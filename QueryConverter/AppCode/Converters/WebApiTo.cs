@@ -104,7 +104,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         {
             var topCount = "";
             
-            if (top != null || top != "")
+            if (top != null && top != "")
                 topCount = $"TopCount = {top}";
 
             return topCount;
@@ -119,7 +119,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             if (filtersCount == 0)
                 return orders;
 
-            orders += $"Orders = {{";
+            orders += "Orders = { ";
 
             List<string> orderExpressions = new List<string>();
             foreach (var order in ordersList.Split(','))
@@ -145,7 +145,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             if (columnsCount == 0 || columnsList == null || columnsList == "" || columnsList == "*")
                 columns = "true";
             else if (columnsCount > 0)
-                columns = columnsCount > 1 ? string.Join(",", columnsList.Split(',').Select(x => string.Format("\"{0}\"", x)).ToList()) : $"{columnsList}";
+                columns = columnsCount > 1 ? string.Join(",", columnsList.Split(',').Select(x => $"\"{x.Trim()}\"").ToList()) : $"{columnsList}";
 
             var stringq = $"ColumnSet = new ColumnSet({columns})";
 
@@ -161,7 +161,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             if (filtersCount == 0)
                 return conditionsString;
 
-            conditionsString += $"Criteria = {{ Filters = {{";
+            conditionsString += "Criteria = { Filters = { ";
 
             List<string> conditionExpressions = new List<string>();
 
@@ -175,8 +175,8 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
                 conditionExpressions = new List<string>();
 
                 conditionsString += i == 0
-                    ? "new FilterExpression { Conditions = {"
-                    : ", new FilterExpression { Conditions = {";
+                    ? "new FilterExpression { Conditions = { "
+                    : ", new FilterExpression { Conditions = { ";
 
                 var groupType = "And";
                 var subGroupAnd = group.Split(new string[] {" and "}, StringSplitOptions.None);
@@ -243,10 +243,10 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
                 }
 
                 conditionsString += String.Join($",", conditionExpressions);
-                conditionsString = $"{conditionsString} }} ,FilterOperator = LogicalOperator.{groupType} }}";
+                conditionsString = $"{conditionsString} }}, FilterOperator = LogicalOperator.{groupType}}}";
             }
 
-            conditionsString += "} }";
+            conditionsString += "}}";
 
             return conditionsString;
         }

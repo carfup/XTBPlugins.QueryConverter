@@ -38,7 +38,7 @@ namespace Carfup.XTBPlugins.QueryConverter.Test
         }
 
         [TestMethod]
-        public void ShouldGetMultipleColumns()
+        public void ShouldGetMultipleColumnsFromWebApi()
         {
             var columns = "name, opportunityid";
 
@@ -47,59 +47,64 @@ namespace Carfup.XTBPlugins.QueryConverter.Test
         }
 
         [TestMethod]
-        public void ShouldGetSingleOrderByAsc()
+        public void ShouldGetSingleOrderByAscFromWebApi()
         {
-            var orderByAsc = "orderby = name asc";
+            var orderByAsc = "orderby=name asc";
+            var dunno = orderByAsc.Split('=');
 
-            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(orderByAsc), 
+            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(dunno[1]), 
                 "Orders = { new OrderExpression(\"name\", OrderType.Ascending)}");
         }
 
         [TestMethod]
-        public void ShouldGetSingleOrderByDesc()
+        public void ShouldGetSingleOrderByDescFromWebApi()
         {
-            var orderByAsc = "orderby = name desc";
+            var orderByAsc = "orderby=name desc";
+            var dunno = orderByAsc.Split('=');
 
-            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(orderByAsc), 
+            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(dunno[1]), 
                 "Orders = { new OrderExpression(\"name\", OrderType.Descending)}");
         }
 
         [TestMethod]
-        public void ShouldGetMultipleOrderByAsc()
+        public void ShouldGetMultipleOrderByAscFromWebApi()
         {
             var orderByAsc = "orderby=name asc,opportunityid asc";
+            var dunno = orderByAsc.Split('=');
 
-            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(orderByAsc), 
-                "Orders = {new OrderExpression(\"name\", OrderType.Ascending),new OrderExpression(\"opportunityid\", OrderType.Ascending)}");
+            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(dunno[1]), 
+                "Orders = { new OrderExpression(\"name\", OrderType.Ascending),new OrderExpression(\"opportunityid\", OrderType.Ascending)}");
         }
 
         [TestMethod]
-        public void ShouldGetMultipleOrderByDesc()
+        public void ShouldGetMultipleOrderByDescFromWebApi()
         {
             var orderByDesc = "orderby=name desc,opportunityid desc";
+            var dunno = orderByDesc.Split('=');
 
-            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(orderByDesc),
-                "Orders = {new OrderExpression(\"name\", OrderType.Descending),new OrderExpression(\"opportunityid\", OrderType.Descending)}");
+            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(dunno[1]),
+                "Orders = { new OrderExpression(\"name\", OrderType.Descending),new OrderExpression(\"opportunityid\", OrderType.Descending)}");
         }
 
         [TestMethod]
-        public void ShouldGetMultipleOrderByMix()
+        public void ShouldGetMultipleOrderByMixFromWebApi()
         {
             var orderByDesc = "orderby=name asc,opportunityid desc";
+            var dunno = orderByDesc.Split('=');
 
-            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(orderByDesc),
-                "Orders = {new OrderExpression(\"name\", OrderType.Ascending),new OrderExpression(\"opportunityid\", OrderType.Descending)}");
+            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(dunno[1]),
+                "Orders = { new OrderExpression(\"name\", OrderType.Ascending),new OrderExpression(\"opportunityid\", OrderType.Descending)}");
         }
 
         [TestMethod]
-        public void ShouldGetTopCountNull()
+        public void ShouldGetTopCountNullFromWebApi()
         {
             Assert.AreEqual(converterHelper.webApiTo.ManageTopCount(null), "");
             Assert.AreEqual(converterHelper.webApiTo.ManageTopCount(""), "");
         }
 
         [TestMethod]
-        public void ShouldGetTopCount()
+        public void ShouldGetTopCountFromWebApi()
         {
             Assert.AreEqual(converterHelper.webApiTo.ManageTopCount("5"), "TopCount = 5");
         }
@@ -109,90 +114,53 @@ namespace Carfup.XTBPlugins.QueryConverter.Test
         ///  TO COMPLETE FROM HERE
         /// </summary>
         [TestMethod]
-        public void ShouldGetSingleCondition()
+        public void ShouldGetSingleConditionFromWebApi()
         {
+            var criteria = "filter=(name eq 'test')";
+            var dunno = criteria.Split('=');
 
-            var criteria = "filter = (name eq 'test')";
-            
-            Assert.AreEqual(converterHelper.webApiTo.ManageFilters(criteria), "$filter=(name eq 'test')");
+            Assert.AreEqual(converterHelper.webApiTo.ManageFilters(dunno[1]), 
+                "Criteria = { Filters = { new FilterExpression { Conditions = { new ConditionExpression(\"name\", ConditionOperator.Equal, \"test\") }, FilterOperator = LogicalOperator.And}}}");
         }
 
         [TestMethod]
-        public void ShouldGetMultipleConditions()
+        public void ShouldGetMultipleConditionsFromWebApi()
         {
-            var criteria = new FilterExpression
-            {
-                Conditions =
-                {
-                    new ConditionExpression("name", ConditionOperator.Equal, "test"),
-                    new ConditionExpression("opportunityid", ConditionOperator.Equal, "guid")
-                }
-            };
+            var criteria = "filter=(name eq 'test' and opportunity eq 'guid')";
+            var dunno = criteria.Split('=');
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageConditionsToWebApi(criteria, ""), "$filter=(name eq 'test' and opportunityid eq 'guid')");
+            Assert.AreEqual(converterHelper.webApiTo.ManageFilters(dunno[1]),
+                "Criteria = { Filters = { new FilterExpression { Conditions = { new ConditionExpression(\"name\", ConditionOperator.Equal, \"test\"),new ConditionExpression(\"opportunity\", ConditionOperator.Equal, \"guid\") }, FilterOperator = LogicalOperator.And}}}");
         }
 
         [TestMethod]
-        public void ShouldGetMultipleAndConditions()
+        public void ShouldGetMultipleAndConditionsFromWebApi()
         {
-            var criteria = new FilterExpression
-            {
-                Conditions =
-                {
-                    new ConditionExpression("name", ConditionOperator.Equal, "test"),
-                    new ConditionExpression("opportunityid", ConditionOperator.Equal, "guid")
-                },
-                FilterOperator = LogicalOperator.And
-            };
+            var criteria = "filter=(name eq 'test' and opportunity eq 'guid')";
+            var dunno = criteria.Split('=');
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageConditionsToWebApi(criteria, ""), "$filter=(name eq 'test' and opportunityid eq 'guid')");
+            Assert.AreEqual(converterHelper.webApiTo.ManageFilters(dunno[1]),
+                "Criteria = { Filters = { new FilterExpression { Conditions = { new ConditionExpression(\"name\", ConditionOperator.Equal, \"test\"),new ConditionExpression(\"opportunity\", ConditionOperator.Equal, \"guid\") }, FilterOperator = LogicalOperator.And}}}");
         }
 
         [TestMethod]
-        public void ShouldGetMultipleOrConditions()
+        public void ShouldGetMultipleOrConditionsFromWebApi()
         {
-            var criteria = new FilterExpression
-            {
-                Conditions =
-                {
-                    new ConditionExpression("name", ConditionOperator.Equal, "test"),
-                    new ConditionExpression("opportunityid", ConditionOperator.Equal, "guid"),
-                },
-                FilterOperator = LogicalOperator.Or
-            };
+            var criteria = "filter=(name eq 'test' or opportunity eq 'guid')";
+            var dunno = criteria.Split('=');
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageConditionsToWebApi(criteria, ""), "$filter=(name eq 'test' or opportunityid eq 'guid')");
+            Assert.AreEqual(converterHelper.webApiTo.ManageFilters(dunno[1]),
+                "Criteria = { Filters = { new FilterExpression { Conditions = { new ConditionExpression(\"name\", ConditionOperator.Equal, \"test\"),new ConditionExpression(\"opportunity\", ConditionOperator.Equal, \"guid\") }, FilterOperator = LogicalOperator.Or}}}");
         }
 
         [TestMethod]
-        public void ShouldGetMultipleAndOrConditions()
+        public void ShouldGetMultipleAndOrConditionsFromWebApi()
         {
-            QueryExpression query = new QueryExpression()
-            {
-                EntityName = "contact",
-                Distinct = false,
-                ColumnSet = new ColumnSet("fullname", "address1_telephone1"),
-                Criteria = {
-                    Filters = {
-                        new FilterExpression {
-                            FilterOperator = LogicalOperator.And,
-                            Conditions = {
-                                new ConditionExpression("name", ConditionOperator.Equal, "test"),
-                                new ConditionExpression("opportunityid", ConditionOperator.Equal, "guid"),
-                            }
-                        },
-                        new FilterExpression {
-                            FilterOperator = LogicalOperator.Or,
-                            Conditions = {
-                                new ConditionExpression("name", ConditionOperator.Equal, "test"),
-                                new ConditionExpression("opportunityid", ConditionOperator.Equal, "guid"),
-                            }
-                        }
-                    }
-                }
-            };
+            var criteria = "filter=(name eq 'test' and opportunity eq 'guid') and (name eq 'test' or opportunity eq 'guid')";
+            var dunno = criteria.Split('=');
 
-            Assert.AreEqual(converterHelper.queryExpressionTo.ManageConditionsToWebApi(query.Criteria, ""), "$filter=(name eq 'test' and opportunityid eq 'guid') and (name eq 'test' or opportunityid eq 'guid')");
+            Assert.AreEqual(converterHelper.webApiTo.ManageFilters(dunno[1]),
+                "Criteria = { Filters = { new FilterExpression { Conditions = { new ConditionExpression(\"name\", ConditionOperator.Equal, \"test\"),new ConditionExpression(\"opportunity\", ConditionOperator.Equal, \"guid\") }, FilterOperator = LogicalOperator.And}, new FilterExpression { Conditions = { new ConditionExpression(\"name\", ConditionOperator.Equal, \"test\"),new ConditionExpression(\"opportunity\", ConditionOperator.Equal, \"guid\") }, FilterOperator = LogicalOperator.Or}}}");
         }
     }
 }

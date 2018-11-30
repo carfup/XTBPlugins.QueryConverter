@@ -252,4 +252,4 @@ paket-files/
 *.sln.iml
 
 # private file to exclude
-/Test/PrivateFile.cs
+*PrivateFile.cs

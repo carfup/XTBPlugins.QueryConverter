@@ -1,13 +1,10 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Carfup.XTBPlugins.QueryConverter.AppCode;
-using Microsoft.Xrm.Sdk.Query;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
-using System.Collections.Generic;
 using Microsoft.Xrm.Tooling.Connector;
-using Test;
 
-namespace Carfup.XTBPlugins.QueryConverter.Test
+namespace Carfup.XTBPlugins.QueryConverter.UnitTest
 {
     [TestClass]
     public class ToQueryExpression
@@ -42,7 +39,7 @@ namespace Carfup.XTBPlugins.QueryConverter.Test
         {
             var columns = "name, opportunityid";
 
-            Assert.AreEqual(converterHelper.webApiTo.ManageColumns(columns), 
+            Assert.AreEqual(converterHelper.webApiTo.ManageColumns(columns),
                 "ColumnSet = new ColumnSet(\"name\",\"opportunityid\")");
         }
 
@@ -52,7 +49,7 @@ namespace Carfup.XTBPlugins.QueryConverter.Test
             var orderByAsc = "orderby=name asc";
             var dunno = orderByAsc.Split('=');
 
-            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(dunno[1]), 
+            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(dunno[1]),
                 "Orders = { new OrderExpression(\"name\", OrderType.Ascending)}");
         }
 
@@ -62,7 +59,7 @@ namespace Carfup.XTBPlugins.QueryConverter.Test
             var orderByAsc = "orderby=name desc";
             var dunno = orderByAsc.Split('=');
 
-            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(dunno[1]), 
+            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(dunno[1]),
                 "Orders = { new OrderExpression(\"name\", OrderType.Descending)}");
         }
 
@@ -72,7 +69,7 @@ namespace Carfup.XTBPlugins.QueryConverter.Test
             var orderByAsc = "orderby=name asc,opportunityid asc";
             var dunno = orderByAsc.Split('=');
 
-            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(dunno[1]), 
+            Assert.AreEqual(converterHelper.webApiTo.ManagerOrders(dunno[1]),
                 "Orders = { new OrderExpression(\"name\", OrderType.Ascending),new OrderExpression(\"opportunityid\", OrderType.Ascending)}");
         }
 
@@ -119,7 +116,7 @@ namespace Carfup.XTBPlugins.QueryConverter.Test
             var criteria = "filter=(name eq 'test')";
             var dunno = criteria.Split('=');
 
-            Assert.AreEqual(converterHelper.webApiTo.ManageFilters(dunno[1]), 
+            Assert.AreEqual(converterHelper.webApiTo.ManageFilters(dunno[1]),
                 "Criteria = { Filters = { new FilterExpression { Conditions = { new ConditionExpression(\"name\", ConditionOperator.Equal, \"test\") }, FilterOperator = LogicalOperator.And}}}");
         }
 

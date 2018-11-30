@@ -6,9 +6,8 @@ using Microsoft.Xrm.Sdk;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xrm.Tooling.Connector;
-using Test;
 
-namespace Carfup.XTBPlugins.QueryConverter.Test
+namespace Carfup.XTBPlugins.QueryConverter.UnitTest
 {
     [TestClass]
     public class ToLinq

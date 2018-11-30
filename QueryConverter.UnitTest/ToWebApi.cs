@@ -5,9 +5,8 @@ using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk;
 using System.Collections.Generic;
 using Microsoft.Xrm.Tooling.Connector;
-using Test;
 
-namespace Carfup.XTBPlugins.QueryConverter.Test
+namespace Carfup.XTBPlugins.QueryConverter.UnitTest
 {
     [TestClass]
     public class ToWebApi

@@ -4,13 +4,25 @@ using Carfup.XTBPlugins.QueryConverter.AppCode;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk;
 using System.Collections.Generic;
+using Microsoft.Xrm.Tooling.Connector;
 
-namespace Carfup.XTBPlugins.Test
+namespace Carfup.XTBPlugins.QueryConverter.UnitTest
 {
     [TestClass]
     public class ToWebApi
     {
-       ConverterHelper converterHelper = new ConverterHelper(null);
+        private CrmServiceClient crmSvc;
+        private IOrganizationService service;
+        private ConverterHelper converterHelper;
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            crmSvc = new CrmServiceClient(PrivateFile.connectionString);
+            service = (IOrganizationService)crmSvc.OrganizationWebProxyClient != null ? (IOrganizationService)crmSvc.OrganizationWebProxyClient : (IOrganizationService)crmSvc.OrganizationServiceProxy;
+            converterHelper = new ConverterHelper(service);
+            converterHelper.queryExpressionTo.LoadEntityMetadata("opportunity");
+        }
 
         [TestMethod]
         public void ShouldGetAllColumns()

@@ -20,7 +20,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
 
     public static class CustomParameter
     {
-        public static string INSIGHTS_INTRUMENTATIONKEY = "INSIGHTS_INTRUMENTATIONKEY_TOREPLACE";
+        public static string INSIGHTS_INTRUMENTATIONKEY = PrivateFile.applicationInsightsKey;
     }
 
     // EventType to qualify which action was performed by the plugin

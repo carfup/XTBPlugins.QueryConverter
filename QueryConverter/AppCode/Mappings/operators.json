@@ -4,7 +4,7 @@
     {
       "queryexpression": {
         "operator": "Above",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.Above",
@@ -14,7 +14,7 @@
     {
       "queryexpression": {
         "operator": "AboveOrEqual",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.AboveOrEqual",
@@ -24,7 +24,7 @@
     {
       "queryexpression": {
         "operator": "BeginsWith",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "startswith",
@@ -39,7 +39,7 @@
     {
       "queryexpression": {
         "operator": "Between",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.Between",
@@ -49,7 +49,7 @@
     {
       "queryexpression": {
         "operator": "DoesNotBeginWith",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "not startswith",
@@ -63,7 +63,7 @@
     {
       "queryexpression": {
         "operator": "DoesNotContain",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "not contains",
@@ -77,7 +77,7 @@
     {
       "queryexpression": {
         "operator": "DoesNotEndWith",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "not endswith",
@@ -92,7 +92,7 @@
     {
       "queryexpression": {
         "operator": "EndsWith",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "endswith",
@@ -107,7 +107,7 @@
     {
       "queryexpression": {
         "operator": "Equal",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "eq",
@@ -121,7 +121,7 @@
     {
       "queryexpression": {
         "operator": "EqualBusinessId",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.EqualBusinessId",
@@ -131,7 +131,7 @@
     {
       "queryexpression": {
         "operator": "EqualUserId",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.EqualUserId",
@@ -141,7 +141,7 @@
     {
       "queryexpression": {
         "operator": "EqualUserLanguage",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.EqualUserLanguage",
@@ -151,7 +151,7 @@
     {
       "queryexpression": {
         "operator": "EqualUserOrUserHierarchy",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.EqualUserOrUserHierarchy",
@@ -161,7 +161,7 @@
     {
       "queryexpression": {
         "operator": "EqualUserOrUserHierarchyAndTeams",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.EqualUserOrUserHierarchyAndTeams",
@@ -171,7 +171,7 @@
     {
       "queryexpression": {
         "operator": "EqualUserOrUserTeams",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.EqualUserOrUserTeams",
@@ -181,7 +181,7 @@
     {
       "queryexpression": {
         "operator": "EqualUserTeams",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.EqualUserTeams",
@@ -191,7 +191,7 @@
     {
       "queryexpression": {
         "operator": "GreaterEqual",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "ge",
@@ -205,7 +205,7 @@
     {
       "queryexpression": {
         "operator": "GreaterThan",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "gt",
@@ -219,7 +219,7 @@
     {
       "queryexpression": {
         "operator": "In",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, new object[] { {value} }"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, new object[] { {value} }"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.In",
@@ -233,7 +233,7 @@
     {
       "queryexpression": {
         "operator": "InFiscalPeriod",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.InFiscalPeriod",
@@ -243,7 +243,7 @@
     {
       "queryexpression": {
         "operator": "InFiscalYear",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.InFiscalYear",
@@ -253,7 +253,7 @@
     {
       "queryexpression": {
         "operator": "Last7Days",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.Last7Days",
@@ -263,7 +263,7 @@
     {
       "queryexpression": {
         "operator": "LastFiscalPeriod",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.LastFiscalPeriod",
@@ -273,7 +273,7 @@
     {
       "queryexpression": {
         "operator": "LastFiscalYear",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.LastFiscalYear",
@@ -283,7 +283,7 @@
     {
       "queryexpression": {
         "operator": "LastMonth",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.LastMonth",
@@ -293,7 +293,7 @@
     {
       "queryexpression": {
         "operator": "LastWeek",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.LastWeek",
@@ -303,7 +303,7 @@
     {
       "queryexpression": {
         "operator": "LastXDays",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.LastXDays",
@@ -313,7 +313,7 @@
     {
       "queryexpression": {
         "operator": "LastXFiscalPeriods",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.LastXFiscalPeriods",
@@ -323,7 +323,7 @@
     {
       "queryexpression": {
         "operator": "LastXFiscalYears",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.LastXFiscalYears",
@@ -333,7 +333,7 @@
     {
       "queryexpression": {
         "operator": "LastXHours",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.LastXHours",
@@ -343,7 +343,7 @@
     {
       "queryexpression": {
         "operator": "LastXMonths",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.LastXMonths",
@@ -353,7 +353,7 @@
     {
       "queryexpression": {
         "operator": "LastXWeeks",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.LastXWeeks",
@@ -363,7 +363,7 @@
     {
       "queryexpression": {
         "operator": "LastXYears",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.LastXYears",
@@ -373,7 +373,7 @@
     {
       "queryexpression": {
         "operator": "LastYear",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.LastYear",
@@ -383,7 +383,7 @@
     {
       "queryexpression": {
         "operator": "LessEqual",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "le",
@@ -397,7 +397,7 @@
     {
       "queryexpression": {
         "operator": "LessThan",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "lt",
@@ -411,7 +411,7 @@
     {
       "queryexpression": {
         "operator": "Like",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}",
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}",
         "valuepattern": "^%(.*)%$"
       },
       "webapi": {
@@ -427,7 +427,7 @@
     {
       "queryexpression": {
         "operator": "Like",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}",
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}",
         "valuepattern": "(.*)%$"
       },
       "webapi": {
@@ -443,7 +443,7 @@
     {
       "queryexpression": {
         "operator": "Like",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}",
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}",
         "valuepattern": "^%(.*)"
       },
       "webapi": {
@@ -458,7 +458,7 @@
     {
       "queryexpression": {
         "operator": "Next7Days",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.Next7Days",
@@ -468,7 +468,7 @@
     {
       "queryexpression": {
         "operator": "NextFiscalPeriod",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextFiscalPeriod",
@@ -478,7 +478,7 @@
     {
       "queryexpression": {
         "operator": "NextFiscalYear",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextFiscalYear",
@@ -488,7 +488,7 @@
     {
       "queryexpression": {
         "operator": "NextMonth",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextMonth",
@@ -498,7 +498,7 @@
     {
       "queryexpression": {
         "operator": "NextWeek",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextWeek",
@@ -508,7 +508,7 @@
     {
       "queryexpression": {
         "operator": "NextXDays",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextXDays",
@@ -518,7 +518,7 @@
     {
       "queryexpression": {
         "operator": "NextXFiscalPeriods",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextXFiscalPeriods",
@@ -528,7 +528,7 @@
     {
       "queryexpression": {
         "operator": "NextXFiscalYears",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextXFiscalYears",
@@ -538,7 +538,7 @@
     {
       "queryexpression": {
         "operator": "NextXHours",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextXHours",
@@ -548,7 +548,7 @@
     {
       "queryexpression": {
         "operator": "NextXMonths",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextXMonths",
@@ -558,7 +558,7 @@
     {
       "queryexpression": {
         "operator": "NextXWeeks",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextXWeeks",
@@ -568,7 +568,7 @@
     {
       "queryexpression": {
         "operator": "NextXYears",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextXYears",
@@ -578,7 +578,7 @@
     {
       "queryexpression": {
         "operator": "NextYear",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextYear",
@@ -588,7 +588,7 @@
     {
       "queryexpression": {
         "operator": "NextXYears",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextXYears",
@@ -598,7 +598,7 @@
     {
       "queryexpression": {
         "operator": "NotEqual",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "ne",
@@ -612,7 +612,7 @@
     {
       "queryexpression": {
         "operator": "NotEqualBusinessId",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NotEqualBusinessId",
@@ -622,7 +622,7 @@
     {
       "queryexpression": {
         "operator": "NotEqualUserId",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NotEqualUserId",
@@ -632,7 +632,7 @@
     {
       "queryexpression": {
         "operator": "NotIn",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, new object[] { {value} }"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, new object[] { {value} }"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NotIn",
@@ -646,7 +646,7 @@
     {
       "queryexpression": {
         "operator": "NotLike",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}",
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}",
         "valuepattern": "^%(.*)%$"
       },
       "webapi": {
@@ -661,7 +661,7 @@
     {
       "queryexpression": {
         "operator": "NotLike",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}",
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}",
         "valuepattern": "(.*)%$"
       },
       "webapi": {
@@ -677,7 +677,7 @@
     {
       "queryexpression": {
         "operator": "NotLike",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}",
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}",
         "valuepattern": "^%(.*)"
       },
       "webapi": {
@@ -692,7 +692,7 @@
     {
       "queryexpression": {
         "operator": "NotNull",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "ne null",
@@ -710,7 +710,7 @@
     {
       "queryexpression": {
         "operator": "NotUnder",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator},  {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator},  {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NotUnder",
@@ -720,7 +720,7 @@
     {
       "queryexpression": {
         "operator": "Null",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "eq null",
@@ -734,7 +734,7 @@
     {
       "queryexpression": {
         "operator": "OlderThanXDays",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.OlderThanXDays",
@@ -754,7 +754,7 @@
     {
       "queryexpression": {
         "operator": "OlderThanXMinutes",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.OlderThanXMinutes",
@@ -764,7 +764,7 @@
     {
       "queryexpression": {
         "operator": "OlderThanXMonths",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.OlderThanXMonths",
@@ -774,7 +774,7 @@
     {
       "queryexpression": {
         "operator": "OlderThanXWeeks",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.OlderThanXWeeks",
@@ -784,7 +784,7 @@
     {
       "queryexpression": {
         "operator": "OlderThanXYears",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.OlderThanXYears",
@@ -794,7 +794,7 @@
     {
       "queryexpression": {
         "operator": "On",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.On",
@@ -804,7 +804,7 @@
     {
       "queryexpression": {
         "operator": "OnOrAfter",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}, {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.OnOrAfter",
@@ -814,7 +814,7 @@
     {
       "queryexpression": {
         "operator": "ThisFiscalPeriod",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.ThisFiscalPeriod",
@@ -824,7 +824,7 @@
     {
       "queryexpression": {
         "operator": "ThisMonth",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.ThisMonth",
@@ -834,7 +834,7 @@
     {
       "queryexpression": {
         "operator": "ThisWeek",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.ThisWeek",
@@ -844,7 +844,7 @@
     {
       "queryexpression": {
         "operator": "ThisYear",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.ThisYear",
@@ -854,7 +854,7 @@
     {
       "queryexpression": {
         "operator": "Today",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.Today",
@@ -864,7 +864,7 @@
     {
       "queryexpression": {
         "operator": "Tomorrow",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.Tomorrow",
@@ -874,7 +874,7 @@
     {
       "queryexpression": {
         "operator": "Yesterday",
-        "conditionpattern": "\"{propName}\" , ConditionOperator.{operator}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.Yesterday",

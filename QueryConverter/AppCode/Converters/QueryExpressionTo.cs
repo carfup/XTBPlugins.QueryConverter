@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.Scripting;
+
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Client;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
-using Microsoft.Xrm.Tooling.Connector;
-using Newtonsoft.Json.Linq;
+using RestSharp;
 
 namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
 {
@@ -53,53 +53,52 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
 
         public QueryExpression FromStringToQueryExpression(string input)
         {
-            List<object> convertVariable = new List<object>();
-
-            //Making sure the String has a variable name to convert it into a QueryExpression
-            if (input.ToLower().StartsWith("new queryexpression"))
-            {
-                input = $"var {this.converterHelper.queryVariableName} = {input}";
-            }
-
-            var result = Task.Run<object>(async () =>
-            {
-                // CSharpScript.RunAsync can also be generic with typed ReturnValue
-                var s = await CSharpScript.RunAsync(@"using Microsoft.Xrm.Sdk.Query;", ScriptOptions.Default.WithReferences(typeof(Microsoft.Xrm.Sdk.Query.QueryExpression).Assembly));
-
-                // continuing with previous evaluation state
-                s = await s.ContinueWithAsync(input);
-
-                // inspecting defined variables
-                Console.WriteLine("inspecting defined variables:");
-                foreach (var variable in s.Variables)
-                {
-                    convertVariable.Add(variable.Value);
-                }
-                return s;
-
-            }).Result;
-
             QueryExpression queryToTransform = null;
 
-            if (convertVariable.FirstOrDefault().GetType() == typeof(QueryExpression))
-                queryToTransform = convertVariable.FirstOrDefault() as QueryExpression;
+            // rework input to get all the query within the webapi
+            input = input.Replace("\"", "\\\"");
 
+            var client = new RestClient(PrivateFile.roslynApiUrl);
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("cache-control", "no-cache");
+            request.AddHeader("Content-Type", "application/json");
+            request.AddParameter("undefined", $"\"{input}\"", ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+
+            if(response.StatusCode == HttpStatusCode.OK)
+            {
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(QueryExpression));
+                MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(response.Content));
+                queryToTransform = serializer.ReadObject(ms) as QueryExpression;
+            }
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Exception));
+                MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(response.Content));
+                var exception = serializer.ReadObject(ms) as Exception;
+                throw new Exception(exception.Message);
+            }
+            else
+            {
+                throw new Exception("An error occured during the Text to object conversion.");
+            }
+           
             return queryToTransform;
         }
 
         #region Linq
         public string ProcessToLinq(QueryExpression query)
         {
-            entityMetadata = LoadEntityMetadata(query.EntityName);
+            LoadEntityMetadata(query.EntityName);
             var entitySet = $"var {this.converterHelper.queryVariableName} = {this.converterHelper.serviceContextName}.{entityMetadata.SchemaName}Set";
             var conditions = ManageCriteriaLinq(query.Criteria);
             var columns = ManageColumsetToLinq(query.ColumnSet);
-            var order = ManageOrdersToLinq(query.Orders);
+            var order = ManageOrdersToLinq(query.Orders.ToList());
             var topCount = ManageTopCountToLinq(query.TopCount);
             return entitySet + conditions + columns + order + topCount + ";";
         }
 
-        private string ManageTopCountToLinq(int? topCount)
+        public string ManageTopCountToLinq(int? topCount)
         {
             var result = "";
             if (topCount != null)
@@ -173,7 +172,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return conditionsString;
         }
 
-        private string ManageColumsetToLinq(ColumnSet columnSet)
+        public string ManageColumsetToLinq(ColumnSet columnSet)
         {
             var columns = "";
 
@@ -193,7 +192,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return stringq;
         }
 
-        private string ManageOrdersToLinq(DataCollection<OrderExpression> ordersList)
+        public string ManageOrdersToLinq(List<OrderExpression> ordersList)
         {
             var orders = "";
 
@@ -216,7 +215,9 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
                     else if (order.OrderType == OrderType.Descending)
                         prefix = "ThenByDescending";
                 }
-                orders += $".{prefix}(ord => ord.Attributes[\"{order.AttributeName}\"])";
+
+                var attr = entityMetadata.Attributes.Where(xx => xx.LogicalName == order.AttributeName).Select(xx => xx.SchemaName).FirstOrDefault();
+                orders += $".{prefix}(ord => ord.{attr})";
             }
 
             return orders;
@@ -357,7 +358,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         }
         #endregion
 
-        private EntityMetadata LoadEntityMetadata(string entity)
+        public void LoadEntityMetadata(string entity)
         {
             var request = new RetrieveEntityRequest
             {
@@ -367,8 +368,8 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
 
             var attributesList = (RetrieveEntityResponse)this.converterHelper.service.Execute(request);
             if (attributesList != null)
-                return attributesList.EntityMetadata;
-            else return null;
+                entityMetadata = attributesList.EntityMetadata;
+            else entityMetadata = null;
         }
     }
 }

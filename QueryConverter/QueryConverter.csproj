@@ -217,7 +217,7 @@
     <None Include="Resources\fxb.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="ILRepack" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+  <Target Name="ILRepack" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
     <MakeDir Directories="$(OutputPath)\Plugins" />
     <ItemGroup>
       <MergeAssemblies Include="$(OutputPath)\AceWinforms.dll" />

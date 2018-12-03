@@ -69,8 +69,10 @@ namespace Carfup.XTBPlugins.QueryConverter
 
         private void buttonConvert_Click(object sender, EventArgs evt)
         {
-            DetectQueryType(inputCodeEditor.Text);
-            ExecuteMethod(ProcessToConversion);
+            var proceed = DetectQueryType(inputCodeEditor.Text);
+
+            if (proceed != "")
+                ExecuteMethod(ProcessToConversion);
         }
 
         private string DetectQueryType(string query, bool displayAlert = true)
@@ -89,7 +91,7 @@ namespace Carfup.XTBPlugins.QueryConverter
 
                 if (inputTypeQuery == "" && displayAlert )
                 {
-                    MessageBox.Show("Query not supported", "Query Not supported !", MessageBoxButtons.OK,
+                    MessageBox.Show("Query not supported yet for conversion.", "Query Not supported yet for conversion !", MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
                     this.log.LogData(EventType.Event, LogAction.InputQueryTypeNotFound);
                 }
@@ -144,7 +146,7 @@ namespace Carfup.XTBPlugins.QueryConverter
                 Work = (bw, e) =>
                 {
                     if (converter == null)
-                        converter = new ConverterHelper(Service);
+                        converter = new ConverterHelper(Service, log);
 
                     e.Result = converter.ProcessQuery(inputType, outputType, inputQuery);
                 },

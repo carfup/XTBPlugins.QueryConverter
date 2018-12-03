@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Carfup.XTBPlugins.QueryConverter")]
-[assembly: AssemblyDescription("This tool will allow you to reassign or copy personal views from one user to another. This is really useful when someone left a company and forgot to migrate his own views to somebody else.")]
+[assembly: AssemblyDescription("This tool will allow you to convert queries from and to QueryExpression, FetchXML, Linq and Web Api.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Clement O.")]
 [assembly: AssemblyProduct("Carfup.XTBPlugins.QueryConverter")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.2018.0.0")]
-[assembly: AssemblyFileVersion("1.2018.0.0")]
+[assembly: AssemblyVersion("1.2018.12.1")]
+[assembly: AssemblyFileVersion("1.2018.12.1")]

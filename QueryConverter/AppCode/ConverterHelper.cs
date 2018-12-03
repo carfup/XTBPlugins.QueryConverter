@@ -21,6 +21,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
     {
       
         public IOrganizationService service { get; set; } = null;
+        public LogUsage log = null;
         public QueryExpressionTo queryExpressionTo = null;
         public WebApiTo webApiTo = null;
         public FetchXMLTo fetchXmlTo = null;
@@ -31,9 +32,10 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         public string queryVariableName = "query";
         public string serviceContextName = "ServiceContext";
 
-        public ConverterHelper(IOrganizationService service)
+        public ConverterHelper(IOrganizationService service, LogUsage log)
         {
             this.service = service;
+            this.log = log;
             this.queryExpressionTo = new QueryExpressionTo(this);
             this.webApiTo = new WebApiTo(this);
             this.fetchXmlTo = new FetchXMLTo(this);

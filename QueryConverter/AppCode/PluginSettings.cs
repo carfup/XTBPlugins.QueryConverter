@@ -35,5 +35,6 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         public const string StatsAccepted = "StatsAccepted";
         public const string StatsDenied = "StatsDenied";
         public const string InputQueryTypeNotFound = "InputQueryTypeNotFound";
+        public const string ConvertedWithRoslyn = "ConvertedWithRoslyn";
     }
 }

@@ -55,34 +55,44 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         {
             QueryExpression queryToTransform = null;
 
-            // rework input to get all the query within the webapi
-            input = input.Replace("\"", "\\\"");
+            try
+            {
+                // rework input to get all the query within the webapi
+                input = input.Replace("\"", "\\\"");
 
-            var client = new RestClient(PrivateFile.roslynApiUrl);
-            var request = new RestRequest(Method.POST);
-            request.AddHeader("cache-control", "no-cache");
-            request.AddHeader("Content-Type", "application/json");
-            request.AddParameter("undefined", $"\"{input}\"", ParameterType.RequestBody);
-            IRestResponse response = client.Execute(request);
+                var client = new RestClient(PrivateFile.roslynApiUrl);
+                var request = new RestRequest(Method.POST);
+                request.AddHeader("cache-control", "no-cache");
+                request.AddHeader("Content-Type", "application/json");
+                request.AddParameter("undefined", $"\"{input}\"", ParameterType.RequestBody);
+                IRestResponse response = client.Execute(request);
 
-            if(response.StatusCode == HttpStatusCode.OK)
-            {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(QueryExpression));
-                MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(response.Content));
-                queryToTransform = serializer.ReadObject(ms) as QueryExpression;
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(QueryExpression));
+                    MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(response.Content));
+                    queryToTransform = serializer.ReadObject(ms) as QueryExpression;
+                    converterHelper.log.LogData(EventType.Event, LogAction.ConvertedWithRoslyn);
+                }
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Exception));
+                    MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(response.Content));
+                    var exception = serializer.ReadObject(ms) as Exception;
+                    converterHelper.log.LogData(EventType.Exception, LogAction.ConvertedWithRoslyn, exception);
+                    throw new Exception(exception.Message);
+                }
+                else
+                {
+                    throw new Exception("An error occured during the Text to object conversion.");
+                }
             }
-            else if (response.StatusCode == HttpStatusCode.BadRequest)
+            catch (Exception ex)
             {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Exception));
-                MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(response.Content));
-                var exception = serializer.ReadObject(ms) as Exception;
-                throw new Exception(exception.Message);
+                converterHelper.log.LogData(EventType.Exception, LogAction.ConvertedWithRoslyn, ex);
+                throw;
             }
-            else
-            {
-                throw new Exception("An error occured during the Text to object conversion.");
-            }
-           
+            
             return queryToTransform;
         }
 

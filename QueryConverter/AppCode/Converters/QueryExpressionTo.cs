@@ -76,11 +76,8 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
                 }
                 else if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Exception));
-                    MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(response.Content));
-                    var exception = serializer.ReadObject(ms) as Exception;
-                    converterHelper.log.LogData(EventType.Exception, LogAction.ConvertedWithRoslyn, exception);
-                    throw new Exception(exception.Message);
+                    var exception = new Exception($"An error occured during the Text to object conversion.{Environment.NewLine} {response.Content}");
+                    throw exception;
                 }
                 else
                 {

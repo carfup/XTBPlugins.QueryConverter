@@ -28,65 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.comboBoxFavTheme = new System.Windows.Forms.ComboBox();
             this.bgStats = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.checkboxAllowStats = new System.Windows.Forms.CheckBox();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOk = new System.Windows.Forms.Button();
-            this.groupBox3.SuspendLayout();
+            this.comboBoxFavTheme = new System.Windows.Forms.ComboBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.bgStats.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox3.AutoSize = true;
-            this.groupBox3.Controls.Add(this.comboBoxFavTheme);
-            this.groupBox3.Location = new System.Drawing.Point(8, 12);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(181, 61);
-            this.groupBox3.TabIndex = 23;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Favorite Theme";
-            // 
-            // comboBoxFavTheme
-            // 
-            this.comboBoxFavTheme.FormattingEnabled = true;
-            this.comboBoxFavTheme.Items.AddRange(new object[] {
-            "chrome",
-            "clouds",
-            "crimson_editor",
-            "dawn",
-            "dreamweaver",
-            "eclipse",
-            "github",
-            "solarized_light",
-            "textmate",
-            "tomorrow",
-            "xcode",
-            "ambiance",
-            "chaos",
-            "clouds_midnight",
-            "cobalt",
-            "idle_fingers",
-            "kr_theme",
-            "merbivore",
-            "merbivore_soft",
-            "terminal",
-            "tomorrow_night",
-            "tomorrow_night_blue",
-            "tomorrow_night_bright",
-            "tomorrow_night_eighties",
-            "twilight",
-            "vibrant_ink"});
-            this.comboBoxFavTheme.Location = new System.Drawing.Point(11, 21);
-            this.comboBoxFavTheme.Name = "comboBoxFavTheme";
-            this.comboBoxFavTheme.Size = new System.Drawing.Size(155, 21);
-            this.comboBoxFavTheme.TabIndex = 0;
-            this.comboBoxFavTheme.TextChanged += new System.EventHandler(this.comboBoxFavTheme_TextChanged);
             // 
             // bgStats
             // 
@@ -149,6 +100,55 @@
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
             // 
+            // comboBoxFavTheme
+            // 
+            this.comboBoxFavTheme.FormattingEnabled = true;
+            this.comboBoxFavTheme.Items.AddRange(new object[] {
+            "chrome",
+            "clouds",
+            "crimson_editor",
+            "dawn",
+            "dreamweaver",
+            "eclipse",
+            "github",
+            "solarized_light",
+            "textmate",
+            "tomorrow",
+            "xcode",
+            "ambiance",
+            "chaos",
+            "clouds_midnight",
+            "cobalt",
+            "idle_fingers",
+            "kr_theme",
+            "merbivore",
+            "merbivore_soft",
+            "terminal",
+            "tomorrow_night",
+            "tomorrow_night_blue",
+            "tomorrow_night_bright",
+            "tomorrow_night_eighties",
+            "twilight",
+            "vibrant_ink"});
+            this.comboBoxFavTheme.Location = new System.Drawing.Point(11, 21);
+            this.comboBoxFavTheme.Name = "comboBoxFavTheme";
+            this.comboBoxFavTheme.Size = new System.Drawing.Size(155, 21);
+            this.comboBoxFavTheme.TabIndex = 0;
+            this.comboBoxFavTheme.TextChanged += new System.EventHandler(this.comboBoxFavTheme_TextChanged);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.AutoSize = true;
+            this.groupBox3.Controls.Add(this.comboBoxFavTheme);
+            this.groupBox3.Location = new System.Drawing.Point(8, 12);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(193, 61);
+            this.groupBox3.TabIndex = 23;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Favorite Theme";
+            // 
             // Options
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -163,22 +163,21 @@
             this.Name = "Options";
             this.ShowIcon = false;
             this.Text = "Options";
-            this.groupBox3.ResumeLayout(false);
             this.bgStats.ResumeLayout(false);
             this.bgStats.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.ComboBox comboBoxFavTheme;
         private System.Windows.Forms.GroupBox bgStats;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox checkboxAllowStats;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonOk;
+        private System.Windows.Forms.ComboBox comboBoxFavTheme;
+        private System.Windows.Forms.GroupBox groupBox3;
     }
 }

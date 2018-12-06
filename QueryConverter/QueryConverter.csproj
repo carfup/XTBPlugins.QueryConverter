@@ -231,7 +231,7 @@
     <None Include="Resources\helpscreenshot.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="ILRepack" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+  <Target Name="ILRepack" AfterTargets="Build" Condition="">
     <MakeDir Directories="$(OutputPath)\Plugins" />
     <ItemGroup>
       <MergeAssemblies Include="$(OutputPath)\AceWinforms.dll" />

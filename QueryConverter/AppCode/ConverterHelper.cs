@@ -106,6 +106,10 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
                 var queryExpression = this.queryExpressionTo.FromStringToQueryExpression(queryExpressionString);
                 outputQuery = this.queryExpressionTo.ProcessToLinq(queryExpression);
             }
+            else if(this.inputType == this.outputType)
+            {
+                outputQuery = inputQuery;
+            }
 
             return outputQuery;
         }

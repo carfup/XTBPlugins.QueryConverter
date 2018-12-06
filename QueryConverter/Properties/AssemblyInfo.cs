@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Carfup.XTBPlugins.QueryConverter")]
-[assembly: AssemblyDescription("This tool will allow you to convert queries from and to QueryExpression, FetchXML, Linq and Web Api.")]
+[assembly: AssemblyDescription("This tool will allow you to convert queries from and to QueryExpression, FetchXML, Linq and WebApi.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Clement O.")]
 [assembly: AssemblyProduct("Carfup.XTBPlugins.QueryConverter")]

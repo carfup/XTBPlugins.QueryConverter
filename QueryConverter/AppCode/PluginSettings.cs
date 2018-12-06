@@ -20,7 +20,9 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
 
     public static class CustomParameter
     {
-        public static string INSIGHTS_INTRUMENTATIONKEY = PrivateFile.applicationInsightsKey;
+        
+        public static string INSIGHTS_INTRUMENTATIONKEY = "INSIGHTS_INTRUMENTATIONKEY_TOREPLACE";
+        public static string ROSLYNAPIURL = "ROSLYNAPIURL_TOREPLACE";
     }
 
     // EventType to qualify which action was performed by the plugin
@@ -36,5 +38,6 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         public const string StatsDenied = "StatsDenied";
         public const string InputQueryTypeNotFound = "InputQueryTypeNotFound";
         public const string ConvertedWithRoslyn = "ConvertedWithRoslyn";
+        public const string InputQueryEmpty = "InputQueryEmpty";
     }
 }

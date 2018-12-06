@@ -1,25 +1,12 @@
-﻿using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using XrmToolBox.Extensibility;
-using Microsoft.Xrm.Sdk.Query;
-using Microsoft.Xrm.Sdk;
 using System.Reflection;
-using System.Web.UI.WebControls;
-using System.IO;
 using XrmToolBox.Extensibility.Interfaces;
-using System.Collections.Generic;
-using Microsoft.Xrm.Sdk.Client;
 using System;
 using System.Diagnostics;
-using Microsoft.Xrm.Sdk.Messages;
 using Carfup.XTBPlugins.QueryConverter.AppCode;
-using Microsoft.Crm.Sdk.Messages;
-using AceWinforms;
 using Carfup.XTBPlugins.Forms;
+using Carfup.XTBPlugins.QueryConverter.Forms;
 
 namespace Carfup.XTBPlugins.QueryConverter
 {
@@ -69,10 +56,19 @@ namespace Carfup.XTBPlugins.QueryConverter
 
         private void buttonConvert_Click(object sender, EventArgs evt)
         {
-            var proceed = DetectQueryType(inputCodeEditor.Text);
+            if (inputCodeEditor.Text == "" || inputCodeEditor.Text == null)
+            {
+                this.log.LogData(EventType.Event, LogAction.InputQueryEmpty);
+                MessageBox.Show("The input box is empty. Fill it with your query !", "The input box is empty!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                var proceed = DetectQueryType(inputCodeEditor.Text);
 
-            if (proceed != "")
-                ExecuteMethod(ProcessToConversion);
+                if (proceed != "")
+                    ExecuteMethod(ProcessToConversion);
+            }
+            
         }
 
         private string DetectQueryType(string query, bool displayAlert = true)
@@ -91,7 +87,7 @@ namespace Carfup.XTBPlugins.QueryConverter
 
                 if (inputTypeQuery == "" && displayAlert )
                 {
-                    MessageBox.Show("Query not supported yet for conversion.", "Query Not supported yet for conversion !", MessageBoxButtons.OK,
+                    MessageBox.Show("We didn't recognize the query you are try to convert. Maybe we didn't manage that type yet or there is an issue somewhere ...", "Query Not supported yet for conversion !", MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
                     this.log.LogData(EventType.Event, LogAction.InputQueryTypeNotFound);
                 }
@@ -347,6 +343,12 @@ namespace Carfup.XTBPlugins.QueryConverter
                 OnOutgoingMessage(this, messageBusEventArgs);
 
             }
+        }
+
+        private void toolStripButtonHelp_Click(object sender, EventArgs e)
+        {
+            var helpDlg = new HelpForm();
+            helpDlg.ShowDialog(this);
         }
     }
 }

@@ -18,10 +18,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         {
             this.qc = qc;
 
-            TelemetryConfiguration.Active.InstrumentationKey = PrivateFile.applicationInsightsKey;
-#if DEBUG
-            TelemetryConfiguration.Active.InstrumentationKey = PrivateFile.applicationInsightsKeyDev;
-#endif
+            TelemetryConfiguration.Active.InstrumentationKey = CustomParameter.INSIGHTS_INTRUMENTATIONKEY;
             this.telemetry = new TelemetryClient();
             this.telemetry.Context.Component.Version = QueryConverter.CurrentVersion;
             this.telemetry.Context.Device.Id = this.qc.GetType().Name;

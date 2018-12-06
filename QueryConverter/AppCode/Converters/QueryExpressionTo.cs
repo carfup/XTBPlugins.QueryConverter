@@ -60,7 +60,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
                 // rework input to get all the query within the webapi
                 input = input.Replace("\"", "\\\"");
 
-                var client = new RestClient(PrivateFile.roslynApiUrl);
+                var client = new RestClient(CustomParameter.ROSLYNAPIURL);
                 var request = new RestRequest(Method.POST);
                 request.AddHeader("cache-control", "no-cache");
                 request.AddHeader("Content-Type", "application/json");

@@ -164,7 +164,6 @@
     <Compile Include="Forms\Options.Designer.cs">
       <DependentUpon>Options.cs</DependentUpon>
     </Compile>
-    <Compile Include="PrivateFile.cs" />
     <Compile Include="QueryConverter.cs">
       <SubType>UserControl</SubType>
     </Compile>

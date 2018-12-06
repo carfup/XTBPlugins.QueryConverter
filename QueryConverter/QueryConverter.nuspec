@@ -24,6 +24,6 @@ Converters available :
     </dependencies>
   </metadata>
   <files>
-	  <file src="bin\Release\Carfup.XTBPlugins.*.dll" target="lib\net462\Plugins" />
+	  <file src="bin\Release\Plugins\Carfup.XTBPlugins.*.dll" target="lib\net462\Plugins" />
   </files>
 </package>

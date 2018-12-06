@@ -20,7 +20,18 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
 
     public static class CustomParameter
     {
+        
+#if DEBUG
         public static string INSIGHTS_INTRUMENTATIONKEY = PrivateFile.applicationInsightsKey;
+#else
+        public static string INSIGHTS_INTRUMENTATIONKEY = "INSIGHTS_INTRUMENTATIONKEY_TOREPLACE";
+#endif
+
+#if DEBUG
+        public static string ROSLYNAPIURL = PrivateFile.roslynApiUrl;
+#else
+        public static string ROSLYNAPIURL = "ROSLYNAPIURL_TOREPLACE";
+#endif
     }
 
     // EventType to qualify which action was performed by the plugin

@@ -7,6 +7,8 @@ using System.Diagnostics;
 using Carfup.XTBPlugins.QueryConverter.AppCode;
 using Carfup.XTBPlugins.Forms;
 using Carfup.XTBPlugins.QueryConverter.Forms;
+using RestSharp;
+using System.Threading.Tasks;
 
 namespace Carfup.XTBPlugins.QueryConverter
 {
@@ -38,15 +40,45 @@ namespace Carfup.XTBPlugins.QueryConverter
             }
         }
 
-        private void QueryConverter_Load(object sender, EventArgs e)
+        private void QueryConverter_Load(object sender, EventArgs evt)
         {
-            log = new LogUsage(this);
-            log.LogData(EventType.Event, LogAction.PluginOpened);
-            LoadSetting();
+            Invoke(new Action(() =>
+            {
+                WorkAsync(new WorkAsyncInfo
+                {
+                    Message = "Loading necessary modules...",
+                    Work = (bw, e) =>
+                    {
+                        log = new LogUsage(this);
+                        log.LogData(EventType.Event, LogAction.PluginOpened);
+                        LoadSetting();
 
-            inputCodeEditor.HighlighterMode = "csharp";
-            outputCodeEditor.HighlighterMode = "csharp";
-            UpdateThemeDisplayed();
+                        converter = new ConverterHelper(Service, log);
+
+                        inputCodeEditor.HighlighterMode = "csharp";
+                        outputCodeEditor.HighlighterMode = "csharp";
+                        UpdateThemeDisplayed();
+
+                        //just making sure the api is not in idle mode :)
+                        var client = new RestClient($"{CustomParameter.ROSLYNAPIURL}/wampup");
+                        var request = new RestRequest(Method.GET);
+                        request.AddHeader("cache-control", "no-cache");
+                        request.AddHeader("Content-Type", "application/json");
+                        var warmup = client.ExecuteAsync(request, null);
+                    },
+                    PostWorkCallBack = e =>
+                    {
+                        if (e.Error != null)
+                        {
+                            MessageBox.Show(this, e.Error.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            this.log.LogData(EventType.Exception, LogAction.ModulesLoaded, e.Error);
+                            return;
+                        }
+                    },
+                    ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
+                });
+            }));
+            
         }
 
         private void toolStripButtonCloseTool_Click(object sender, System.EventArgs e)
@@ -201,42 +233,45 @@ namespace Carfup.XTBPlugins.QueryConverter
             var inputData = inputCodeEditor.Text;
             var outputData = outputCodeEditor.Text;
 
-            WorkAsync(new WorkAsyncInfo
+            Invoke(new Action(() =>
             {
-                Message = "Modifying the theme...",
-                Work = (bw, e) =>
+                WorkAsync(new WorkAsyncInfo
                 {
-                    Invoke(new Action(() =>
+                    Message = "Modifying the theme...",
+                    Work = (bw, e) =>
                     {
-                        if(inputCodeEditor.Theme != this.settings.FavoriteTheme)
+                        Invoke(new Action(() =>
                         {
-                            inputCodeEditor.Theme = this.settings.FavoriteTheme;
-                            inputCodeEditor.Load();
+                            if (inputCodeEditor.Theme != this.settings.FavoriteTheme)
+                            {
+                                inputCodeEditor.Theme = this.settings.FavoriteTheme;
+                                inputCodeEditor.Load();
+                            }
+
+                            if (outputCodeEditor.Theme != this.settings.FavoriteTheme)
+                            {
+                                outputCodeEditor.Theme = this.settings.FavoriteTheme;
+                                outputCodeEditor.Load();
+                            }
+                        }));
+                    },
+                    PostWorkCallBack = e =>
+                    {
+                        if (e.Error != null)
+                        {
+                            MessageBox.Show(this, e.Error.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            this.log.LogData(EventType.Exception, LogAction.ThemeModified, e.Error);
+                            return;
                         }
 
-                        if(outputCodeEditor.Theme != this.settings.FavoriteTheme)
-                        {
-                            outputCodeEditor.Theme = this.settings.FavoriteTheme;
-                            outputCodeEditor.Load();
-                        }
-                    }));
-                },
-                PostWorkCallBack = e =>
-                {
-                    if (e.Error != null)
-                    {
-                        MessageBox.Show(this, e.Error.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        this.log.LogData(EventType.Exception, LogAction.ThemeModified, e.Error);
-                        return;
-                    }
+                        inputCodeEditor.Text = inputData;
+                        outputCodeEditor.Text = outputData;
 
-                    inputCodeEditor.Text = inputData;
-                    outputCodeEditor.Text = outputData;
-
-                    this.log.LogData(EventType.Event, LogAction.ThemeModified);
-                },
-                ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
-            });
+                        this.log.LogData(EventType.Event, LogAction.ThemeModified);
+                    },
+                    ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
+                });
+            }));
         }
 
         public void SaveSettings()
@@ -308,7 +343,7 @@ namespace Carfup.XTBPlugins.QueryConverter
 
         private void textBoxQueryVariable_TextChanged(object sender, EventArgs e)
         {
-            this.converter.queryVariableName = textBoxQueryVariable.Text;
+                    this.converter.queryVariableName = textBoxQueryVariable.Text;
         }
 
         private void textBoxCrmContext_TextChanged(object sender, EventArgs e)

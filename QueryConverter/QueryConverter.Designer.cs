@@ -29,11 +29,20 @@
         private void InitializeComponent()
         {
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripButtonCloseTool = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButtonOpenFXB = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButtonOptions = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButtonHelp = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.outputCodeEditor = new AceWinforms.CodeEditor();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.inputCodeEditor = new AceWinforms.CodeEditor();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.buttonConvert = new System.Windows.Forms.Button();
             this.groupBoxConversionDetails = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.labelQueryVariable = new System.Windows.Forms.Label();
@@ -44,15 +53,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.comboBoxOutput = new System.Windows.Forms.ComboBox();
             this.comboBoxInput = new System.Windows.Forms.ComboBox();
-            this.outputCodeEditor = new AceWinforms.CodeEditor();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.buttonConvert = new System.Windows.Forms.Button();
-            this.toolStripButtonCloseTool = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonOpenFXB = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonOptions = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonHelp = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -77,6 +77,58 @@
             this.toolStrip1.Size = new System.Drawing.Size(1042, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripButtonCloseTool
+            // 
+            this.toolStripButtonCloseTool.Image = global::Carfup.XTBPlugins.Properties.Resources.close;
+            this.toolStripButtonCloseTool.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonCloseTool.Name = "toolStripButtonCloseTool";
+            this.toolStripButtonCloseTool.Size = new System.Drawing.Size(56, 22);
+            this.toolStripButtonCloseTool.Text = "Close";
+            this.toolStripButtonCloseTool.Click += new System.EventHandler(this.toolStripButtonCloseTool_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButtonOpenFXB
+            // 
+            this.toolStripButtonOpenFXB.Image = global::Carfup.XTBPlugins.Properties.Resources.fxb;
+            this.toolStripButtonOpenFXB.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonOpenFXB.Name = "toolStripButtonOpenFXB";
+            this.toolStripButtonOpenFXB.Size = new System.Drawing.Size(139, 22);
+            this.toolStripButtonOpenFXB.Text = "Use FetchXMLBuilder";
+            this.toolStripButtonOpenFXB.ToolTipText = "Open or build in FetchXMLBuilder";
+            this.toolStripButtonOpenFXB.Click += new System.EventHandler(this.toolStripButtonOpenFXB_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButtonOptions
+            // 
+            this.toolStripButtonOptions.Image = global::Carfup.XTBPlugins.Properties.Resources.gear;
+            this.toolStripButtonOptions.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonOptions.Name = "toolStripButtonOptions";
+            this.toolStripButtonOptions.Size = new System.Drawing.Size(69, 22);
+            this.toolStripButtonOptions.Text = "Options";
+            this.toolStripButtonOptions.Click += new System.EventHandler(this.toolStripButtonOptions_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButtonHelp
+            // 
+            this.toolStripButtonHelp.Image = global::Carfup.XTBPlugins.Properties.Resources.help;
+            this.toolStripButtonHelp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonHelp.Name = "toolStripButtonHelp";
+            this.toolStripButtonHelp.Size = new System.Drawing.Size(52, 22);
+            this.toolStripButtonHelp.Text = "Help";
+            this.toolStripButtonHelp.Click += new System.EventHandler(this.toolStripButtonHelp_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -109,6 +161,18 @@
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Output";
+            // 
+            // outputCodeEditor
+            // 
+            this.outputCodeEditor.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.outputCodeEditor.HighlighterMode = "javascript";
+            this.outputCodeEditor.Location = new System.Drawing.Point(3, 16);
+            this.outputCodeEditor.MinIeVersion = "10";
+            this.outputCodeEditor.MinimumSize = new System.Drawing.Size(20, 20);
+            this.outputCodeEditor.Name = "outputCodeEditor";
+            this.outputCodeEditor.Size = new System.Drawing.Size(409, 485);
+            this.outputCodeEditor.TabIndex = 4;
+            this.outputCodeEditor.Theme = "monokai";
             // 
             // groupBox1
             // 
@@ -151,6 +215,18 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Settings";
             // 
+            // buttonConvert
+            // 
+            this.buttonConvert.Image = global::Carfup.XTBPlugins.Properties.Resources.arrow_right_64;
+            this.buttonConvert.Location = new System.Drawing.Point(15, 263);
+            this.buttonConvert.Name = "buttonConvert";
+            this.buttonConvert.Size = new System.Drawing.Size(166, 90);
+            this.buttonConvert.TabIndex = 7;
+            this.buttonConvert.Text = "Convert";
+            this.buttonConvert.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.buttonConvert.UseVisualStyleBackColor = true;
+            this.buttonConvert.Click += new System.EventHandler(this.buttonConvert_Click);
+            // 
             // groupBoxConversionDetails
             // 
             this.groupBoxConversionDetails.AutoSize = true;
@@ -189,6 +265,7 @@
             this.textBoxQueryVariable.Size = new System.Drawing.Size(154, 20);
             this.textBoxQueryVariable.TabIndex = 32;
             this.textBoxQueryVariable.Text = "query";
+            this.textBoxQueryVariable.TextChanged += new System.EventHandler(this.textBoxQueryVariable_TextChanged);
             // 
             // labelCrmContext
             // 
@@ -206,6 +283,7 @@
             this.textBoxCrmContext.Size = new System.Drawing.Size(154, 20);
             this.textBoxCrmContext.TabIndex = 34;
             this.textBoxCrmContext.Text = "ServiceContext";
+            this.textBoxCrmContext.TextChanged += new System.EventHandler(this.textBoxCrmContext_TextChanged);
             // 
             // label2
             // 
@@ -253,82 +331,6 @@
             this.comboBoxInput.Size = new System.Drawing.Size(182, 21);
             this.comboBoxInput.TabIndex = 0;
             this.comboBoxInput.TextChanged += new System.EventHandler(this.comboBoxInput_TextChanged);
-            // 
-            // outputCodeEditor
-            // 
-            this.outputCodeEditor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.outputCodeEditor.HighlighterMode = "javascript";
-            this.outputCodeEditor.Location = new System.Drawing.Point(3, 16);
-            this.outputCodeEditor.MinIeVersion = "10";
-            this.outputCodeEditor.MinimumSize = new System.Drawing.Size(20, 20);
-            this.outputCodeEditor.Name = "outputCodeEditor";
-            this.outputCodeEditor.Size = new System.Drawing.Size(409, 485);
-            this.outputCodeEditor.TabIndex = 4;
-            this.outputCodeEditor.Theme = "monokai";
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
-            // 
-            // buttonConvert
-            // 
-            this.buttonConvert.Image = global::Carfup.XTBPlugins.Properties.Resources.arrow_right_64;
-            this.buttonConvert.Location = new System.Drawing.Point(15, 263);
-            this.buttonConvert.Name = "buttonConvert";
-            this.buttonConvert.Size = new System.Drawing.Size(166, 90);
-            this.buttonConvert.TabIndex = 7;
-            this.buttonConvert.Text = "Convert";
-            this.buttonConvert.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.buttonConvert.UseVisualStyleBackColor = true;
-            this.buttonConvert.Click += new System.EventHandler(this.buttonConvert_Click);
-            // 
-            // toolStripButtonCloseTool
-            // 
-            this.toolStripButtonCloseTool.Image = global::Carfup.XTBPlugins.Properties.Resources.close;
-            this.toolStripButtonCloseTool.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonCloseTool.Name = "toolStripButtonCloseTool";
-            this.toolStripButtonCloseTool.Size = new System.Drawing.Size(56, 22);
-            this.toolStripButtonCloseTool.Text = "Close";
-            this.toolStripButtonCloseTool.Click += new System.EventHandler(this.toolStripButtonCloseTool_Click);
-            // 
-            // toolStripButtonOpenFXB
-            // 
-            this.toolStripButtonOpenFXB.Image = global::Carfup.XTBPlugins.Properties.Resources.fxb;
-            this.toolStripButtonOpenFXB.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonOpenFXB.Name = "toolStripButtonOpenFXB";
-            this.toolStripButtonOpenFXB.Size = new System.Drawing.Size(139, 22);
-            this.toolStripButtonOpenFXB.Text = "Use FetchXMLBuilder";
-            this.toolStripButtonOpenFXB.ToolTipText = "Open or build in FetchXMLBuilder";
-            this.toolStripButtonOpenFXB.Click += new System.EventHandler(this.toolStripButtonOpenFXB_Click);
-            // 
-            // toolStripButtonOptions
-            // 
-            this.toolStripButtonOptions.Image = global::Carfup.XTBPlugins.Properties.Resources.gear;
-            this.toolStripButtonOptions.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonOptions.Name = "toolStripButtonOptions";
-            this.toolStripButtonOptions.Size = new System.Drawing.Size(69, 22);
-            this.toolStripButtonOptions.Text = "Options";
-            this.toolStripButtonOptions.Click += new System.EventHandler(this.toolStripButtonOptions_Click);
-            // 
-            // toolStripButtonHelp
-            // 
-            this.toolStripButtonHelp.Image = global::Carfup.XTBPlugins.Properties.Resources.help;
-            this.toolStripButtonHelp.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonHelp.Name = "toolStripButtonHelp";
-            this.toolStripButtonHelp.Size = new System.Drawing.Size(52, 22);
-            this.toolStripButtonHelp.Text = "Help";
-            this.toolStripButtonHelp.Click += new System.EventHandler(this.toolStripButtonHelp_Click);
             // 
             // QueryConverter
             // 

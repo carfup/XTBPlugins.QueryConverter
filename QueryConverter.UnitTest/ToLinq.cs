@@ -136,12 +136,13 @@ namespace Carfup.XTBPlugins.QueryConverter.UnitTest
                 Conditions =
                 {
                     new ConditionExpression("name", ConditionOperator.Equal, "test"),
-                    new ConditionExpression("opportunityid", ConditionOperator.Equal, "guid")
+                    new ConditionExpression("opportunityid", ConditionOperator.Equal, "guid"),
+                    new ConditionExpression("parentaccountid", ConditionOperator.Equal, "guid"),
                 }
             };
 
             Assert.AreEqual(converterHelper.queryExpressionTo.ManageCriteriaLinq(criteria),
-                $"{Environment.NewLine}.Where(w => (w.Name == \"test\" && w.OpportunityId == \"guid\"))");
+                $"{Environment.NewLine}.Where(w => (w.Name == \"test\" && w.OpportunityId == \"guid\" && w.ParentAccountId.Id.ToString() == \"guid\"))");
         }
 
         [TestMethod]

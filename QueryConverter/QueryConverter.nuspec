@@ -12,10 +12,10 @@
     <summary>This tool will allow you to convert queries from and to QueryExpression, FetchXML, Linq and WebApi.</summary>
     <releaseNotes>
 1.2018.12.1
-Converters available : 
-  * from QueryExpression to WebApi, FetchXML, LinQ
-  * from WebApi to WebApi, FetchXML, LinQ
-  * from FetchXML to QueryExpression, WebApi, LinQ
+Converters available :
+* from QueryExpression to WebApi, FetchXML, LinQ
+* from WebApi to QueryExpression, FetchXML, LinQ
+* from FetchXML to QueryExpression, WebApi, LinQ
     </releaseNotes>
     <copyright>Copyright 2018</copyright>
     <tags>XrmToolBox Plugin QueryConverter</tags>

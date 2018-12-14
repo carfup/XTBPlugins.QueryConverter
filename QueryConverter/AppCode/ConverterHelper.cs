@@ -32,7 +32,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         public string queryVariableName = "query";
         public string serviceContextName = "ServiceContext";
 
-        public ConverterHelper(IOrganizationService service, LogUsage log)
+        public ConverterHelper(IOrganizationService service, LogUsage log = null)
         {
             this.service = service;
             this.log = log;

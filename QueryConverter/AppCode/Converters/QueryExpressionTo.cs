@@ -57,10 +57,23 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
 
             try
             {
+                //Making sure sur QE is in "right" format : variable defined and ending with a ;
+                //Making sure the String has a variable name to convert it into a QueryExpression
+                if (input.ToLower().StartsWith("new queryexpression"))
+                {
+                    input = $"var {this.converterHelper.queryVariableName} = {input}";
+                }
+
+                if(!input.ToLower().EndsWith(";"))
+                {
+                    input = $"{input};";
+                }
+
+
                 // rework input to get all the query within the webapi
                 input = input.Replace("\"", "\\\"");
 
-                var client = new RestClient(CustomParameter.ROSLYNAPIURL);
+                var client = new RestClient($"{CustomParameter.ROSLYNAPIURL}/convert");
                 var request = new RestRequest(Method.POST);
                 request.AddHeader("cache-control", "no-cache");
                 request.AddHeader("Content-Type", "application/json");
@@ -159,8 +172,14 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             List<string> conditionExpressions = new List<string>();
             foreach (var condition in conditions)
             {
-                var schemaAttributeName = entityMetadata.Attributes.Where(x => x.LogicalName == condition.AttributeName)
-                    .Select(x => x.SchemaName).FirstOrDefault();
+                var attributeDetails = entityMetadata.Attributes.Where(x => x.LogicalName == condition.AttributeName).FirstOrDefault();
+                var schemaAttributeName = attributeDetails.SchemaName;
+
+                if (new List<AttributeTypeCode>() { AttributeTypeCode.Picklist, AttributeTypeCode.Money}
+                        .Contains(attributeDetails.AttributeType.Value))
+                    schemaAttributeName += ".Value";
+                if (attributeDetails.AttributeType == AttributeTypeCode.Lookup)
+                    schemaAttributeName += ".Id.ToString()";
 
                 var formatedCondition = this.converterHelper.ConditionHandling("queryexpression", "linq",
                     condition.Operator.ToString(), schemaAttributeName, condition.Values.ToList());

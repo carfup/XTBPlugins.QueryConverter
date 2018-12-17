@@ -28,11 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QueryConverter));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButtonCloseTool = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButtonOpenFXB = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButtonReturnQuery = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButtonOptions = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButtonHelp = new System.Windows.Forms.ToolStripButton();
@@ -69,6 +72,8 @@
             this.toolStripSeparator1,
             this.toolStripButtonOpenFXB,
             this.toolStripSeparator2,
+            this.toolStripButtonReturnQuery,
+            this.toolStripSeparator4,
             this.toolStripButtonOptions,
             this.toolStripSeparator3,
             this.toolStripButtonHelp});
@@ -106,6 +111,20 @@
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButtonReturnQuery
+            // 
+            this.toolStripButtonReturnQuery.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonReturnQuery.Image")));
+            this.toolStripButtonReturnQuery.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonReturnQuery.Name = "toolStripButtonReturnQuery";
+            this.toolStripButtonReturnQuery.Size = new System.Drawing.Size(97, 22);
+            this.toolStripButtonReturnQuery.Text = "Return Query";
+            this.toolStripButtonReturnQuery.Click += new System.EventHandler(this.toolStripButtonReturnQuery_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
             // 
             // toolStripButtonOptions
             // 
@@ -384,5 +403,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton toolStripButtonHelp;
+        private System.Windows.Forms.ToolStripButton toolStripButtonReturnQuery;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
     }
 }

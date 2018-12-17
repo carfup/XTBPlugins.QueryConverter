@@ -152,6 +152,7 @@
     <Compile Include="AppCode\Converters\WebApiTo.cs" />
     <Compile Include="AppCode\LogUsage.cs" />
     <Compile Include="AppCode\PluginSettings.cs" />
+    <Compile Include="AppCode\QueryConverterMessageBusArgument.cs" />
     <Compile Include="Forms\HelpForm.cs">
       <SubType>Form</SubType>
     </Compile>

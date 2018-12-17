@@ -40,5 +40,6 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         public const string ConvertedWithRoslyn = "ConvertedWithRoslyn";
         public const string InputQueryEmpty = "InputQueryEmpty";
         public const string ModulesLoaded = "ModulesLoaded";
+        public const string ReturnedTo = "ReturnTo";
     }
 }

@@ -12,8 +12,12 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
 
         private TelemetryClient telemetry = null;
         private bool forceLog { get; set; } = false;
-
         private QueryConverter qc = null;
+
+        /// <summary>
+        /// LogUsage constructor class
+        /// </summary>
+        /// <param name="qc">QueryConverter class objact</param>
         public LogUsage(QueryConverter qc)
         {
             this.qc = qc;
@@ -25,11 +29,20 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
             this.telemetry.Context.User.Id = Guid.NewGuid().ToString();
         }
 
+        /// <summary>
+        /// For the logging if necessary
+        /// </summary>
         public void updateForceLog()
         {
             this.forceLog = true;
         }
 
+        /// <summary>
+        /// Log data into App Insights
+        /// </summary>
+        /// <param name="type">type of event (event, exception, trace)</param>
+        /// <param name="action">what was done</param>
+        /// <param name="exception">exception stack if necessary</param>
         public void LogData(string type, string action, Exception exception = null)
         {
             if (this.qc.settings.AllowLogUsage == true || this.forceLog)
@@ -55,12 +68,19 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
                 this.forceLog = false;
         }
 
+        /// <summary>
+        /// Flush to send the telemetry to azure
+        /// </summary>
         public void Flush()
         {
             this.telemetry.Flush();
         }
 
-
+        /// <summary>
+        /// Completion of log with some info from the Plugin and XrmToolBox app
+        /// </summary>
+        /// <param name="action">the action to log</param>
+        /// <returns>the dictionary which will complete the initial log to send to azure</returns>
         public Dictionary<string, string> completeLog(string action = null)
         {
             Dictionary<string, string> dictionary = new Dictionary<string, string>
@@ -76,6 +96,9 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
             return dictionary;
         }
 
+        /// <summary>
+        /// Prompt a form to let the user know that by default there is logging
+        /// </summary>
         internal void PromptToLog()
         {
             var msg = "Anonymous statistics will be collected to improve plugin functionalities.\n\n" +

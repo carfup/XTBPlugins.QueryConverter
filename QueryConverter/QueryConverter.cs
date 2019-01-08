@@ -31,6 +31,7 @@ namespace Carfup.XTBPlugins.QueryConverter
 
         public event EventHandler<MessageBusEventArgs> OnOutgoingMessage;
 
+
         public void OnIncomingMessage(MessageBusEventArgs message)
         {
             callerArgs = message;
@@ -83,9 +84,14 @@ namespace Carfup.XTBPlugins.QueryConverter
                 if (proceed != "")
                     ExecuteMethod(ProcessToConversion);
             }
-            
         }
 
+        /// <summary>
+        /// Detect which type of query is pushed to the input code editor field 
+        /// </summary>
+        /// <param name="query">query code</param>
+        /// <param name="displayAlert">display popup for not recognize query</param>
+        /// <returns></returns>
         private string DetectQueryType(string query, bool displayAlert = true)
         {
             try
@@ -121,6 +127,11 @@ namespace Carfup.XTBPlugins.QueryConverter
             return "";            
         }
 
+        /// <summary>
+        /// Return the type of query to be converted for the code editor rendering
+        /// </summary>
+        /// <param name="type">query type</param>
+        /// <returns></returns>
         private string GetCodeEditorHighlight(string type)
         {
             switch (type.ToLower())
@@ -145,6 +156,9 @@ namespace Carfup.XTBPlugins.QueryConverter
             inputCodeEditor.Text = data;
         }
 
+        /// <summary>
+        /// Call the helpers to perform the actual conversion from the input into output query wanted
+        /// </summary>
         private void ProcessToConversion()
         {
             string inputType = comboBoxInput.Text;
@@ -187,6 +201,10 @@ namespace Carfup.XTBPlugins.QueryConverter
             ManageMandatoryFields(comboBoxOutput.Text);
         }
 
+        /// <summary>
+        /// Based on the query type, we display or not some fields
+        /// </summary>
+        /// <param name="type">Query Type</param>
         private void ManageMandatoryFields(string type)
         {
             switch (type.ToLower())
@@ -211,6 +229,9 @@ namespace Carfup.XTBPlugins.QueryConverter
             }
         }
 
+        /// <summary>
+        /// Allow user to update the theme for the code editor rendering
+        /// </summary>
         public void UpdateThemeDisplayed()
         {
             var inputData = inputCodeEditor.Text;
@@ -254,6 +275,9 @@ namespace Carfup.XTBPlugins.QueryConverter
             });
         }
 
+        /// <summary>
+        /// Saving settings if user updates any
+        /// </summary>
         public void SaveSettings()
         {
             log.LogData(EventType.Event, LogAction.SettingsSaved);
@@ -261,6 +285,9 @@ namespace Carfup.XTBPlugins.QueryConverter
             UpdateThemeDisplayed();
         }
 
+        /// <summary>
+        /// Load user settings to prefill some information with his preferences
+        /// </summary>
         private void LoadSetting()
         {
             try
@@ -287,6 +314,9 @@ namespace Carfup.XTBPlugins.QueryConverter
             }
         }
 
+        /// <summary>
+        /// Return the version of the plugin assembly
+        /// </summary>
         public static string CurrentVersion
         {
             get

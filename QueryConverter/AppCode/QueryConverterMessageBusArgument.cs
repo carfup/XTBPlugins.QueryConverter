@@ -26,6 +26,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         public string TypeToReturn { get; set; }
 
         public QueryExpression queryExpression { get; set; }
+        public string queryExpressionString { get; set; }
         public string Linq { get; set; }
         public string WebApi { get; set; }
         public string FetchXml { get; set; }
@@ -34,6 +35,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
     public enum QCMessageBusRequest
     {
         FetchXML,
+        QueryExpressionString,
         QueryExpression,
         WebApi,
         Linq,

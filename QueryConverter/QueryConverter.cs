@@ -40,9 +40,25 @@ namespace Carfup.XTBPlugins.QueryConverter
             {
                 if (message.TargetArgument is QueryConverterMessageBusArgument)
                 {
-                    var qCArg = (QueryConverterMessageBusArgument)message.TargetArgument;
-                    query = qCArg.FetchXml;
-                    comboBoxInput.SelectedItem = qCArg.qCRequest.ToString();
+                    var qcArg = (QueryConverterMessageBusArgument)message.TargetArgument;
+                    comboBoxInput.SelectedItem = qcArg.qCRequest.ToString();
+
+                    switch (qcArg.qCRequest)
+                    {
+                        case QCMessageBusRequest.FetchXML:
+                            query = qcArg.FetchXml;
+                            break;
+                        case QCMessageBusRequest.Linq:
+                            query = qcArg.Linq;
+                            break;
+                        case QCMessageBusRequest.QueryExpression:
+                        case QCMessageBusRequest.QueryExpressionString:
+                            query = qcArg.queryExpressionString;
+                            break;
+                        case QCMessageBusRequest.WebApi:
+                            query = qcArg.WebApi;
+                            break;
+                    }
                 }
                 else if (message.TargetArgument is string)
                 {
@@ -52,6 +68,9 @@ namespace Carfup.XTBPlugins.QueryConverter
 
                 inputCodeEditor.Text = query;
             }
+
+            toolStripButtonReturnQuery.Visible = true;
+            toolStripSeparator4.Visible = true;
         }
 
         private void QueryConverter_Load(object sender, EventArgs e)
@@ -396,6 +415,7 @@ namespace Carfup.XTBPlugins.QueryConverter
             helpDlg.ShowDialog(this);
         }
 
+        // Thanks to Jonas Rapp for this piece of code !
         private void toolStripButtonReturnQuery_Click(object sender, EventArgs e)
         {
             if (callerArgs == null)
@@ -417,16 +437,16 @@ namespace Carfup.XTBPlugins.QueryConverter
                         qcArgs.FetchXml = result;
                         break;
 
-                    //case QCMessageBusRequest.QueryExpression:
-                    //    qcArgs.queryExpression = result;
-                    //    break;
+                    case QCMessageBusRequest.QueryExpressionString:
+                        qcArgs.queryExpressionString = result;
+                        break;
 
                     case QCMessageBusRequest.WebApi:
                         qcArgs.WebApi = result;
                         break;
 
                     case QCMessageBusRequest.Linq:
-                        qcArgs.WebApi = result;
+                        qcArgs.Linq = result;
                         break;
                 }
                 message.TargetArgument = qcArgs;
@@ -436,6 +456,9 @@ namespace Carfup.XTBPlugins.QueryConverter
                 message.TargetArgument = result;
             }
             OnOutgoingMessage(this, message);
+
+            toolStripButtonReturnQuery.Visible = false;
+            toolStripSeparator4.Visible = false;
         }
     }
 }

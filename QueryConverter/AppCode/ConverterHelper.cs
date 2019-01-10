@@ -25,6 +25,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         public QueryExpressionTo queryExpressionTo = null;
         public WebApiTo webApiTo = null;
         public FetchXMLTo fetchXmlTo = null;
+        public QueryExpression queryExpressionObject = null;
         public string inputType { get; set; } = null;
         public string outputType { get; set; } = null;
         public string inputQuery { get; set; } = null;
@@ -87,6 +88,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
                 var codeBeautifier = CodeBeautifier.doIt();
 
                 outputQuery = codeBeautifier;
+                queryExpressionObject = query;
             }
             // FetchXML to WebApi
             else if (this.inputType == ConstantHelper.FetchXml && this.outputType == ConstantHelper.WebApi) 
@@ -105,6 +107,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
                 CodeBeautifier.input = this.webApiTo.ProcessToQueryExpression(inputQuery);
                 var codeBeautifier = CodeBeautifier.doIt();
                 outputQuery = codeBeautifier;
+
             }
             // WebApi to FetchXML
             else if (this.inputType == ConstantHelper.WebApi && this.outputType == ConstantHelper.FetchXml) 

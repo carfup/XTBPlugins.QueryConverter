@@ -175,7 +175,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
                 var attributeDetails = entityMetadata.Attributes.Where(x => x.LogicalName == condition.AttributeName).FirstOrDefault();
                 var schemaAttributeName = attributeDetails.SchemaName;
 
-                if (new List<AttributeTypeCode>() { AttributeTypeCode.Picklist, AttributeTypeCode.Money}
+                if (attributeDetails.AttributeType != null && new List<AttributeTypeCode>() { AttributeTypeCode.Picklist, AttributeTypeCode.Money}
                         .Contains(attributeDetails.AttributeType.Value))
                     schemaAttributeName += ".Value";
                 if (attributeDetails.AttributeType == AttributeTypeCode.Lookup)

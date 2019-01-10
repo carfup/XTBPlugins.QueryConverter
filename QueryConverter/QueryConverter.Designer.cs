@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QueryConverter));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButtonCloseTool = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -116,7 +115,7 @@
             // 
             // toolStripButtonReturnQuery
             // 
-            this.toolStripButtonReturnQuery.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonReturnQuery.Image")));
+            this.toolStripButtonReturnQuery.Image = global::Carfup.XTBPlugins.Properties.Resources.arrow_return_64;
             this.toolStripButtonReturnQuery.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonReturnQuery.Name = "toolStripButtonReturnQuery";
             this.toolStripButtonReturnQuery.Size = new System.Drawing.Size(168, 34);

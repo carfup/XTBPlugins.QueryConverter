@@ -799,6 +799,10 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.On",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValue={value})"
+      },
+      "linq": {
+        "operator": "equal",
+        "conditionpattern": "w.{propName}.{operator}({value})"
       }
     },
     {
@@ -809,6 +813,24 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.OnOrAfter",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValue={value})"
+      },
+      "linq": {
+        "operator": ">=",
+        "conditionpattern": "w.{propName}.Value {operator} {value}"
+      }
+    },
+    {
+      "queryexpression": {
+        "operator": "OnOrBefore",
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
+      },
+      "webapi": {
+        "operator": "Microsoft.Dynamics.CRM.OnOrBefore",
+        "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValue={value})"
+      },
+      "linq": {
+        "operator": "<=",
+        "conditionpattern": "w.{propName}.Value {operator} {value}"
       }
     },
     {

@@ -22,7 +22,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
     {
         
         public static string INSIGHTS_INTRUMENTATIONKEY = "INSIGHTS_INTRUMENTATIONKEY_TOREPLACE";
-        public static string ROSLYNAPIURL = "ROSLYNAPIURL_TOREPLACE";
+        public static string ROSLYNAPIURL = "https://carfup-xtbpluginswebapi.azurewebsites.net/api/roslyn/convert";
     }
 
     // EventType to qualify which action was performed by the plugin
@@ -40,5 +40,6 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         public const string ConvertedWithRoslyn = "ConvertedWithRoslyn";
         public const string InputQueryEmpty = "InputQueryEmpty";
         public const string ModulesLoaded = "ModulesLoaded";
+        public const string ReturnedTo = "ReturnTo";
     }
 }

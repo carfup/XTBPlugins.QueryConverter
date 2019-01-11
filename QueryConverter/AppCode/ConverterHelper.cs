@@ -25,6 +25,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         public QueryExpressionTo queryExpressionTo = null;
         public WebApiTo webApiTo = null;
         public FetchXMLTo fetchXmlTo = null;
+        public QueryExpression queryExpressionObject = null;
         public string inputType { get; set; } = null;
         public string outputType { get; set; } = null;
         public string inputQuery { get; set; } = null;
@@ -32,6 +33,11 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         public string queryVariableName = "query";
         public string serviceContextName = "ServiceContext";
 
+        /// <summary>
+        /// Constructor of the ConverterHelper class which is then used in all converters class
+        /// </summary>
+        /// <param name="service">IOrganizationService from the CRM SDK</param>
+        /// <param name="log">Log class</param>
         public ConverterHelper(IOrganizationService service, LogUsage log = null)
         {
             this.service = service;
@@ -42,6 +48,13 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
             this.operators = LoadOperatorsMapping();
         }
 
+        /// <summary>
+        /// Process the conversion from input type query to wanted output type query
+        /// </summary>
+        /// <param name="inputType">Input type query</param>
+        /// <param name="outputType">Output type query</param>
+        /// <param name="inputQuery">Query to be converted</param>
+        /// <returns></returns>
         public string ProcessQuery(string inputType, string outputType, string inputQuery)
         {
             this.inputQuery = inputQuery;
@@ -75,6 +88,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
                 var codeBeautifier = CodeBeautifier.doIt();
 
                 outputQuery = codeBeautifier;
+                queryExpressionObject = query;
             }
             // FetchXML to WebApi
             else if (this.inputType == ConstantHelper.FetchXml && this.outputType == ConstantHelper.WebApi) 
@@ -93,6 +107,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
                 CodeBeautifier.input = this.webApiTo.ProcessToQueryExpression(inputQuery);
                 var codeBeautifier = CodeBeautifier.doIt();
                 outputQuery = codeBeautifier;
+
             }
             // WebApi to FetchXML
             else if (this.inputType == ConstantHelper.WebApi && this.outputType == ConstantHelper.FetchXml) 
@@ -115,6 +130,10 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         }
 
          
+        /// <summary>
+        /// Get the CRM version used in the webapi converter
+        /// </summary>
+        /// <returns>X.X</returns>
         public string GetCrmVersion()
         {
             RetrieveVersionRequest req = new RetrieveVersionRequest();
@@ -125,6 +144,11 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
             return $"{versionNumber[0]}.{versionNumber[1]}";
         }
 
+        /// <summary>
+        /// For some usage we need to get the plural name of entities
+        /// </summary>
+        /// <param name="entity">Name of entity</param>
+        /// <returns></returns>
         public string GetEntityPlural(string entity)
         {
             var request = new RetrieveEntityRequest()
@@ -139,6 +163,10 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
             return result.EntityMetadata.CollectionSchemaName.ToLower();
         }
 
+        /// <summary>
+        /// Load the mapping of condition operator for conversion
+        /// </summary>
+        /// <returns>the list of all the mappings in JObject</returns>
         private JObject LoadOperatorsMapping()
         {
             var assembly = Assembly.GetExecutingAssembly();
@@ -152,6 +180,14 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
             }
         }
 
+        /// <summary>
+        /// Looking for an operator condition within the mapping
+        /// </summary>
+        /// <param name="fromQueryType">query type of the input</param>
+        /// <param name="toQueryType">query type of the output</param>
+        /// <param name="operatorToSearch">operator to look for</param>
+        /// <param name="sampleValue">values linked to that operator from the input query</param>
+        /// <returns>a string with the formatting of the output query type operator</returns>
         private JToken LookForOperator(string fromQueryType, string toQueryType, string operatorToSearch, object sampleValue)
         {
             try
@@ -184,6 +220,15 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
             }
         }
 
+        /// <summary>
+        /// Handling condition specifics from the operator
+        /// </summary>
+        /// <param name="fromType">input query type</param>
+        /// <param name="toType">output query type</param>
+        /// <param name="operatorToLookFor">operator to look for</param>
+        /// <param name="attribute">crm attribute name</param>
+        /// <param name="valuesList">value(s) to link with the operator</param>
+        /// <returns>string formatted condition</returns>
         public string ConditionHandling(string fromType, string toType, string operatorToLookFor, string attribute, List<object> valuesList)
         {
             var operatorToken = LookForOperator(fromType, toType, operatorToLookFor, valuesList?.FirstOrDefault());

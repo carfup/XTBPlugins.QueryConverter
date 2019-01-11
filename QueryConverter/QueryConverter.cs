@@ -7,8 +7,6 @@ using System.Diagnostics;
 using Carfup.XTBPlugins.QueryConverter.AppCode;
 using Carfup.XTBPlugins.Forms;
 using Carfup.XTBPlugins.QueryConverter.Forms;
-using RestSharp;
-using System.Threading.Tasks;
 
 namespace Carfup.XTBPlugins.QueryConverter
 {
@@ -18,7 +16,8 @@ namespace Carfup.XTBPlugins.QueryConverter
         ConverterHelper converter = null;
         internal PluginSettings settings = new PluginSettings();
         public LogUsage log = null;
-        
+        private MessageBusEventArgs callerArgs = null;
+
 
         public string RepositoryName { get; } = "XTBPlugins.QueryConverter";
 
@@ -32,53 +31,57 @@ namespace Carfup.XTBPlugins.QueryConverter
 
         public event EventHandler<MessageBusEventArgs> OnOutgoingMessage;
 
+
         public void OnIncomingMessage(MessageBusEventArgs message)
         {
-            if (message.SourcePlugin == "FetchXML Builder" && message.TargetArgument is string)
+            callerArgs = message;
+            string query = null;
+            if (message.TargetArgument != null)
             {
-                inputCodeEditor.Text = (message.TargetArgument); 
+                if (message.TargetArgument is QueryConverterMessageBusArgument)
+                {
+                    var qcArg = (QueryConverterMessageBusArgument)message.TargetArgument;
+                    comboBoxInput.SelectedItem = qcArg.qCRequest.ToString();
+
+                    switch (qcArg.qCRequest)
+                    {
+                        case QCMessageBusRequest.FetchXML:
+                            query = qcArg.FetchXml;
+                            break;
+                        case QCMessageBusRequest.Linq:
+                            query = qcArg.Linq;
+                            break;
+                        case QCMessageBusRequest.QueryExpression:
+                        case QCMessageBusRequest.QueryExpressionString:
+                            query = qcArg.queryExpressionString;
+                            break;
+                        case QCMessageBusRequest.WebApi:
+                            query = qcArg.WebApi;
+                            break;
+                    }
+                }
+                else if (message.TargetArgument is string)
+                {
+                    query = (string)message.TargetArgument;
+                    DetectQueryType(inputCodeEditor.Text);
+                }
+
+                inputCodeEditor.Text = query;
             }
+
+            toolStripButtonReturnQuery.Visible = true;
+            toolStripSeparator4.Visible = true;
         }
 
-        private void QueryConverter_Load(object sender, EventArgs evt)
+        private void QueryConverter_Load(object sender, EventArgs e)
         {
-            Invoke(new Action(() =>
-            {
-                WorkAsync(new WorkAsyncInfo
-                {
-                    Message = "Loading necessary modules...",
-                    Work = (bw, e) =>
-                    {
-                        log = new LogUsage(this);
-                        log.LogData(EventType.Event, LogAction.PluginOpened);
-                        LoadSetting();
+            log = new LogUsage(this);
+            log.LogData(EventType.Event, LogAction.PluginOpened);
+            LoadSetting();
 
-                        converter = new ConverterHelper(Service, log);
-
-                        inputCodeEditor.HighlighterMode = "csharp";
-                        outputCodeEditor.HighlighterMode = "csharp";
-                        UpdateThemeDisplayed();
-
-                        //just making sure the api is not in idle mode :)
-                        var client = new RestClient($"{CustomParameter.ROSLYNAPIURL}/wampup");
-                        var request = new RestRequest(Method.GET);
-                        request.AddHeader("cache-control", "no-cache");
-                        request.AddHeader("Content-Type", "application/json");
-                        var warmup = client.ExecuteAsync(request, null);
-                    },
-                    PostWorkCallBack = e =>
-                    {
-                        if (e.Error != null)
-                        {
-                            MessageBox.Show(this, e.Error.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            this.log.LogData(EventType.Exception, LogAction.ModulesLoaded, e.Error);
-                            return;
-                        }
-                    },
-                    ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
-                });
-            }));
-            
+            inputCodeEditor.HighlighterMode = "csharp";
+            outputCodeEditor.HighlighterMode = "csharp";
+            UpdateThemeDisplayed();
         }
 
         private void toolStripButtonCloseTool_Click(object sender, System.EventArgs e)
@@ -88,7 +91,7 @@ namespace Carfup.XTBPlugins.QueryConverter
 
         private void buttonConvert_Click(object sender, EventArgs evt)
         {
-            if (inputCodeEditor.Text == "" || inputCodeEditor.Text == null)
+            if (String.IsNullOrEmpty(inputCodeEditor.Text))
             {
                 this.log.LogData(EventType.Event, LogAction.InputQueryEmpty);
                 MessageBox.Show("The input box is empty. Fill it with your query !", "The input box is empty!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -100,9 +103,14 @@ namespace Carfup.XTBPlugins.QueryConverter
                 if (proceed != "")
                     ExecuteMethod(ProcessToConversion);
             }
-            
         }
 
+        /// <summary>
+        /// Detect which type of query is pushed to the input code editor field 
+        /// </summary>
+        /// <param name="query">query code</param>
+        /// <param name="displayAlert">display popup for not recognize query</param>
+        /// <returns></returns>
         private string DetectQueryType(string query, bool displayAlert = true)
         {
             try
@@ -138,6 +146,11 @@ namespace Carfup.XTBPlugins.QueryConverter
             return "";            
         }
 
+        /// <summary>
+        /// Return the type of query to be converted for the code editor rendering
+        /// </summary>
+        /// <param name="type">query type</param>
+        /// <returns></returns>
         private string GetCodeEditorHighlight(string type)
         {
             switch (type.ToLower())
@@ -162,6 +175,9 @@ namespace Carfup.XTBPlugins.QueryConverter
             inputCodeEditor.Text = data;
         }
 
+        /// <summary>
+        /// Call the helpers to perform the actual conversion from the input into output query wanted
+        /// </summary>
         private void ProcessToConversion()
         {
             string inputType = comboBoxInput.Text;
@@ -204,6 +220,10 @@ namespace Carfup.XTBPlugins.QueryConverter
             ManageMandatoryFields(comboBoxOutput.Text);
         }
 
+        /// <summary>
+        /// Based on the query type, we display or not some fields
+        /// </summary>
+        /// <param name="type">Query Type</param>
         private void ManageMandatoryFields(string type)
         {
             switch (type.ToLower())
@@ -228,52 +248,55 @@ namespace Carfup.XTBPlugins.QueryConverter
             }
         }
 
+        /// <summary>
+        /// Allow user to update the theme for the code editor rendering
+        /// </summary>
         public void UpdateThemeDisplayed()
         {
             var inputData = inputCodeEditor.Text;
             var outputData = outputCodeEditor.Text;
 
-            Invoke(new Action(() =>
+            WorkAsync(new WorkAsyncInfo
             {
-                WorkAsync(new WorkAsyncInfo
+                Message = "Modifying the theme...",
+                Work = (bw, e) =>
                 {
-                    Message = "Modifying the theme...",
-                    Work = (bw, e) =>
+                    Invoke(new Action(() =>
                     {
-                        Invoke(new Action(() =>
+                        if(inputCodeEditor.Theme != this.settings.FavoriteTheme)
                         {
-                            if (inputCodeEditor.Theme != this.settings.FavoriteTheme)
-                            {
-                                inputCodeEditor.Theme = this.settings.FavoriteTheme;
-                                inputCodeEditor.Load();
-                            }
-
-                            if (outputCodeEditor.Theme != this.settings.FavoriteTheme)
-                            {
-                                outputCodeEditor.Theme = this.settings.FavoriteTheme;
-                                outputCodeEditor.Load();
-                            }
-                        }));
-                    },
-                    PostWorkCallBack = e =>
-                    {
-                        if (e.Error != null)
-                        {
-                            MessageBox.Show(this, e.Error.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            this.log.LogData(EventType.Exception, LogAction.ThemeModified, e.Error);
-                            return;
+                            inputCodeEditor.Theme = this.settings.FavoriteTheme;
+                            inputCodeEditor.Load();
                         }
 
-                        inputCodeEditor.Text = inputData;
-                        outputCodeEditor.Text = outputData;
+                        if(outputCodeEditor.Theme != this.settings.FavoriteTheme)
+                        {
+                            outputCodeEditor.Theme = this.settings.FavoriteTheme;
+                            outputCodeEditor.Load();
+                        }
+                    }));
+                },
+                PostWorkCallBack = e =>
+                {
+                    if (e.Error != null)
+                    {
+                        MessageBox.Show(this, e.Error.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        this.log.LogData(EventType.Exception, LogAction.ThemeModified, e.Error);
+                        return;
+                    }
 
-                        this.log.LogData(EventType.Event, LogAction.ThemeModified);
-                    },
-                    ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
-                });
-            }));
+                    inputCodeEditor.Text = inputData;
+                    outputCodeEditor.Text = outputData;
+
+                    this.log.LogData(EventType.Event, LogAction.ThemeModified);
+                },
+                ProgressChanged = e => { SetWorkingMessage(e.UserState.ToString()); }
+            });
         }
 
+        /// <summary>
+        /// Saving settings if user updates any
+        /// </summary>
         public void SaveSettings()
         {
             log.LogData(EventType.Event, LogAction.SettingsSaved);
@@ -281,6 +304,9 @@ namespace Carfup.XTBPlugins.QueryConverter
             UpdateThemeDisplayed();
         }
 
+        /// <summary>
+        /// Load user settings to prefill some information with his preferences
+        /// </summary>
         private void LoadSetting()
         {
             try
@@ -307,6 +333,9 @@ namespace Carfup.XTBPlugins.QueryConverter
             }
         }
 
+        /// <summary>
+        /// Return the version of the plugin assembly
+        /// </summary>
         public static string CurrentVersion
         {
             get
@@ -343,7 +372,7 @@ namespace Carfup.XTBPlugins.QueryConverter
 
         private void textBoxQueryVariable_TextChanged(object sender, EventArgs e)
         {
-                    this.converter.queryVariableName = textBoxQueryVariable.Text;
+            this.converter.queryVariableName = textBoxQueryVariable.Text;
         }
 
         private void textBoxCrmContext_TextChanged(object sender, EventArgs e)
@@ -384,6 +413,52 @@ namespace Carfup.XTBPlugins.QueryConverter
         {
             var helpDlg = new HelpForm();
             helpDlg.ShowDialog(this);
+        }
+
+        // Thanks to Jonas Rapp for this piece of code !
+        private void toolStripButtonReturnQuery_Click(object sender, EventArgs e)
+        {
+            if (callerArgs == null)
+                return;
+
+            this.log.LogData(EventType.Event, $"{LogAction.ReturnedTo}-{callerArgs.SourcePlugin}");
+            var result = outputCodeEditor.Text;
+
+            if (string.IsNullOrWhiteSpace(result))
+                return;
+
+            var message = new MessageBusEventArgs(callerArgs.SourcePlugin);
+            if (callerArgs.TargetArgument is QueryConverterMessageBusArgument)
+            {
+                var qcArgs = (QueryConverterMessageBusArgument)callerArgs.TargetArgument;
+                switch (qcArgs.qCRequest)
+                {
+                    case QCMessageBusRequest.FetchXML:
+                        qcArgs.FetchXml = result;
+                        break;
+
+                    case QCMessageBusRequest.QueryExpressionString:
+                        qcArgs.queryExpressionString = result;
+                        break;
+
+                    case QCMessageBusRequest.WebApi:
+                        qcArgs.WebApi = result;
+                        break;
+
+                    case QCMessageBusRequest.Linq:
+                        qcArgs.Linq = result;
+                        break;
+                }
+                message.TargetArgument = qcArgs;
+            }
+            else
+            {
+                message.TargetArgument = result;
+            }
+            OnOutgoingMessage(this, message);
+
+            toolStripButtonReturnQuery.Visible = false;
+            toolStripSeparator4.Visible = false;
         }
     }
 }

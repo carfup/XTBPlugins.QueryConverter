@@ -434,6 +434,8 @@ namespace Carfup.XTBPlugins.QueryConverter
                 switch (qcArgs.qCRequest)
                 {
                     case QCMessageBusRequest.FetchXML:
+                        // STILL REALLY UGLY
+                        result = result.Replace("useraworderby=\"false\"", "").Replace("useraworderby=\"true\"", "");
                         qcArgs.FetchXml = result;
                         break;
 

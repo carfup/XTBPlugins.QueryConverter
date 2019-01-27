@@ -14,6 +14,10 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         public string entityName = null;
         public ConverterHelper converterHelper = null;
 
+        /// <summary>
+        /// Constructor for the converter from FetchXML
+        /// </summary>
+        /// <param name="converterHelper">instance of the ConverterHelper</param>
         public FetchXMLTo(ConverterHelper converterHelper)
         {
             this.converterHelper = converterHelper;
@@ -75,6 +79,11 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return result;
         }
 
+        /// <summary>
+        /// Transform a fetchxml query into QueryExpression query using the SDK
+        /// </summary>
+        /// <param name="input">the FetchXML query</param>
+        /// <returns>the related QueryExpression Query</returns>
         public QueryExpression FromStringToQueryExpression(string input)
         {
             var conversionRequest = new FetchXmlToQueryExpressionRequest
@@ -91,6 +100,12 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
 
             return queryExpression;
         }
+
+        /// <summary>
+        /// Handles the conversion of the orders from fetchxml to QueryExpression
+        /// </summary>
+        /// <param name="ordersList">List of OrderExpression from the QueryExpression object</param>
+        /// <returns>converted orders into string with QueryExpression syntax</returns>
         public string ManagerOrders(DataCollection<OrderExpression> ordersList)
         {
             var orders = "";
@@ -113,7 +128,12 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return orders;
         }
 
-
+        /// <summary>
+        /// Handles the conversion of the criteria from fetchxml to QueryExpression
+        /// </summary>
+        /// <param name="criteria">FilterExpression from the QueryExpression object</param>
+        /// <param name="linkEntity">Is there any link entities</param>
+        /// <returns>converted criteria into string with QueryExpression syntax</returns>
         public string ManageCriteria(FilterExpression criteria, bool linkEntity = false)
         {
             var conditions = "";

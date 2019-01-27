@@ -463,6 +463,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.Next7Days",
         "conditionpattern": "{operator}(PropertyName='{propName}')"
+      },
+      "linq": {
+        "operator": "Next7Days",
+        "conditionpattern": "w.{propName}.Value >= {value} && w.{propName}.Value < {value2}",
+        "valuerendering": "Next7Days"
       }
     },
     {
@@ -493,6 +498,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextMonth",
         "conditionpattern": "{operator}(PropertyName='{propName}')"
+      },
+      "linq": {
+        "operator": "NextMonth",
+        "conditionpattern": "w.{propName}.Value >= {value} && w.{propName}.Value < {value2}",
+        "valuerendering": "NextMonth"
       }
     },
     {
@@ -503,6 +513,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextWeek",
         "conditionpattern": "{operator}(PropertyName='{propName}')"
+      },
+      "linq": {
+        "operator": "NextWeek",
+        "conditionpattern": "w.{propName}.Value >= {value} && w.{propName}.Value < {value2}",
+        "valuerendering": "NextWeek"
       }
     },
     {
@@ -513,6 +528,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextXDays",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValue={value})"
+      },
+      "linq": {
+        "operator": "NextXDays",
+        "conditionpattern": "w.{propName}.Value >= {value} && w.{propName}.Value < {value2}",
+        "valuerendering": "NextXDays"
       }
     },
     {
@@ -543,6 +563,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextXHours",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValue={value})"
+      },
+      "linq": {
+        "operator": "NextXHours",
+        "conditionpattern": "w.{propName}.Value >= {value} && w.{propName}.Value < {value2}",
+        "valuerendering": "NextXHours"
       }
     },
     {
@@ -553,6 +578,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextXMonths",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValue={value})"
+      },
+      "linq": {
+        "operator": "NextXMonths",
+        "conditionpattern": "w.{propName}.Value >= {value} && w.{propName}.Value < {value2}",
+        "valuerendering": "NextXMonths"
       }
     },
     {
@@ -563,16 +593,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextXWeeks",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValue={value})"
-      }
-    },
-    {
-      "queryexpression": {
-        "operator": "NextXYears",
-        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}, {value}"
       },
-      "webapi": {
-        "operator": "Microsoft.Dynamics.CRM.NextXYears",
-        "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValue={value})"
+      "linq": {
+        "operator": "NextXWeeks",
+        "conditionpattern": "w.{propName}.Value >= {value} && w.{propName}.Value < {value2}",
+        "valuerendering": "NextXWeeks"
       }
     },
     {
@@ -583,6 +608,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextYear",
         "conditionpattern": "{operator}(PropertyName='{propName}')"
+      },
+      "linq": {
+        "operator": "NextYears",
+        "conditionpattern": "w.{propName}.Value >= {value} && w.{propName}.Value < {value2}",
+        "valuerendering": "NextYears"
       }
     },
     {
@@ -593,6 +623,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NextXYears",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValue={value})"
+      },
+      "linq": {
+        "operator": "NextXYears",
+        "conditionpattern": "w.{propName}.Value >= {value} && w.{propName}.Value < {value2}",
+        "valuerendering": "NextXYears"
       }
     },
     {
@@ -612,7 +647,7 @@
     {
       "queryexpression": {
         "operator": "NotEqualBusinessId",
-        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NotEqualBusinessId",
@@ -622,7 +657,7 @@
     {
       "queryexpression": {
         "operator": "NotEqualUserId",
-        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.NotEqualUserId",
@@ -739,6 +774,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.OlderThanXDays",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValue={value})"
+      },
+      "linq": {
+        "operator": "<",
+        "conditionpattern": "w.{propName}.Value {operator} {value}",
+        "valuerendering": "OlderThanXDays"
       }
     },
     {
@@ -749,6 +789,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.OlderThanXHours",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValue={value})"
+      },
+      "linq": {
+        "operator": "<",
+        "conditionpattern": "w.{propName}.Value {operator} {value}",
+        "valuerendering": "OlderThanXHours"
       }
     },
     {
@@ -759,6 +804,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.OlderThanXMinutes",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValue={value})"
+      },
+      "linq": {
+        "operator": "<",
+        "conditionpattern": "w.{propName}.Value {operator} {value}",
+        "valuerendering": "OlderThanXMinutes"
       }
     },
     {
@@ -769,6 +819,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.OlderThanXMonths",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValue={value})"
+      },
+      "linq": {
+        "operator": "<",
+        "conditionpattern": "w.{propName}.Value {operator} {value}",
+        "valuerendering": "OlderThanXMonths"
       }
     },
     {
@@ -779,6 +834,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.OlderThanXWeeks",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValue={value})"
+      },
+      "linq": {
+        "operator": "<",
+        "conditionpattern": "w.{propName}.Value {operator} {value}",
+        "valuerendering": "OlderThanXWeeks"
       }
     },
     {
@@ -789,6 +849,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.OlderThanXYears",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValue={value})"
+      },
+      "linq": {
+        "operator": "<",
+        "conditionpattern": "w.{propName}.Value {operator} {value}",
+        "valuerendering": "OlderThanXYears"
       }
     },
     {
@@ -802,7 +867,7 @@
       },
       "linq": {
         "operator": "equal",
-        "conditionpattern": "w.{propName}.{operator}({value})"
+        "conditionpattern": "w.{propName}.Value.{operator}({value})"
       }
     },
     {
@@ -851,6 +916,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.ThisMonth",
         "conditionpattern": "{operator}(PropertyName='{propName}')"
+      },
+      "linq": {
+        "operator": "ThisMonth",
+        "conditionpattern": "w.{propName}.Value >= {value} && w.{propName}.Value <= {value2}",
+        "valuerendering" :  "ThisMonth" 
       }
     },
     {
@@ -861,6 +931,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.ThisWeek",
         "conditionpattern": "{operator}(PropertyName='{propName}')"
+      },
+      "linq": {
+        "operator": "ThisWeek",
+        "conditionpattern": "w.{propName}.Value >= {value} && w.{propName}.Value <= {value2}",
+        "valuerendering": "ThisWeek"
       }
     },
     {
@@ -871,6 +946,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.ThisYear",
         "conditionpattern": "{operator}(PropertyName='{propName}')"
+      },
+      "linq": {
+        "operator": "ThisYear",
+        "conditionpattern": "w.{propName}.Value >= {value} && w.{propName}.Value <= {value2}",
+        "valuerendering": "ThisYear"
       }
     },
     {
@@ -881,6 +961,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.Today",
         "conditionpattern": "{operator}(PropertyName='{propName}')"
+      },
+      "linq": {
+        "operator": "==",
+        "conditionpattern": "w.{propName}.Value.ToShortDateString() {operator} {value}",
+        "valuerendering": "Today"
       }
     },
     {
@@ -891,6 +976,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.Tomorrow",
         "conditionpattern": "{operator}(PropertyName='{propName}')"
+      },
+      "linq": {
+        "operator": "==",
+        "conditionpattern": "w.{propName}.Value.ToShortDateString() {operator} {value}",
+        "valuerendering": "Tomorrow"
       }
     },
     {
@@ -901,6 +991,11 @@
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.Yesterday",
         "conditionpattern": "{operator}(PropertyName='{propName}')"
+      },
+      "linq": {
+        "operator": "==",
+        "conditionpattern": "w.{propName}.Value.ToShortDateString() {operator} {value}",
+        "valuerendering": "Yesterday"
       }
     }
 

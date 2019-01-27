@@ -49,6 +49,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         public const string OlderThanXMinutes = "OlderThanXMinutes";
         public const string OlderThanXHours = "OlderThanXHours";
         public const string OlderThanXDays = "OlderThanXDays";
+        public const string Between = "Between";
         #endregion
     }
 }

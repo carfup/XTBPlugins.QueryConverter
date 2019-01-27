@@ -23,11 +23,20 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         public ConverterHelper converterHelper = null;
         private EntityMetadata entityMetadata = null;
 
+        /// <summary>
+        /// QueryExpressionTo class constructor
+        /// </summary>
+        /// <param name="convertHelper"></param>
         public QueryExpressionTo(ConverterHelper convertHelper)
         {
             this.converterHelper = convertHelper;
         }
 
+        /// <summary>
+        /// Convert a QueryExpression in string format to FetchXml
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public string ProcessToFetchXml(string input)
         {
             var queryToTransform = this.FromStringToQueryExpression(input);
@@ -37,6 +46,11 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return doc.ToString();
         }
 
+        /// <summary>
+        /// Convert a QueryExpression to FetchXml
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
         public string FromQueryExpressionToFetchXml(QueryExpression query)
         {
             // Convert the FetchXML into a query expression.
@@ -51,6 +65,11 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return conversionResponse.FetchXml;
         }
 
+        /// <summary>
+        /// Convert a string into a QueryExpression
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public QueryExpression FromStringToQueryExpression(string input)
         {
             QueryExpression queryToTransform = null;
@@ -107,6 +126,11 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         }
 
         #region Linq
+        /// <summary>
+        /// Process the conversion from QE to LinQ
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
         public string ProcessToLinq(QueryExpression query)
         {
             LoadEntityMetadata(query.EntityName);
@@ -115,9 +139,23 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             var columns = ManageColumsetToLinq(query.ColumnSet);
             var order = ManageOrdersToLinq(query.Orders.ToList());
             var topCount = ManageTopCountToLinq(query.TopCount);
-            return entitySet + conditions + columns + order + topCount + ";";
+            var distinct = query.Distinct ? ".Distinct()": null;
+            return entitySet + conditions + columns + order + topCount + distinct + ";";
         }
 
+        /// <summary>
+        /// Next function to manage LinkEntities conversion ..
+        /// </summary>
+        public void ManageLinkEntities()
+        {
+            // ATTENTION ONLY LEFT OUTER SUPPORTED
+        }
+
+        /// <summary>
+        /// Handle TopCount attribute
+        /// </summary>
+        /// <param name="topCount"></param>
+        /// <returns></returns>
         public string ManageTopCountToLinq(int? topCount)
         {
             var result = "";
@@ -127,6 +165,12 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return result;
         }
 
+        /// <summary>
+        /// Handle the criteria from QE to LinQ
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <param name="linkEntity"></param>
+        /// <returns></returns>
         public string ManageCriteriaLinq(FilterExpression criteria, bool linkEntity = false)
         {
             var conditions = "";
@@ -165,6 +209,12 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return conditions;
         }
 
+        /// <summary>
+        /// Handle the conditions from QE to LinQ
+        /// </summary>
+        /// <param name="conditions"></param>
+        /// <param name="logicalOperator"></param>
+        /// <returns></returns>
         public string ManageConditionsToLinq(DataCollection<ConditionExpression> conditions, LogicalOperator logicalOperator)
         {
             var conditionsString = "(";
@@ -198,6 +248,11 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return conditionsString;
         }
 
+        /// <summary>
+        /// Handle the columns from QE to LinQ
+        /// </summary>
+        /// <param name="columnSet"></param>
+        /// <returns></returns>
         public string ManageColumsetToLinq(ColumnSet columnSet)
         {
             var columns = "";
@@ -218,6 +273,11 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return stringq;
         }
 
+        /// <summary>
+        /// Handle the Orders from QE to LinQ
+        /// </summary>
+        /// <param name="ordersList"></param>
+        /// <returns></returns>
         public string ManageOrdersToLinq(List<OrderExpression> ordersList)
         {
             var orders = "";
@@ -251,6 +311,12 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         #endregion
 
         #region WebApi
+
+        /// <summary>
+        /// Process the conversion from QE to WebApi
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public string ProcessToWebApi(string input)
         {
            // QueryExpressionTo queryExpressionTo = new QueryExpressionTo(this.convertHelper);
@@ -287,6 +353,11 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return completeLink;
         }
 
+        /// <summary>
+        /// Check if that's the first parameter or not (? or &)
+        /// </summary>
+        /// <param name="link"></param>
+        /// <returns></returns>
         private string exclaOrIntePoint(string link)
         {
             if (link.EndsWith("?"))
@@ -295,11 +366,21 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
                 return "&";
         }
 
+        /// <summary>
+        /// Manage TopCount from QE to WebApi
+        /// </summary>
+        /// <param name="topCount"></param>
+        /// <returns></returns>
         public string ManageTopCountToWebApi(int? topCount)
         {
             return topCount == null ? "" : $"$top={topCount.Value}";
         }
 
+        /// <summary>
+        /// Manager Orders from QE to WebApi
+        /// </summary>
+        /// <param name="orderExpressions"></param>
+        /// <returns></returns>
         public string ManageOrdersToWebApi(List<OrderExpression> orderExpressions)
         {
             var ordersString = "";
@@ -320,6 +401,14 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return ordersString;
         }
 
+        /// <summary>
+        /// Manage conditions from QE to WebApi
+        /// </summary>
+        /// <param name="filterExpression"></param>
+        /// <param name="conditionsString"></param>
+        /// <param name="depth"></param>
+        /// <param name="maxDepth"></param>
+        /// <returns></returns>
         public string ManageConditionsToWebApi(FilterExpression filterExpression, string conditionsString, int depth = 0, int maxDepth = 0)
         {
             
@@ -363,6 +452,12 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return conditionsString;
         }
 
+        /// <summary>
+        /// Manage Columns from QE to WebApi
+        /// </summary>
+        /// <param name="columnSet"></param>
+        /// <param name="linkEntity"></param>
+        /// <returns></returns>
         public string ManageColumsetToWebApi(ColumnSet columnSet, bool linkEntity = false)
         {
             var columns = "";
@@ -384,6 +479,10 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         }
         #endregion
 
+        /// <summary>
+        /// Load Entity Metadata for post processing
+        /// </summary>
+        /// <param name="entity"></param>
         public void LoadEntityMetadata(string entity)
         {
             var request = new RetrieveEntityRequest

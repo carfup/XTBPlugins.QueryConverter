@@ -45,6 +45,12 @@
         "operator": "Microsoft.Dynamics.CRM.Between",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValues=[{value}])"
       }
+        //,
+        //"linq": {
+        //  "operator": "Between",
+        //  "conditionpattern": "w.{propName}?.Value >= {value} && w.{propName}?.Value <= {value2}",
+        //  "valuerendering": "Between"
+        //}
     },
     {
       "queryexpression": {

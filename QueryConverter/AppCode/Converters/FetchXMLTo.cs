@@ -177,6 +177,11 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return conditions;
         }
 
+        /// <summary>
+        /// Managing the conditions conversion from a list of ConditionExpression to QE string condition
+        /// </summary>
+        /// <param name="conditions"></param>
+        /// <returns></returns>
         public string ManageConditions(DataCollection<ConditionExpression> conditions)
         {
             var conditionsString = "";
@@ -201,6 +206,12 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return conditionsString;
         }
 
+        /// <summary>
+        /// Managing the columnset conversion from a list of ConditionExpression to QE string columnset
+        /// </summary>
+        /// <param name="columnSet"></param>
+        /// <param name="linkEntity"></param>
+        /// <returns></returns>
         public string ManageColumset(ColumnSet columnSet, bool linkEntity = false)
         {
             var columns = "";
@@ -227,6 +238,14 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return stringq;
         }
 
+        /// <summary>
+        /// Managing the LinkEntities conversion from a list of ConditionExpression to QE string LinkEntities
+        /// </summary>
+        /// <param name="linkEntities"></param>
+        /// <param name="result"></param>
+        /// <param name="depth"></param>
+        /// <param name="entityNameFrom"></param>
+        /// <returns></returns>
         public string ManageLinkEntities(DataCollection<LinkEntity> linkEntities, string result = null, bool depth = false, string entityNameFrom = null)
         {
             if (linkEntities.Count == 0)

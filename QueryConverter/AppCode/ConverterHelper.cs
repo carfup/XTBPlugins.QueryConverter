@@ -329,6 +329,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
 
             switch (valueType)
             {
+                
                 case ConstantHelper.Next7Days:
                     return new object[] { today, today.AddDays(7) };
                 case ConstantHelper.Last7Days:

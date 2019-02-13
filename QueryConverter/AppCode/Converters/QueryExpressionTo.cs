@@ -6,6 +6,7 @@ using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Xml.Linq;
 
 using Microsoft.Crm.Sdk.Messages;
@@ -134,9 +135,10 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         public string ProcessToLinq(QueryExpression query)
         {
             LoadEntityMetadata(query.EntityName);
-            var entitySet = $"var {this.converterHelper.queryVariableName} = {this.converterHelper.serviceContextName}.{entityMetadata.SchemaName}Set";
+            var entitySet = $"var {this.converterHelper.queryVariableName} = {this.converterHelper.serviceContextName}.{entityMetadata.SchemaName}Set.AsEnumerable()";
             var conditions = ManageCriteriaLinq(query.Criteria);
             var columns = ManageColumsetToLinq(query.ColumnSet);
+            var linkentities = ManageLinkEntities(query.LinkEntities);
             var order = ManageOrdersToLinq(query.Orders.ToList());
             var topCount = ManageTopCountToLinq(query.TopCount);
             var distinct = query.Distinct ? ".Distinct()": null;
@@ -146,9 +148,13 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         /// <summary>
         /// Next function to manage LinkEntities conversion ..
         /// </summary>
-        public void ManageLinkEntities()
+        public string ManageLinkEntities(DataCollection<LinkEntity> linkEntities)
         {
             // ATTENTION ONLY LEFT OUTER SUPPORTED
+            if (linkEntities.Count > 0)
+                MessageBox.Show($"Sorry the LinkEntities are not supported yet for conversion. {Environment.NewLine}You might have a partial result.","LinkEntities are not supported yet.",MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            return "";
         }
 
         /// <summary>
@@ -222,13 +228,13 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             List<string> conditionExpressions = new List<string>();
             foreach (var condition in conditions)
             {
-                var attributeDetails = entityMetadata.Attributes.Where(x => x.LogicalName == condition.AttributeName).FirstOrDefault();
-                var schemaAttributeName = attributeDetails.SchemaName;
+                var attributeDetails = entityMetadata.Attributes.FirstOrDefault(x => x.LogicalName == condition.AttributeName);
+                var schemaAttributeName = attributeDetails?.SchemaName;
 
-                if (attributeDetails.AttributeType != null && new List<AttributeTypeCode>() { AttributeTypeCode.Picklist, AttributeTypeCode.Money}
+                if (attributeDetails?.AttributeType != null && new List<AttributeTypeCode>() { AttributeTypeCode.Picklist, AttributeTypeCode.Money}
                         .Contains(attributeDetails.AttributeType.Value))
                     schemaAttributeName += ".Value";
-                if (attributeDetails.AttributeType == AttributeTypeCode.Lookup)
+                if (attributeDetails?.AttributeType == AttributeTypeCode.Lookup)
                     schemaAttributeName += ".Id.ToString()";
 
                 var formatedCondition = this.converterHelper.ConditionHandling("queryexpression", "linq",
@@ -287,7 +293,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
 
             orders += Environment.NewLine;
 
-            for (int i = 0; i < ordersList.Count; i++)
+            for (var i = 0; i < ordersList.Count; i++)
             {
                 var order = ordersList[i];
 

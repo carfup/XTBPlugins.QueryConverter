@@ -52,6 +52,7 @@ namespace Carfup.XTBPlugins.QueryConverter
                             query = qcArg.Linq;
                             break;
                         case QCMessageBusRequest.QueryExpression:
+                            
                         case QCMessageBusRequest.QueryExpressionString:
                             query = qcArg.queryExpressionString;
                             break;

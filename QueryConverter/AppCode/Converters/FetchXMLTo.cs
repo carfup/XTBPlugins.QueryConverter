@@ -243,10 +243,9 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         /// </summary>
         /// <param name="linkEntities"></param>
         /// <param name="result"></param>
-        /// <param name="depth"></param>
         /// <param name="entityNameFrom"></param>
         /// <returns></returns>
-        public string ManageLinkEntities(DataCollection<LinkEntity> linkEntities, string result = null, bool depth = false, string entityNameFrom = null)
+        public string ManageLinkEntities(DataCollection<LinkEntity> linkEntities, string result = null, string entityNameFrom = null)
         {
             if (linkEntities.Count == 0)
                 return result;
@@ -261,13 +260,13 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
                 linkentityString += $"LinkFromAttributeName = \"{le.LinkFromAttributeName}\",";
                 linkentityString += $"LinkToEntityName = \"{le.LinkToEntityName}\", ";
                 linkentityString += $"LinkToAttributeName = \"{le.LinkToAttributeName}\",";
-                linkentityString += (le.EntityAlias != null) ? $"EntityAlias = {le.EntityAlias}," : "";
+                linkentityString += (le.EntityAlias != null) ? $"EntityAlias = \"{le.EntityAlias}\"," : "";
                 linkentityString += $"JoinOperator = JoinOperator.{le.JoinOperator.ToString()}";
                 linkentityString += $"{ManageColumset(le.Columns, true)}";
                 linkentityString += $"{ManageCriteria(le.LinkCriteria, true)}";
 
                 if (le.LinkEntities.Count > 0)
-                    linkentityString = ManageLinkEntities(le.LinkEntities, linkentityString, true, le.LinkToEntityName);
+                    linkentityString = ManageLinkEntities(le.LinkEntities, linkentityString, le.LinkToEntityName);
 
                 linkentityString += "}";
 

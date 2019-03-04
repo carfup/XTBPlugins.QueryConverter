@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -23,6 +24,8 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
     {
         public ConverterHelper converterHelper = null;
         private EntityMetadata entityMetadata = null;
+        private List<string> linkEntityToLinqEntityFirstLetters = new List<string>();
+        private List<string> ToLinqColumnsToKeepForLinkEntities = null;
 
         /// <summary>
         /// QueryExpressionTo class constructor
@@ -134,27 +137,83 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         /// <returns></returns>
         public string ProcessToLinq(QueryExpression query)
         {
+            linkEntityToLinqEntityFirstLetters = new List<string>();
+          
             LoadEntityMetadata(query.EntityName);
-            var entitySet = $"var {this.converterHelper.queryVariableName} = {this.converterHelper.serviceContextName}.{entityMetadata.SchemaName}Set.AsEnumerable()";
+            var entitySet = ManageEntitySetToLinq();
+            var linkentities = ManageLinkEntitiesLinq(query.LinkEntities);
             var conditions = ManageCriteriaLinq(query.Criteria);
             var columns = ManageColumsetToLinq(query.ColumnSet);
-            var linkentities = ManageLinkEntities(query.LinkEntities);
             var order = ManageOrdersToLinq(query.Orders.ToList());
             var topCount = ManageTopCountToLinq(query.TopCount);
             var distinct = query.Distinct ? ".Distinct()": null;
-            return entitySet + conditions + columns + order + topCount + distinct + ";";
+            return entitySet + linkentities + conditions + columns + order + topCount + distinct + ";";
+        }
+
+        /// <summary>
+        /// render the first part of the query for linq syntax (method base or not)
+        /// </summary>
+        /// <param name="syntax"></param>
+        /// <returns></returns>
+        public string ManageEntitySetToLinq(string syntax = LinqSyntax.SQLSynxtax)
+        {
+            var entitySet = $"var {this.converterHelper.queryVariableName} = ";
+
+            var entityName = entityMetadata.SchemaName;
+
+            if (syntax == LinqSyntax.SQLSynxtax)
+                entitySet += $"from {entityName} in ";
+            //entitySet += $"from {ManageUsedFirstLettersToLinq(entityName)} in ";
+
+            entitySet += $"{ this.converterHelper.serviceContextName}.{entityMetadata.SchemaName}Set.AsEnumerable()";
+
+            return entitySet;
         }
 
         /// <summary>
         /// Next function to manage LinkEntities conversion ..
         /// </summary>
-        public string ManageLinkEntities(DataCollection<LinkEntity> linkEntities)
+        public string ManageLinkEntitiesLinq(DataCollection<LinkEntity> linkEntities, string result = null, string syntax = LinqSyntax.SQLSynxtax)
         {
-            // ATTENTION ONLY LEFT OUTER SUPPORTED
-            if (linkEntities.Count > 0)
-                MessageBox.Show($"Sorry the LinkEntities are not supported yet for conversion. {Environment.NewLine}You might have a partial result.","LinkEntities are not supported yet.",MessageBoxButton.OK, MessageBoxImage.Warning);
+            if (linkEntities.Count == 0)
+                return result;
 
-            return "";
+            // LinkEntities, not implemented yet for MethodSyntax
+            if (linkEntities.Count > 0 && syntax == LinqSyntax.MethodSynxtax)
+            {
+                MessageBox.Show(
+                    $"Sorry the LinkEntities are not supported yet for conversion. {Environment.NewLine}You might have a partial result.",
+                    "LinkEntities are not supported yet.", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                return "";
+            }
+
+            LinkEntity currentItem = null;
+
+            List<string> linkEntitiesList = new List<string>();
+
+            foreach (LinkEntity le in linkEntities)
+            {
+                var linkentityString = $"{Environment.NewLine}join {le.LinkToEntityName} in {le.LinkToEntityName}Set.AsEnumerable()";
+                linkentityString += $" on {le.LinkFromEntityName}.{le.LinkFromAttributeName}.Value equals {le.LinkToEntityName}.{le.LinkToAttributeName}.Id";
+
+                // selection des champs dans le join
+                if (ToLinqColumnsToKeepForLinkEntities == null)
+                    ToLinqColumnsToKeepForLinkEntities = new List<string>();
+
+                foreach (var column in le.Columns.Columns)
+                    ToLinqColumnsToKeepForLinkEntities.Add($"{le.LinkToEntityName}.{column}");
+
+                if (le.LinkEntities.Count > 0)
+                    linkentityString = ManageLinkEntitiesLinq(le.LinkEntities, linkentityString);
+
+
+                linkEntitiesList.Add(linkentityString);
+            }
+
+            result += String.Join(Environment.NewLine, linkEntitiesList);
+
+            return result;
         }
 
         /// <summary>
@@ -177,7 +236,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         /// <param name="criteria"></param>
         /// <param name="linkEntity"></param>
         /// <returns></returns>
-        public string ManageCriteriaLinq(FilterExpression criteria, bool linkEntity = false)
+        public string ManageCriteriaLinq(FilterExpression criteria, string syntax = LinqSyntax.SQLSynxtax, bool linkEntity = false)
         {
             var conditions = "";
 
@@ -187,7 +246,8 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             if (criteria.Conditions.Count > 0 || criteria.Filters.Count > 0)
             {
                 // start criteria + conditions
-                conditions += $"{Environment.NewLine}.Where(w => ";
+                conditions += Environment.NewLine;
+                conditions += syntax == LinqSyntax.SQLSynxtax ? $"where " : $".Where(w => ";
 
                 // Managing filterExpression
                 if (!linkEntity && criteria.Filters.Count > 0)
@@ -205,11 +265,12 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
                 }
                 else
                 {
-                    conditions += ManageConditionsToLinq(criteria.Conditions, criteria.FilterOperator);
+                    conditions += ManageConditionsToLinq(criteria.Conditions, criteria.FilterOperator, syntax);
                 }
 
                 // end criteria
-                conditions += ")";
+                if(syntax == LinqSyntax.MethodSynxtax)
+                    conditions += ")";
             }
 
             return conditions;
@@ -221,7 +282,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         /// <param name="conditions"></param>
         /// <param name="logicalOperator"></param>
         /// <returns></returns>
-        public string ManageConditionsToLinq(DataCollection<ConditionExpression> conditions, LogicalOperator logicalOperator)
+        public string ManageConditionsToLinq(DataCollection<ConditionExpression> conditions, LogicalOperator logicalOperator, string syntax = LinqSyntax.SQLSynxtax)
         {
             var conditionsString = "(";
 
@@ -259,7 +320,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         /// </summary>
         /// <param name="columnSet"></param>
         /// <returns></returns>
-        public string ManageColumsetToLinq(ColumnSet columnSet)
+        public string ManageColumsetToLinq(ColumnSet columnSet, string syntax = LinqSyntax.SQLSynxtax)
         {
             var columns = "";
 
@@ -270,11 +331,20 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             {
                 var columnslist = columnSet.Columns;
                 columns = String.Join(",", columnslist);
-                columns = columns.Count() > 1 ? string.Join(", ", columns.Split(',').Select(x => string.Format("col.{0}", entityMetadata.Attributes.Where(xx => xx.LogicalName == x)
-                    .Select(xx => xx.SchemaName).FirstOrDefault())).ToList()) : columns;
+                if(syntax == LinqSyntax.SQLSynxtax)
+                    columns = columns.Count() > 1 ? string.Join(", ", columnslist.Select(x => string.Format("{0}.{1}", entityMetadata.SchemaName, entityMetadata.Attributes.Where(xx => xx.LogicalName == x)
+                        .Select(xx => xx.SchemaName).FirstOrDefault())).ToList()) : columns;
+                else if (syntax == LinqSyntax.MethodSynxtax)
+                    columns = columns.Count() > 1 ? string.Join(", ", columnslist.Select(x => string.Format("col.{0}", entityMetadata.Attributes.Where(xx => xx.LogicalName == x)
+                        .Select(xx => xx.SchemaName).FirstOrDefault())).ToList()) : columns;
             }
 
-            var stringq = $"{Environment.NewLine}.Select(col => new {{{columns}}})";
+            if (ToLinqColumnsToKeepForLinkEntities != null)
+                columns += "," + String.Join(",", ToLinqColumnsToKeepForLinkEntities);
+
+
+            var stringq = $"{Environment.NewLine}";
+            stringq += syntax == LinqSyntax.SQLSynxtax ? $"select new {{{columns}}}" : $".Select(col => new {{{columns}}})";
 
             return stringq;
         }
@@ -284,36 +354,67 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         /// </summary>
         /// <param name="ordersList"></param>
         /// <returns></returns>
-        public string ManageOrdersToLinq(List<OrderExpression> ordersList)
+        public string ManageOrdersToLinq(List<OrderExpression> ordersList, string syntax = LinqSyntax.SQLSynxtax)
         {
-            var orders = "";
-
             if (ordersList.Count == 0)
-                return orders;
+                return "";
 
-            orders += Environment.NewLine;
+            var orders =  Environment.NewLine;
+            orders += syntax == LinqSyntax.SQLSynxtax ? "order by " : "";
+
+            List<string> attrList = new List<string>();
 
             for (var i = 0; i < ordersList.Count; i++)
             {
                 var order = ordersList[i];
+                var attr = entityMetadata.Attributes.Where(xx => xx.LogicalName == order.AttributeName)
+                    .Select(xx => xx.SchemaName).FirstOrDefault();
 
-                var prefix = "OrderBy";
-                if (i == 0 && order.OrderType == OrderType.Descending)
-                    prefix = "OrderByDescending";
-                else if (i > 0)
+                if (syntax == LinqSyntax.MethodSynxtax)
                 {
-                    if (order.OrderType == OrderType.Ascending)
-                        prefix = "ThenBy";
-                    else if (order.OrderType == OrderType.Descending)
-                        prefix = "ThenByDescending";
+                    var prefix = "OrderBy";
+                    if (i == 0 && order.OrderType == OrderType.Descending)
+                        prefix = "OrderByDescending";
+                    else if (i > 0)
+                    {
+                        if (order.OrderType == OrderType.Ascending)
+                            prefix = "ThenBy";
+                        else if (order.OrderType == OrderType.Descending)
+                            prefix = "ThenByDescending";
+                    }
+
+                    attr = $"{prefix}(ord => ord.{attr})";                   
                 }
 
-                var attr = entityMetadata.Attributes.Where(xx => xx.LogicalName == order.AttributeName).Select(xx => xx.SchemaName).FirstOrDefault();
-                orders += $".{prefix}(ord => ord.{attr})";
+                attrList.Add(attr);
             }
+
+            var separator = syntax == LinqSyntax.SQLSynxtax ? "," : ".";
+            orders += String.Join(separator, attrList);
 
             return orders;
         }
+
+        /// <summary>
+        /// Making sure that each user entity in the query use an unique alias
+        /// </summary>
+        /// <param name="entityName"></param>
+        /// <returns></returns>
+        public string ManageUsedFirstLettersToLinq(string entityName)
+        {
+            var sizeOfEntityName = entityName.Length;
+            string returnLetter = null;
+
+            for (int i = 0; i < sizeOfEntityName; i++)
+            {
+                returnLetter = entityName.Substring(0, i);
+                if (!linkEntityToLinqEntityFirstLetters.Contains(returnLetter))
+                    return returnLetter;
+            }
+            
+            return returnLetter;
+        } 
+
         #endregion
 
         #region WebApi

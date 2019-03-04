@@ -45,12 +45,12 @@
         "operator": "Microsoft.Dynamics.CRM.Between",
         "conditionpattern": "{operator}(PropertyName='{propName}',PropertyValues=[{value}])"
       }
-        //,
-        //"linq": {
-        //  "operator": "Between",
-        //  "conditionpattern": "w.{propName}?.Value >= {value} && w.{propName}?.Value <= {value2}",
-        //  "valuerendering": "Between"
-        //}
+      //,
+      //"linq": {
+      //  "operator": "Between",
+      //  "conditionpattern": "w.{propName}?.Value >= {value} && w.{propName}?.Value <= {value2}",
+      //  "valuerendering": "Between"
+      //}
     },
     {
       "queryexpression": {
@@ -122,6 +122,10 @@
       "linq": {
         "operator": "==",
         "conditionpattern": "w.{propName} {operator} {value}"
+      },
+      "linqquery": {
+        "operator": "equals",
+        "conditionpattern": "w.{propName} {operator} {value}"
       }
     },
     {
@@ -137,7 +141,7 @@
     {
       "queryexpression": {
         "operator": "EqualUserId",
-        "conditionpattern": "\"{propName}\", ConditionOperator.{operator} {value}"
+        "conditionpattern": "\"{propName}\", ConditionOperator.{operator}"
       },
       "webapi": {
         "operator": "Microsoft.Dynamics.CRM.EqualUserId",
@@ -926,7 +930,7 @@
       "linq": {
         "operator": "ThisMonth",
         "conditionpattern": "w.{propName}.Value >= {value} && w.{propName}.Value <= {value2}",
-        "valuerendering" :  "ThisMonth" 
+        "valuerendering": "ThisMonth"
       }
     },
     {

@@ -233,7 +233,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         /// <param name="attribute">crm attribute name</param>
         /// <param name="valuesList">value(s) to link with the operator</param>
         /// <returns>string formatted condition</returns>
-        public string ConditionHandling(string fromType, string toType, string operatorToLookFor, string attribute, List<object> valuesList)
+        public string ConditionHandling(string fromType, string toType, string operatorToLookFor, string attribute, List<object> valuesList, string prefix = null)
         {
             var operatorToken = LookForOperator(fromType, toType, operatorToLookFor, valuesList?.FirstOrDefault());
             
@@ -245,6 +245,9 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
 
             transformedCondition = transformedCondition.Replace("{propName}", attribute);
             transformedCondition = transformedCondition.Replace("{operator}", operatorToken.SelectToken("operator").ToString());
+
+            if (prefix != null && transformedCondition.Contains("{prefix}"))
+                transformedCondition = transformedCondition.Replace("{prefix}", prefix);
 
             // If no values needed, return in this state
             if (!transformedCondition.Contains("{value}"))

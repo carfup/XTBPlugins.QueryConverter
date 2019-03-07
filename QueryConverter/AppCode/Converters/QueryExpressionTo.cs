@@ -26,6 +26,8 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         private EntityMetadata entityMetadata = null;
         private List<string> linkEntityToLinqEntityFirstLetters = new List<string>();
         private List<string> ToLinqColumnsToKeepForLinkEntities = null;
+        private List<string> ToLinqConditionsToKeepForLinkEntities = null;
+        private string multipleConditions = null;
 
         /// <summary>
         /// QueryExpressionTo class constructor
@@ -138,16 +140,20 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         public string ProcessToLinq(QueryExpression query)
         {
             linkEntityToLinqEntityFirstLetters = new List<string>();
-          
-            LoadEntityMetadata(query.EntityName);
-            var entitySet = ManageEntitySetToLinq();
+            ToLinqColumnsToKeepForLinkEntities = new List<string>();
+            ToLinqConditionsToKeepForLinkEntities = new List<string>();
+
             var linkentities = ManageLinkEntitiesLinq(query.LinkEntities);
+            LoadEntityMetadata(query.EntityName);
+            var variableName = $"var {this.converterHelper.queryVariableName} = ";
+            var entitySet = ManageEntitySetToLinq();
             var conditions = ManageCriteriaLinq(query.Criteria);
             var columns = ManageColumsetToLinq(query.ColumnSet);
             var order = ManageOrdersToLinq(query.Orders.ToList());
             var topCount = ManageTopCountToLinq(query.TopCount);
             var distinct = query.Distinct ? ".Distinct()": null;
-            return entitySet + linkentities + conditions + columns + order + topCount + distinct + ";";
+            
+            return variableName + ((topCount != null || distinct != null) ? "(" : "") + entitySet + linkentities + conditions + columns + order + ((topCount != null || distinct != null) ? ")" : "") + topCount + distinct + ";";
         }
 
         /// <summary>
@@ -157,7 +163,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         /// <returns></returns>
         public string ManageEntitySetToLinq(string syntax = LinqSyntax.SQLSynxtax)
         {
-            var entitySet = $"var {this.converterHelper.queryVariableName} = ";
+            var entitySet = "";
 
             var entityName = entityMetadata.SchemaName;
 
@@ -188,25 +194,36 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
                 return "";
             }
 
-            LinkEntity currentItem = null;
-
             List<string> linkEntitiesList = new List<string>();
 
             foreach (LinkEntity le in linkEntities)
             {
-                var linkentityString = $"{Environment.NewLine}join {le.LinkToEntityName} in {le.LinkToEntityName}Set.AsEnumerable()";
-                linkentityString += $" on {le.LinkFromEntityName}.{le.LinkFromAttributeName}.Value equals {le.LinkToEntityName}.{le.LinkToAttributeName}.Id";
+                // manage metadata for LinkToEntity
+                LoadEntityMetadata(le.LinkFromEntityName);
+                var linkFromAttrName = entityMetadata.Attributes.FirstOrDefault(x => x.LogicalName == le.LinkFromAttributeName)?.SchemaName;
 
-                // selection des champs dans le join
-                if (ToLinqColumnsToKeepForLinkEntities == null)
-                    ToLinqColumnsToKeepForLinkEntities = new List<string>();
+                // manage metadata for LinkToEntity
+                LoadEntityMetadata(le.LinkToEntityName);
+                var linkToAttrName = entityMetadata.Attributes.FirstOrDefault(x => x.LogicalName == le.LinkToAttributeName)?.SchemaName;
+
+                var entityAlias = le.EntityAlias == null ? null : $"{le.EntityAlias}";
+                var linkentityString = $"{Environment.NewLine}join {le.LinkToEntityName}{(entityAlias == null ? "" : " as "+entityAlias)} in {le.LinkToEntityName}Set.AsEnumerable()";
+                linkentityString += $" on {le.LinkFromEntityName}.{linkFromAttrName}.Value equals {le.LinkToEntityName}.{linkToAttrName}.Id";
+
+                if (le.LinkCriteria.Conditions.Count > 0)
+                {
+                    ToLinqConditionsToKeepForLinkEntities.Add(ManageConditionsToLinq(le.LinkCriteria.Conditions, le.LinkCriteria.FilterOperator, entityAlias ?? le.LinkToEntityName));
+                }
 
                 foreach (var column in le.Columns.Columns)
-                    ToLinqColumnsToKeepForLinkEntities.Add($"{le.LinkToEntityName}.{column}");
+                {
+                    var columnSchemaName = entityMetadata.Attributes.Where(xx => xx.LogicalName == column)
+                        .Select(xx => xx.SchemaName).FirstOrDefault();
+                    ToLinqColumnsToKeepForLinkEntities.Add($"{entityAlias ?? le.LinkToEntityName}.{columnSchemaName}");
+                }
 
                 if (le.LinkEntities.Count > 0)
                     linkentityString = ManageLinkEntitiesLinq(le.LinkEntities, linkentityString);
-
 
                 linkEntitiesList.Add(linkentityString);
             }
@@ -265,8 +282,11 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
                 }
                 else
                 {
-                    conditions += ManageConditionsToLinq(criteria.Conditions, criteria.FilterOperator, syntax);
+                    conditions += ManageConditionsToLinq(criteria.Conditions, criteria.FilterOperator, null, syntax);
                 }
+
+                if (ToLinqConditionsToKeepForLinkEntities.Count > 0)
+                    conditions += " and " + String.Join(" ", ToLinqConditionsToKeepForLinkEntities);
 
                 // end criteria
                 if(syntax == LinqSyntax.MethodSynxtax)
@@ -282,9 +302,9 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         /// <param name="conditions"></param>
         /// <param name="logicalOperator"></param>
         /// <returns></returns>
-        public string ManageConditionsToLinq(DataCollection<ConditionExpression> conditions, LogicalOperator logicalOperator, string syntax = LinqSyntax.SQLSynxtax)
+        public string ManageConditionsToLinq(DataCollection<ConditionExpression> conditions, LogicalOperator logicalOperator, string prefix = null, string syntax = LinqSyntax.SQLSynxtax)
         {
-            var conditionsString = "(";
+            var conditionsString = "";
 
             List<string> conditionExpressions = new List<string>();
             foreach (var condition in conditions)
@@ -298,8 +318,10 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
                 if (attributeDetails?.AttributeType == AttributeTypeCode.Lookup)
                     schemaAttributeName += ".Id.ToString()";
 
+                var pref = prefix == null ? attributeDetails.EntityLogicalName : prefix;
+
                 var formatedCondition = this.converterHelper.ConditionHandling("queryexpression", "linq",
-                    condition.Operator.ToString(), schemaAttributeName, condition.Values.ToList());
+                    condition.Operator.ToString(), schemaAttributeName, condition.Values.ToList(), pref);
 
                 if (formatedCondition == null)
                     continue;
@@ -310,9 +332,8 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             var logicalOperatorForLinq = logicalOperator.ToString().ToLower() == "and" ? "&&" : "||";
 
             conditionsString += String.Join($" {logicalOperatorForLinq} ", conditionExpressions);
-            conditionsString += ")";
 
-            return conditionsString;
+            return  "(" + conditionsString + ")";
         }
 
         /// <summary>
@@ -367,8 +388,8 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             for (var i = 0; i < ordersList.Count; i++)
             {
                 var order = ordersList[i];
-                var attr = entityMetadata.Attributes.Where(xx => xx.LogicalName == order.AttributeName)
-                    .Select(xx => xx.SchemaName).FirstOrDefault();
+                var attrDetails = entityMetadata.Attributes.Where(xx => xx.LogicalName == order.AttributeName);
+                var attr = attrDetails.Select(xx => xx.SchemaName).FirstOrDefault();
 
                 if (syntax == LinqSyntax.MethodSynxtax)
                 {
@@ -386,7 +407,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
                     attr = $"{prefix}(ord => ord.{attr})";                   
                 }
 
-                attrList.Add(attr);
+                attrList.Add(attrDetails.Select(x => x.EntityLogicalName).FirstOrDefault() + "."+ attr);
             }
 
             var separator = syntax == LinqSyntax.SQLSynxtax ? "," : ".";

@@ -121,7 +121,7 @@
       },
       "linq": {
         "operator": "==",
-        "conditionpattern": "w.{propName} {operator} {value}"
+        "conditionpattern": "{prefix}.{propName} {operator} {value}"
       },
       "linqquery": {
         "operator": "equals",

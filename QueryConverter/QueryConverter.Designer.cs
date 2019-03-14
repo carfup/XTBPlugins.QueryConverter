@@ -55,6 +55,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.comboBoxOutput = new System.Windows.Forms.ComboBox();
             this.comboBoxInput = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -120,12 +122,14 @@
             this.toolStripButtonReturnQuery.Name = "toolStripButtonReturnQuery";
             this.toolStripButtonReturnQuery.Size = new System.Drawing.Size(168, 34);
             this.toolStripButtonReturnQuery.Text = "Return Query";
+            this.toolStripButtonReturnQuery.Visible = false;
             this.toolStripButtonReturnQuery.Click += new System.EventHandler(this.toolStripButtonReturnQuery_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(6, 37);
+            this.toolStripSeparator4.Visible = false;
             // 
             // toolStripButtonOptions
             // 
@@ -163,7 +167,7 @@
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.groupBox3, 1, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 52);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(6);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -177,9 +181,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox4.Controls.Add(this.outputCodeEditor);
             this.groupBox4.Location = new System.Drawing.Point(1144, 6);
-            this.groupBox4.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(6);
             this.groupBox4.Size = new System.Drawing.Size(760, 930);
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
@@ -190,7 +194,7 @@
             this.outputCodeEditor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.outputCodeEditor.HighlighterMode = "javascript";
             this.outputCodeEditor.Location = new System.Drawing.Point(6, 28);
-            this.outputCodeEditor.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.outputCodeEditor.Margin = new System.Windows.Forms.Padding(6);
             this.outputCodeEditor.MinIeVersion = "10";
             this.outputCodeEditor.MinimumSize = new System.Drawing.Size(37, 37);
             this.outputCodeEditor.Name = "outputCodeEditor";
@@ -205,9 +209,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.inputCodeEditor);
             this.groupBox1.Location = new System.Drawing.Point(6, 6);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(6);
             this.groupBox1.Size = new System.Drawing.Size(759, 930);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
@@ -218,7 +222,7 @@
             this.inputCodeEditor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.inputCodeEditor.HighlighterMode = "javascript";
             this.inputCodeEditor.Location = new System.Drawing.Point(6, 28);
-            this.inputCodeEditor.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.inputCodeEditor.Margin = new System.Windows.Forms.Padding(6);
             this.inputCodeEditor.MinIeVersion = "10";
             this.inputCodeEditor.MinimumSize = new System.Drawing.Size(37, 37);
             this.inputCodeEditor.Name = "inputCodeEditor";
@@ -228,6 +232,8 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.linkLabel1);
+            this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Controls.Add(this.buttonConvert);
             this.groupBox3.Controls.Add(this.groupBoxConversionDetails);
             this.groupBox3.Controls.Add(this.label2);
@@ -236,9 +242,9 @@
             this.groupBox3.Controls.Add(this.comboBoxInput);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(777, 6);
-            this.groupBox3.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(6);
             this.groupBox3.Size = new System.Drawing.Size(355, 930);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
@@ -248,7 +254,7 @@
             // 
             this.buttonConvert.Image = global::Carfup.XTBPlugins.Properties.Resources.arrow_right_64;
             this.buttonConvert.Location = new System.Drawing.Point(28, 486);
-            this.buttonConvert.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.buttonConvert.Margin = new System.Windows.Forms.Padding(6);
             this.buttonConvert.Name = "buttonConvert";
             this.buttonConvert.Size = new System.Drawing.Size(304, 166);
             this.buttonConvert.TabIndex = 7;
@@ -262,9 +268,9 @@
             this.groupBoxConversionDetails.AutoSize = true;
             this.groupBoxConversionDetails.Controls.Add(this.flowLayoutPanel1);
             this.groupBoxConversionDetails.Location = new System.Drawing.Point(0, 240);
-            this.groupBoxConversionDetails.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBoxConversionDetails.Margin = new System.Windows.Forms.Padding(6);
             this.groupBoxConversionDetails.Name = "groupBoxConversionDetails";
-            this.groupBoxConversionDetails.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBoxConversionDetails.Padding = new System.Windows.Forms.Padding(6);
             this.groupBoxConversionDetails.Size = new System.Drawing.Size(358, 251);
             this.groupBoxConversionDetails.TabIndex = 6;
             this.groupBoxConversionDetails.TabStop = false;
@@ -277,7 +283,7 @@
             this.flowLayoutPanel1.Controls.Add(this.labelCrmContext);
             this.flowLayoutPanel1.Controls.Add(this.textBoxCrmContext);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(11, 35);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(6);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(334, 164);
             this.flowLayoutPanel1.TabIndex = 0;
@@ -295,7 +301,7 @@
             // textBoxQueryVariable
             // 
             this.textBoxQueryVariable.Location = new System.Drawing.Point(6, 31);
-            this.textBoxQueryVariable.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.textBoxQueryVariable.Margin = new System.Windows.Forms.Padding(6);
             this.textBoxQueryVariable.Name = "textBoxQueryVariable";
             this.textBoxQueryVariable.Size = new System.Drawing.Size(279, 29);
             this.textBoxQueryVariable.TabIndex = 32;
@@ -315,7 +321,7 @@
             // textBoxCrmContext
             // 
             this.textBoxCrmContext.Location = new System.Drawing.Point(6, 97);
-            this.textBoxCrmContext.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.textBoxCrmContext.Margin = new System.Windows.Forms.Padding(6);
             this.textBoxCrmContext.Name = "textBoxCrmContext";
             this.textBoxCrmContext.Size = new System.Drawing.Size(279, 29);
             this.textBoxCrmContext.TabIndex = 34;
@@ -351,7 +357,7 @@
             "WebApi",
             "Linq"});
             this.comboBoxOutput.Location = new System.Drawing.Point(11, 172);
-            this.comboBoxOutput.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.comboBoxOutput.Margin = new System.Windows.Forms.Padding(6);
             this.comboBoxOutput.Name = "comboBoxOutput";
             this.comboBoxOutput.Size = new System.Drawing.Size(330, 32);
             this.comboBoxOutput.TabIndex = 1;
@@ -367,11 +373,36 @@
             "Linq",
             "WebApi"});
             this.comboBoxInput.Location = new System.Drawing.Point(11, 79);
-            this.comboBoxInput.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.comboBoxInput.Margin = new System.Windows.Forms.Padding(6);
             this.comboBoxInput.Name = "comboBoxInput";
             this.comboBoxInput.Size = new System.Drawing.Size(330, 32);
             this.comboBoxInput.TabIndex = 0;
             this.comboBoxInput.TextChanged += new System.EventHandler(this.comboBoxInput_TextChanged);
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.Gold;
+            this.label3.ForeColor = System.Drawing.Color.Red;
+            this.label3.Location = new System.Drawing.Point(3, 799);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(338, 125);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "The plugin is currently in beta version.\r\nPlease report any issue or feedbacks\r\ni" +
+    "f you want to help improving the tool.\r\n\r\nThanks and enjoy !";
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(181, 899);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(164, 25);
+            this.linkLabel1.TabIndex = 10;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "Report issue here";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // QueryConverter
             // 
@@ -379,7 +410,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.toolStrip1);
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "QueryConverter";
             this.Size = new System.Drawing.Size(1910, 999);
             this.Load += new System.EventHandler(this.QueryConverter_Load);
@@ -428,5 +459,7 @@
         private System.Windows.Forms.ToolStripButton toolStripButtonHelp;
         private System.Windows.Forms.ToolStripButton toolStripButtonReturnQuery;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }

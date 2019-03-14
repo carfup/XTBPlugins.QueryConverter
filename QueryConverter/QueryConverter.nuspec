@@ -1,29 +1,30 @@
 ﻿<package>
   <metadata>
     <id>Carfup.XTBPlugins.QueryConverter</id>
-    <version>1.2018.2.1</version>
+    <version>1.2019.3.0-beta</version>
     <title>QueryConverter</title>
     <authors>Clement O.</authors>
     <owners>Clement O.</owners>
     <projectUrl>https://github.com/carfup/XTBPlugins.QueryConverter</projectUrl>
-	  <iconUrl>http://www.gravatar.com/avatar/8b87aef303e872503c47ef3fdf83c801?s=64</iconUrl>
+    <iconUrl>http://www.gravatar.com/avatar/8b87aef303e872503c47ef3fdf83c801?s=64</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>QueryConverter</description>
     <summary>This tool will allow you to convert queries from and to QueryExpression, FetchXML, Linq and WebApi.</summary>
     <releaseNotes>
-1.2018.12.1
+1.2019.3.0-beta
 Converters available :
 * from QueryExpression to WebApi, FetchXML, LinQ
 * from WebApi to QueryExpression, FetchXML, LinQ
 * from FetchXML to QueryExpression, WebApi, LinQ
+Ability to customize the template rendering for the code
     </releaseNotes>
-    <copyright>Copyright 2018</copyright>
+    <copyright>Copyright 2019</copyright>
     <tags>XrmToolBox Plugin QueryConverter</tags>
     <dependencies>
-	   <dependency id="XrmToolBox" version="1.2018.7.28" />
+      <dependency id="XrmToolBox" version="1.2018.7.28" />
     </dependencies>
   </metadata>
   <files>
-	  <file src="bin\Release\Plugins\Carfup.XTBPlugins.*.dll" target="lib\net462\Plugins" />
+    <file src="bin\Release\Plugins\Carfup.XTBPlugins.*.dll" target="lib\net462\Plugins" />
   </files>
 </package>

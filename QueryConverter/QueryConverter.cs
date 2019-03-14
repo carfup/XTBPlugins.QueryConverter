@@ -463,5 +463,11 @@ namespace Carfup.XTBPlugins.QueryConverter
             toolStripButtonReturnQuery.Visible = false;
             toolStripSeparator4.Visible = false;
         }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            linkLabel1.LinkVisited = true;
+            System.Diagnostics.Process.Start("https://github.com/carfup/XTBPlugins.QueryConverter/issues");
+        }
     }
 }

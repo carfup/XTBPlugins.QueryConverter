@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Activities.Expressions;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -14,6 +17,7 @@ using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RestSharp.Extensions;
 
 namespace Carfup.XTBPlugins.QueryConverter.AppCode
 {
@@ -229,7 +233,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         /// <param name="attribute">crm attribute name</param>
         /// <param name="valuesList">value(s) to link with the operator</param>
         /// <returns>string formatted condition</returns>
-        public string ConditionHandling(string fromType, string toType, string operatorToLookFor, string attribute, List<object> valuesList)
+        public string ConditionHandling(string fromType, string toType, string operatorToLookFor, string attribute, List<object> valuesList, string prefix = null)
         {
             var operatorToken = LookForOperator(fromType, toType, operatorToLookFor, valuesList?.FirstOrDefault());
             
@@ -242,6 +246,9 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
             transformedCondition = transformedCondition.Replace("{propName}", attribute);
             transformedCondition = transformedCondition.Replace("{operator}", operatorToken.SelectToken("operator").ToString());
 
+            if (prefix != null && transformedCondition.Contains("{prefix}"))
+                transformedCondition = transformedCondition.Replace("{prefix}", prefix);
+
             // If no values needed, return in this state
             if (!transformedCondition.Contains("{value}"))
                 return transformedCondition;
@@ -251,43 +258,138 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
 
             // Preparing the value side
             var valueResult = "";
-            if (valuesList.Count > 1)
-            {
-                if (operatorToken.SelectToken("valuerendering") != null)
-                {
+            var valueResult2 = ""; // if necessary
+            var valueResult3 = ""; // if necessary
 
+
+            // NEED TO REWORK THAT PART => UGLY UGLY UGLY
+            if (operatorToken.SelectToken("valuerendering") != null)
+            {
+                var tempValue = FixedValueIntegration(operatorToken.SelectToken("valuerendering").ToString(), valuesList.FirstOrDefault()?.ToString());
+                var type = tempValue.GetType();
+
+                if (type == typeof(Object[]))
+                {
+                    var objectArray = (Object[])tempValue;
+
+                    if (objectArray.Length < 3)
+                        valueResult = (objectArray[0] is int) ? objectArray[0].ToString() : $"\"{objectArray[0]}\"";
+                    if (objectArray.Length == 2 || objectArray.Length < 3)
+                        valueResult2 = (objectArray[1] is int) ? objectArray[1].ToString() : $"\"{objectArray[1]}\"";
+                    if (objectArray.Length == 3)
+                        valueResult3 = (objectArray[2] is int) ? objectArray[2].ToString() : $"\"{objectArray[2]}\"";
+                    if (objectArray.Length > 3)
+                        throw  new Exception("Oups unexpected ValueRendering data");
                 }
                 else
                 {
-                    // Assuming we want an array here
-                    var type = valuesList[0].GetType();
-                    var typeJValue = type == typeof(JValue) ? ((JValue) valuesList[0])?.Type : null;
-                    if (type == typeof(int) || typeJValue == JTokenType.Integer)
-                    {
-                        valueResult = String.Join(",", valuesList.ToArray());
-                    }
-                    else if (type == typeof(string))
-                    {
-                        valueResult = "\"" + String.Join("\",\"", valuesList.ToArray()) + "\"";
-                    }
+                    // If we have a int, no need of the double quotes
+                    valueResult = (type == typeof(int))
+                        ? tempValue.ToString()
+                        : $"\"{tempValue}\"";
+                }
+            }
+            else if (valuesList.Count > 1)
+            {
+                // Assuming we want an array here
+                var type = valuesList[0].GetType();
+                var typeJValue = type == typeof(JValue) ? ((JValue) valuesList[0])?.Type : null;
+                if (type == typeof(int) || typeJValue == JTokenType.Integer)
+                {
+                    valueResult = String.Join(",", valuesList.ToArray());
+                }
+                else if (type == typeof(string))
+                {
+                    valueResult = "\"" + String.Join("\",\"", valuesList.ToArray()) + "\"";
                 }
             }
             else
             {
+
                 var type = valuesList.FirstOrDefault().GetType();
-                var typeJValue = type == typeof(JValue) ? ((JValue)valuesList.FirstOrDefault())?.Type : null;
+                var typeJValue = type == typeof(JValue) ? ((JValue) valuesList.FirstOrDefault())?.Type : null;
                 // If we have a int, no need of the double quotes
-                valueResult = (type == typeof(int) || typeJValue == JTokenType.Integer) ? valuesList.FirstOrDefault()?.ToString() : $"\"{valuesList.FirstOrDefault()}\"";
+                valueResult = (type == typeof(int) || typeJValue == JTokenType.Integer)
+                    ? valuesList.FirstOrDefault()?.ToString()
+                    : $"\"{valuesList.FirstOrDefault()}\"";
 
                 if (toType == "webapi")
                     valueResult = valueResult.Replace("\"", "'");
+
             }
 
-            transformedCondition = transformedCondition.Replace("{value}", valueResult);
+            transformedCondition = transformedCondition.Replace("{value}", valueResult).Replace("{value2}", valueResult2).Replace("{value3}", valueResult3);
             
             return transformedCondition;
         }
-    }
+        public object FixedValueIntegration(string valueType, string value)
+        {
+            var thisYear = DateTime.Now.Year;
+            var thisMonth = DateTime.Now.Month;
+            var thisDay = DateTime.Now.Day;
+            var today = DateTime.Today;
+            var thisWeek = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
 
-    
+            switch (valueType)
+            {
+                
+                case ConstantHelper.Next7Days:
+                    return new object[] { today, today.AddDays(7) };
+                case ConstantHelper.Last7Days:
+                    return new object[] { today.AddDays(-7), today };
+                case ConstantHelper.NextMonth:
+                    return new object[] { today, today.AddMonths(1) };
+                case ConstantHelper.LastMonth:
+                    return new object[] { new DateTime(thisYear, thisMonth - 1, 1), new DateTime(thisYear, thisMonth - 1, DateTime.DaysInMonth(thisYear, thisMonth)) };
+                case ConstantHelper.NextXDays:
+                    return new object[] { today, today.AddDays(Int32.Parse(value)) };
+                case ConstantHelper.LastXDays:
+                    return new object[] { today.AddDays(Int32.Parse(value)), today };
+                case ConstantHelper.NextXHours:
+                    return new object[] { today, today.AddHours(Int32.Parse(value)) };
+                case ConstantHelper.LastXHours:
+                    return new object[] { today.AddHours(-Int32.Parse(value)), today };
+                case ConstantHelper.NextXMinutes:
+                    return new object[] { today, today.AddMinutes(Int32.Parse(value)) };
+                case ConstantHelper.LastXMinutes:
+                    return new object[] { today.AddMinutes(-Int32.Parse(value)), today };
+                case ConstantHelper.NextXMonths:
+                    return new object[] { today, today.AddMonths(Int32.Parse(value)) };
+                case ConstantHelper.LastXMonths:
+                    return new object[] { today.AddMonths(-Int32.Parse(value)), today };
+                case ConstantHelper.NextXYears:
+                    return new object[] { today, today.AddYears(Int32.Parse(value)) };
+                case ConstantHelper.LastXYears:
+                    return new object[] { today.AddYears(-Int32.Parse(value)), today };
+                case ConstantHelper.NextYear:
+                    return new object[] { today, today.AddYears(1) };
+                case ConstantHelper.LastYear:
+                    return new object[] { today.AddYears(-1), today }; 
+                case ConstantHelper.ThisMonth:
+                    return new object[] {new DateTime(thisYear, thisMonth,1), new DateTime(thisYear, thisMonth, DateTime.DaysInMonth(thisYear,thisMonth)) };
+                case ConstantHelper.ThisYear:
+                    return new object[] { new DateTime(thisYear, 1, 1), new DateTime(thisYear, 12, 31) };
+                case ConstantHelper.Today:
+                    return today.ToShortDateString();
+                case ConstantHelper.Tomorrow:
+                    return today.AddDays(1).ToShortDateString();
+                case ConstantHelper.Yesterday:
+                    return today.AddDays(-1).ToShortDateString();
+                case ConstantHelper.OlderThanXYears:
+                    return today.AddYears(-Int32.Parse(value));
+                case ConstantHelper.OlderThanXDays:
+                    return today.AddDays(-Int32.Parse(value));
+                case ConstantHelper.OlderThanXMonths:
+                    return today.AddMonths(-Int32.Parse(value));
+                case ConstantHelper.OlderThanXHours:
+                    return today.AddHours(-Int32.Parse(value));
+                case ConstantHelper.OlderThanXMinutes:
+                    return today.AddMinutes(-Int32.Parse(value));
+                case ConstantHelper.OlderThanXWeeks:
+                    return today.AddDays(-Int32.Parse(value)*7);
+               
+            }
+            return null;
+        }
+    }
 }

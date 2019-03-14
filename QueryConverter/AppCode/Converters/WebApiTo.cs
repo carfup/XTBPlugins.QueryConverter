@@ -21,11 +21,20 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
         static string topCount = null;
         ConverterHelper converterHelper = null;
 
+        /// <summary>
+        /// WebApiTo class constructor
+        /// </summary>
+        /// <param name="convertHelper"></param>
         public WebApiTo(ConverterHelper convertHelper)
         {
             this.converterHelper = convertHelper;
         }
 
+        /// <summary>
+        /// Process from WebApi to FetchXml
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public string ProcessToFetchXml(string input)
         {
             var queryExpressionStringValue = ProcessToQueryExpression(input);
@@ -33,6 +42,12 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
 
             return fetch;
         }
+
+        /// <summary>
+        /// Process from WebApi to QueryExpression
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public string ProcessToQueryExpression(string input)
         {
             var urlParts = input.Split('/');
@@ -100,6 +115,11 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return stringq;
         }
 
+        /// <summary>
+        /// Handle TopCount from WebApi to QE syntax
+        /// </summary>
+        /// <param name="top"></param>
+        /// <returns></returns>
         public string ManageTopCount(string top)
         {
             var topCount = "";
@@ -110,6 +130,11 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return topCount;
         }
 
+        /// <summary>
+        /// Handle orders from webapi to QE syntax
+        /// </summary>
+        /// <param name="ordersList"></param>
+        /// <returns></returns>
         public string ManagerOrders(string ordersList)
         {
 
@@ -137,6 +162,12 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
 
             return orders;
         }
+
+        /// <summary>
+        /// handles Columbs from webapi to QE syntax
+        /// </summary>
+        /// <param name="columnsList"></param>
+        /// <returns></returns>
         public string ManageColumns(string columnsList)
         {
             var columns = "";
@@ -152,6 +183,11 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return stringq;
         }
 
+        /// <summary>
+        /// handle filters from WebAPi to QE syntax
+        /// </summary>
+        /// <param name="filtersList"></param>
+        /// <returns></returns>
         public string ManageFilters(string filtersList)
         {
             filtersList = filtersList.Replace("filter=", "");
@@ -251,6 +287,11 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode.Converters
             return conditionsString;
         }
 
+        /// <summary>
+        /// Retrieve the entity name from metadata for postprocessing
+        /// </summary>
+        /// <param name="entityName"></param>
+        /// <returns></returns>
         public string GetEntityName(string entityName)
         {
             RetrieveAllEntitiesRequest request = new RetrieveAllEntitiesRequest()

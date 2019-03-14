@@ -16,32 +16,40 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         public const string Linq = "Linq";
         public const string WebApi = "WebApi";
 
-        public static List<OperatorMapping> operatorMapping = new List<OperatorMapping>()
-        {
-            new OperatorMapping() {QeConditionOperator = ConditionOperator.Equal, FeOperator = "eq", QeOperator = "eq", WeOperator = "eq"},
-        };
-
-        public static Dictionary<string, string> operatorsMapping = new Dictionary<string, string>
-        {
-            { "Equal", "eq" },
-            { "NotEqual", "ne"},
-            { "GreaterThan", "gt"},
-            { "GreaterEqual", "ge"},
-            { "LessThan", "lt"},
-            { "BeginsWith", "startswith"},
-            { "EndsWith", "endswith"},
-            { "Contains", "contains"},
-            { "NotNull", "ne"},
-            { "NotIn", "not contains"},
-        };
+        //Value Rendering
+        public const string Last7Days = "Last7Days";
+        public const string Next7Days = "Next7Days";
+        public const string NextXYears = "NextXYears";
+        public const string LastXYears = "LastXYears";
+        public const string NextXWeeks = "NextXWeeks";
+        public const string LastXWeeks = "LastXWeeks";
+        public const string NextXMonths = "NextXMonths";
+        public const string LastXMonths = "LastXMonths";
+        public const string NextYear = "NextYear";
+        public const string LastYear = "LastYear";
+        public const string NextWeek = "NextWeek";
+        public const string LastWeek = "LastWeek";
+        public const string NextMonth = "NextMonth";
+        public const string LastMonth = "LastMonth";
+        public const string NextXMinutes = "NextXMinutes";
+        public const string LastXMinutes = "LastXMinutes";
+        public const string NextXHours = "NextXHours";
+        public const string LastXHours = "LastXHours";
+        public const string NextXDays = "NextXDays";
+        public const string LastXDays = "LastXDays";
+        public const string ThisMonth = "ThisMonth";
+        public const string ThisWeek = "ThisWeek";
+        public const string ThisYear = "ThisYear";
+        public const string Today = "Today";
+        public const string Tomorrow = "Tomorrow";
+        public const string Yesterday = "Yesterday";
+        public const string OlderThanXYears = "OlderThanXYears";
+        public const string OlderThanXWeeks = "OlderThanXWeeks";
+        public const string OlderThanXMonths = "OlderThanXMonths";
+        public const string OlderThanXMinutes = "OlderThanXMinutes";
+        public const string OlderThanXHours = "OlderThanXHours";
+        public const string OlderThanXDays = "OlderThanXDays";
+        public const string Between = "Between";
         #endregion
-    }
-
-    public class OperatorMapping
-    {
-        public ConditionOperator QeConditionOperator { get; set; }
-        public string QeOperator { get; set; }
-        public string FeOperator { get; set; }
-        public string WeOperator { get; set; }
     }
 }

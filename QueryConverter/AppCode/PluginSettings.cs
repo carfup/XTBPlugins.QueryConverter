@@ -25,6 +25,12 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         public static string ROSLYNAPIURL = "https://carfup-xtbpluginswebapi.azurewebsites.net/api/roslyn/convert";
     }
 
+    public static class LinqSyntax
+    {
+        public const string MethodSynxtax = "MethodSyntax";
+        public const string SQLSynxtax = "SQLSyntax";
+    }
+
     // EventType to qualify which action was performed by the plugin
     static class LogAction
     {

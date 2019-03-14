@@ -52,6 +52,7 @@ namespace Carfup.XTBPlugins.QueryConverter
                             query = qcArg.Linq;
                             break;
                         case QCMessageBusRequest.QueryExpression:
+                            
                         case QCMessageBusRequest.QueryExpressionString:
                             query = qcArg.queryExpressionString;
                             break;
@@ -63,7 +64,7 @@ namespace Carfup.XTBPlugins.QueryConverter
                 else if (message.TargetArgument is string)
                 {
                     query = (string)message.TargetArgument;
-                    DetectQueryType(inputCodeEditor.Text);
+                    DetectQueryType(inputCodeEditor.Text, false);
                 }
 
                 inputCodeEditor.Text = query;
@@ -100,7 +101,7 @@ namespace Carfup.XTBPlugins.QueryConverter
             {
                 var proceed = DetectQueryType(inputCodeEditor.Text);
 
-                if (proceed != "")
+                if (proceed != null)
                     ExecuteMethod(ProcessToConversion);
             }
         }
@@ -115,7 +116,7 @@ namespace Carfup.XTBPlugins.QueryConverter
         {
             try
             {
-                var inputTypeQuery = "";
+                string inputTypeQuery = null;
                 if (query.ToLower().StartsWith("https://") || query.ToLower().StartsWith("http://")) // Webapi !
                     inputTypeQuery = "WebApi"; 
                 else if (query.ToLower().StartsWith("<fetch"))
@@ -125,7 +126,7 @@ namespace Carfup.XTBPlugins.QueryConverter
                 //else if (query.Contains(".Where(") || query.Contains(".Select"))
                 //    inputTypeQuery = "Linq";
 
-                if (inputTypeQuery == "" && displayAlert )
+                if (String.IsNullOrEmpty(inputTypeQuery) && displayAlert)
                 {
                     MessageBox.Show("We didn't recognize the query you are try to convert. Maybe we didn't manage that type yet or there is an issue somewhere ...", "Query Not supported yet for conversion !", MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);

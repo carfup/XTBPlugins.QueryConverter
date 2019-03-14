@@ -163,7 +163,7 @@
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.groupBox3, 1, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 52);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(6);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -177,9 +177,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox4.Controls.Add(this.outputCodeEditor);
             this.groupBox4.Location = new System.Drawing.Point(1144, 6);
-            this.groupBox4.Margin = new System.Windows.Forms.Padding(6);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Padding = new System.Windows.Forms.Padding(6);
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.groupBox4.Size = new System.Drawing.Size(760, 930);
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
@@ -190,7 +190,7 @@
             this.outputCodeEditor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.outputCodeEditor.HighlighterMode = "javascript";
             this.outputCodeEditor.Location = new System.Drawing.Point(6, 28);
-            this.outputCodeEditor.Margin = new System.Windows.Forms.Padding(6);
+            this.outputCodeEditor.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.outputCodeEditor.MinIeVersion = "10";
             this.outputCodeEditor.MinimumSize = new System.Drawing.Size(37, 37);
             this.outputCodeEditor.Name = "outputCodeEditor";
@@ -205,9 +205,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.inputCodeEditor);
             this.groupBox1.Location = new System.Drawing.Point(6, 6);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(6);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(6);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.groupBox1.Size = new System.Drawing.Size(759, 930);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
@@ -218,7 +218,7 @@
             this.inputCodeEditor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.inputCodeEditor.HighlighterMode = "javascript";
             this.inputCodeEditor.Location = new System.Drawing.Point(6, 28);
-            this.inputCodeEditor.Margin = new System.Windows.Forms.Padding(6);
+            this.inputCodeEditor.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.inputCodeEditor.MinIeVersion = "10";
             this.inputCodeEditor.MinimumSize = new System.Drawing.Size(37, 37);
             this.inputCodeEditor.Name = "inputCodeEditor";
@@ -236,9 +236,9 @@
             this.groupBox3.Controls.Add(this.comboBoxInput);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(777, 6);
-            this.groupBox3.Margin = new System.Windows.Forms.Padding(6);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Padding = new System.Windows.Forms.Padding(6);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.groupBox3.Size = new System.Drawing.Size(355, 930);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
@@ -248,7 +248,7 @@
             // 
             this.buttonConvert.Image = global::Carfup.XTBPlugins.Properties.Resources.arrow_right_64;
             this.buttonConvert.Location = new System.Drawing.Point(28, 486);
-            this.buttonConvert.Margin = new System.Windows.Forms.Padding(6);
+            this.buttonConvert.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.buttonConvert.Name = "buttonConvert";
             this.buttonConvert.Size = new System.Drawing.Size(304, 166);
             this.buttonConvert.TabIndex = 7;
@@ -262,10 +262,10 @@
             this.groupBoxConversionDetails.AutoSize = true;
             this.groupBoxConversionDetails.Controls.Add(this.flowLayoutPanel1);
             this.groupBoxConversionDetails.Location = new System.Drawing.Point(0, 240);
-            this.groupBoxConversionDetails.Margin = new System.Windows.Forms.Padding(6);
+            this.groupBoxConversionDetails.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.groupBoxConversionDetails.Name = "groupBoxConversionDetails";
-            this.groupBoxConversionDetails.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBoxConversionDetails.Size = new System.Drawing.Size(357, 251);
+            this.groupBoxConversionDetails.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBoxConversionDetails.Size = new System.Drawing.Size(358, 251);
             this.groupBoxConversionDetails.TabIndex = 6;
             this.groupBoxConversionDetails.TabStop = false;
             this.groupBoxConversionDetails.Text = "Conversion details :";
@@ -277,7 +277,7 @@
             this.flowLayoutPanel1.Controls.Add(this.labelCrmContext);
             this.flowLayoutPanel1.Controls.Add(this.textBoxCrmContext);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(11, 35);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(6);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(334, 164);
             this.flowLayoutPanel1.TabIndex = 0;
@@ -295,7 +295,7 @@
             // textBoxQueryVariable
             // 
             this.textBoxQueryVariable.Location = new System.Drawing.Point(6, 31);
-            this.textBoxQueryVariable.Margin = new System.Windows.Forms.Padding(6);
+            this.textBoxQueryVariable.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.textBoxQueryVariable.Name = "textBoxQueryVariable";
             this.textBoxQueryVariable.Size = new System.Drawing.Size(279, 29);
             this.textBoxQueryVariable.TabIndex = 32;
@@ -315,7 +315,7 @@
             // textBoxCrmContext
             // 
             this.textBoxCrmContext.Location = new System.Drawing.Point(6, 97);
-            this.textBoxCrmContext.Margin = new System.Windows.Forms.Padding(6);
+            this.textBoxCrmContext.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.textBoxCrmContext.Name = "textBoxCrmContext";
             this.textBoxCrmContext.Size = new System.Drawing.Size(279, 29);
             this.textBoxCrmContext.TabIndex = 34;
@@ -351,7 +351,7 @@
             "WebApi",
             "Linq"});
             this.comboBoxOutput.Location = new System.Drawing.Point(11, 172);
-            this.comboBoxOutput.Margin = new System.Windows.Forms.Padding(6);
+            this.comboBoxOutput.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.comboBoxOutput.Name = "comboBoxOutput";
             this.comboBoxOutput.Size = new System.Drawing.Size(330, 32);
             this.comboBoxOutput.TabIndex = 1;
@@ -367,7 +367,7 @@
             "Linq",
             "WebApi"});
             this.comboBoxInput.Location = new System.Drawing.Point(11, 79);
-            this.comboBoxInput.Margin = new System.Windows.Forms.Padding(6);
+            this.comboBoxInput.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.comboBoxInput.Name = "comboBoxInput";
             this.comboBoxInput.Size = new System.Drawing.Size(330, 32);
             this.comboBoxInput.TabIndex = 0;
@@ -379,7 +379,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.toolStrip1);
-            this.Margin = new System.Windows.Forms.Padding(6);
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "QueryConverter";
             this.Size = new System.Drawing.Size(1910, 999);
             this.Load += new System.EventHandler(this.QueryConverter_Load);

@@ -152,6 +152,7 @@
     <Compile Include="AppCode\Converters\WebApiTo.cs" />
     <Compile Include="AppCode\LogUsage.cs" />
     <Compile Include="AppCode\PluginSettings.cs" />
+    <Compile Include="AppCode\QueryConverterMessageBusArgument.cs" />
     <Compile Include="Forms\HelpForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -229,6 +230,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\helpscreenshot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow-return-64.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="ILRepack" AfterTargets="Build" Condition="">

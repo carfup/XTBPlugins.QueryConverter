@@ -16,7 +16,8 @@ namespace Carfup.XTBPlugins.QueryConverter
         ConverterHelper converter = null;
         internal PluginSettings settings = new PluginSettings();
         public LogUsage log = null;
-        
+        private MessageBusEventArgs callerArgs = null;
+
 
         public string RepositoryName { get; } = "XTBPlugins.QueryConverter";
 
@@ -30,12 +31,47 @@ namespace Carfup.XTBPlugins.QueryConverter
 
         public event EventHandler<MessageBusEventArgs> OnOutgoingMessage;
 
+
         public void OnIncomingMessage(MessageBusEventArgs message)
         {
-            if (message.SourcePlugin == "FetchXML Builder" && message.TargetArgument is string)
+            callerArgs = message;
+            string query = null;
+            if (message.TargetArgument != null)
             {
-                inputCodeEditor.Text = (message.TargetArgument); 
+                if (message.TargetArgument is QueryConverterMessageBusArgument)
+                {
+                    var qcArg = (QueryConverterMessageBusArgument)message.TargetArgument;
+                    comboBoxInput.SelectedItem = qcArg.qCRequest.ToString();
+
+                    switch (qcArg.qCRequest)
+                    {
+                        case QCMessageBusRequest.FetchXML:
+                            query = qcArg.FetchXml;
+                            break;
+                        case QCMessageBusRequest.Linq:
+                            query = qcArg.Linq;
+                            break;
+                        case QCMessageBusRequest.QueryExpression:
+                            
+                        case QCMessageBusRequest.QueryExpressionString:
+                            query = qcArg.queryExpressionString;
+                            break;
+                        case QCMessageBusRequest.WebApi:
+                            query = qcArg.WebApi;
+                            break;
+                    }
+                }
+                else if (message.TargetArgument is string)
+                {
+                    query = (string)message.TargetArgument;
+                    DetectQueryType(inputCodeEditor.Text, false);
+                }
+
+                inputCodeEditor.Text = query;
             }
+
+            toolStripButtonReturnQuery.Visible = true;
+            toolStripSeparator4.Visible = true;
         }
 
         private void QueryConverter_Load(object sender, EventArgs e)
@@ -56,7 +92,7 @@ namespace Carfup.XTBPlugins.QueryConverter
 
         private void buttonConvert_Click(object sender, EventArgs evt)
         {
-            if (inputCodeEditor.Text == "" || inputCodeEditor.Text == null)
+            if (String.IsNullOrEmpty(inputCodeEditor.Text))
             {
                 this.log.LogData(EventType.Event, LogAction.InputQueryEmpty);
                 MessageBox.Show("The input box is empty. Fill it with your query !", "The input box is empty!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -65,17 +101,22 @@ namespace Carfup.XTBPlugins.QueryConverter
             {
                 var proceed = DetectQueryType(inputCodeEditor.Text);
 
-                if (proceed != "")
+                if (proceed != null)
                     ExecuteMethod(ProcessToConversion);
             }
-            
         }
 
+        /// <summary>
+        /// Detect which type of query is pushed to the input code editor field 
+        /// </summary>
+        /// <param name="query">query code</param>
+        /// <param name="displayAlert">display popup for not recognize query</param>
+        /// <returns></returns>
         private string DetectQueryType(string query, bool displayAlert = true)
         {
             try
             {
-                var inputTypeQuery = "";
+                string inputTypeQuery = null;
                 if (query.ToLower().StartsWith("https://") || query.ToLower().StartsWith("http://")) // Webapi !
                     inputTypeQuery = "WebApi"; 
                 else if (query.ToLower().StartsWith("<fetch"))
@@ -85,7 +126,7 @@ namespace Carfup.XTBPlugins.QueryConverter
                 //else if (query.Contains(".Where(") || query.Contains(".Select"))
                 //    inputTypeQuery = "Linq";
 
-                if (inputTypeQuery == "" && displayAlert )
+                if (String.IsNullOrEmpty(inputTypeQuery) && displayAlert)
                 {
                     MessageBox.Show("We didn't recognize the query you are try to convert. Maybe we didn't manage that type yet or there is an issue somewhere ...", "Query Not supported yet for conversion !", MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
@@ -106,6 +147,11 @@ namespace Carfup.XTBPlugins.QueryConverter
             return "";            
         }
 
+        /// <summary>
+        /// Return the type of query to be converted for the code editor rendering
+        /// </summary>
+        /// <param name="type">query type</param>
+        /// <returns></returns>
         private string GetCodeEditorHighlight(string type)
         {
             switch (type.ToLower())
@@ -130,6 +176,9 @@ namespace Carfup.XTBPlugins.QueryConverter
             inputCodeEditor.Text = data;
         }
 
+        /// <summary>
+        /// Call the helpers to perform the actual conversion from the input into output query wanted
+        /// </summary>
         private void ProcessToConversion()
         {
             string inputType = comboBoxInput.Text;
@@ -172,6 +221,10 @@ namespace Carfup.XTBPlugins.QueryConverter
             ManageMandatoryFields(comboBoxOutput.Text);
         }
 
+        /// <summary>
+        /// Based on the query type, we display or not some fields
+        /// </summary>
+        /// <param name="type">Query Type</param>
         private void ManageMandatoryFields(string type)
         {
             switch (type.ToLower())
@@ -196,6 +249,9 @@ namespace Carfup.XTBPlugins.QueryConverter
             }
         }
 
+        /// <summary>
+        /// Allow user to update the theme for the code editor rendering
+        /// </summary>
         public void UpdateThemeDisplayed()
         {
             var inputData = inputCodeEditor.Text;
@@ -239,6 +295,9 @@ namespace Carfup.XTBPlugins.QueryConverter
             });
         }
 
+        /// <summary>
+        /// Saving settings if user updates any
+        /// </summary>
         public void SaveSettings()
         {
             log.LogData(EventType.Event, LogAction.SettingsSaved);
@@ -246,6 +305,9 @@ namespace Carfup.XTBPlugins.QueryConverter
             UpdateThemeDisplayed();
         }
 
+        /// <summary>
+        /// Load user settings to prefill some information with his preferences
+        /// </summary>
         private void LoadSetting()
         {
             try
@@ -272,6 +334,9 @@ namespace Carfup.XTBPlugins.QueryConverter
             }
         }
 
+        /// <summary>
+        /// Return the version of the plugin assembly
+        /// </summary>
         public static string CurrentVersion
         {
             get
@@ -349,6 +414,60 @@ namespace Carfup.XTBPlugins.QueryConverter
         {
             var helpDlg = new HelpForm();
             helpDlg.ShowDialog(this);
+        }
+
+        // Thanks to Jonas Rapp for this piece of code !
+        private void toolStripButtonReturnQuery_Click(object sender, EventArgs e)
+        {
+            if (callerArgs == null)
+                return;
+
+            this.log.LogData(EventType.Event, $"{LogAction.ReturnedTo}-{callerArgs.SourcePlugin}");
+            var result = outputCodeEditor.Text;
+
+            if (string.IsNullOrWhiteSpace(result))
+                return;
+
+            var message = new MessageBusEventArgs(callerArgs.SourcePlugin);
+            if (callerArgs.TargetArgument is QueryConverterMessageBusArgument)
+            {
+                var qcArgs = (QueryConverterMessageBusArgument)callerArgs.TargetArgument;
+                switch (qcArgs.qCRequest)
+                {
+                    case QCMessageBusRequest.FetchXML:
+                        // STILL REALLY UGLY
+                        result = result.Replace("useraworderby=\"false\"", "").Replace("useraworderby=\"true\"", "");
+                        qcArgs.FetchXml = result;
+                        break;
+
+                    case QCMessageBusRequest.QueryExpressionString:
+                        qcArgs.queryExpressionString = result;
+                        break;
+
+                    case QCMessageBusRequest.WebApi:
+                        qcArgs.WebApi = result;
+                        break;
+
+                    case QCMessageBusRequest.Linq:
+                        qcArgs.Linq = result;
+                        break;
+                }
+                message.TargetArgument = qcArgs;
+            }
+            else
+            {
+                message.TargetArgument = result;
+            }
+            OnOutgoingMessage(this, message);
+
+            toolStripButtonReturnQuery.Visible = false;
+            toolStripSeparator4.Visible = false;
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            linkLabel1.LinkVisited = true;
+            System.Diagnostics.Process.Start("https://github.com/carfup/XTBPlugins.QueryConverter/issues");
         }
     }
 }

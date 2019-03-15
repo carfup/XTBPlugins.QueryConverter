@@ -25,6 +25,12 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         public static string ROSLYNAPIURL = "ROSLYNAPIURL_TOREPLACE";
     }
 
+    public static class LinqSyntax
+    {
+        public const string MethodSynxtax = "MethodSyntax";
+        public const string SQLSynxtax = "SQLSyntax";
+    }
+
     // EventType to qualify which action was performed by the plugin
     static class LogAction
     {
@@ -39,5 +45,7 @@ namespace Carfup.XTBPlugins.QueryConverter.AppCode
         public const string InputQueryTypeNotFound = "InputQueryTypeNotFound";
         public const string ConvertedWithRoslyn = "ConvertedWithRoslyn";
         public const string InputQueryEmpty = "InputQueryEmpty";
+        public const string ModulesLoaded = "ModulesLoaded";
+        public const string ReturnedTo = "ReturnTo";
     }
 }

@@ -1,7 +1,7 @@
 ﻿<package>
   <metadata>
     <id>Carfup.XTBPlugins.QueryConverter</id>
-    <version>1.2019.3.0-beta</version>
+    <version>1.2019.3.1-beta</version>
     <title>QueryConverter</title>
     <authors>Clement O.</authors>
     <owners>Clement O.</owners>
@@ -11,7 +11,7 @@
     <description>This tool will allow you to convert queries from and to QueryExpression, FetchXML, Linq and WebApi.</description>
     <summary>This tool will allow you to convert queries from and to QueryExpression, FetchXML, Linq and WebApi.</summary>
     <releaseNotes>
-1.2019.3.0-beta
+1.2019.3.1-beta
 Converters available :
 * from QueryExpression to WebApi, FetchXML, LinQ
 * from WebApi to QueryExpression, FetchXML, LinQ

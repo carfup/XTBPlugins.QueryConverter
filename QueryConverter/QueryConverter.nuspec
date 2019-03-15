@@ -8,7 +8,7 @@
     <projectUrl>https://github.com/carfup/XTBPlugins.QueryConverter</projectUrl>
     <iconUrl>http://www.gravatar.com/avatar/8b87aef303e872503c47ef3fdf83c801?s=64</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>QueryConverter</description>
+    <description>This tool will allow you to convert queries from and to QueryExpression, FetchXML, Linq and WebApi.</description>
     <summary>This tool will allow you to convert queries from and to QueryExpression, FetchXML, Linq and WebApi.</summary>
     <releaseNotes>
 1.2019.3.0-beta
